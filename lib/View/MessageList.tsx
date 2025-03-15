@@ -6,8 +6,8 @@ import type { ChatMessage } from '../Domain/ChatSession';
 interface MessageListProps {
   messages: ChatMessage[]
 }
-
-export const MessageList: FC<MessageListProps> = ({ messages }) => {
+export const MessageList: FC<MessageListProps> = (props) => {
+  const { messages } = props
 
   return (
     <Box
