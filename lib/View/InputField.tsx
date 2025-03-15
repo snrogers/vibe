@@ -16,11 +16,13 @@ const DummyInputField: FC = () => {
   )
 }
 
-const onSubmit = (value: string) => {
-  appStore.dispatch({ type: 'PROMPT_SUBMITTED', payload: { prompt: value } })
-}
 export const LiveInputField: FC = () => {
   const [value, onChange] = useState("")
+
+  const onSubmit = (value: string) => {
+    appStore.dispatch({ type: 'PROMPT_SUBMITTED', payload: { prompt: value } })
+    onChange('')
+  }
 
   useInput((input, key) => {
     if (key.return) {

@@ -29,3 +29,10 @@ export const addUserMessage = (session: ChatSession, message: string) => {
     messages: [...session.messages, userMessage],
   }
 }
+
+export const addAssistantMessage = (session: ChatSession, message: ChatMessage) => {
+  return {
+    ...session,
+    messages: [...session.messages, message],
+  }
+}

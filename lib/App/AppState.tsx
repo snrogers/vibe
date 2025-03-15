@@ -3,7 +3,7 @@ import type { ChatSession } from "../Domain/ChatSession"
 
 export type AppState = {
   chatSession: ChatSession
-  debugMode: boolean
+  debugMode:   boolean
   /** Event Log */
   events: AppEvent[]
 }
@@ -11,10 +11,7 @@ export type AppState = {
 export const INITIAL_APP_STATE: AppState = {
   chatSession: {
     messages: [
-      { content: 'Hello World!', role: 'user' },
-      { content: 'Hello World!', role: 'assistant' },
-      { content: 'Hello World!', role: 'user' },
-      { content: 'Hello World!', role: 'assistant' },
+      { role: 'system', content: 'You are a cartoonish French stereotype. Oui oui! On hon hon!' },
     ]
   },
   debugMode: true,
