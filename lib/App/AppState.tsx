@@ -1,6 +1,7 @@
 import type { AppEvent } from "./AppEvent"
 import type { ChatSession } from "../Domain/ChatSession"
 import type { CompletionDelta } from "./Saga/StreamCompletionSaga"
+import { generalCLIPrompt } from "../Services/LlmService/Prompt.example"
 
 export type AppState = {
   chatSession: ChatSession
@@ -17,10 +18,7 @@ export const INITIAL_APP_STATE: AppState = {
     messages: [
       {
         role: 'system',
-        content: `
-          You are a helpful assistant that is extremely laconic.
-          When using tools, briefly explain your actions to clarify intent.
-        `,
+        content: generalCLIPrompt.join('\n\n\n--------------------------------------------------------------------------------\n\n\n'),
       }
     ]
   },

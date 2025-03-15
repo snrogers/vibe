@@ -27,7 +27,6 @@ export function * StreamCompletionSaga({ chatSession }: StreamCompletionSagaOpts
     yield * mapAsyncIterable(
       completion,
       function * (chunk: ChatCompletionChunk) {
-        yield * put({ type: 'debug/chunk' as const, payload: { chunk, partialCompletion } })
         partialCompletion = mergeDeltas(partialCompletion, chunk.choices[0]?.delta)
         yield * put({ type: 'CHAT_COMPLETION_STREAM_PARTIAL', payload: { partialCompletion } })
       }
