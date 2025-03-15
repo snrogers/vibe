@@ -5,12 +5,8 @@ import type { ChatMessage } from '../Domain/ChatSession';
 import { useAppSelector } from '../App/AppProvider';
 import { MessagePartial } from './MessagePartial';
 
-interface MessageListProps {
-  messages: ChatMessage[]
-}
-export const MessageList: FC<MessageListProps> = (props) => {
-  const { messages } = props
-
+export const MessageList: FC = (props) => {
+  const messages        = useAppSelector((st) => st.chatSession.messages)
   const completionDelta = useAppSelector((st) => st.completionDelta)
 
   return (

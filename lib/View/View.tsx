@@ -12,16 +12,6 @@ import { DebugView } from "./DebugView"
 
 
 export const View: FC = withAppProvider(() => {
-  const messages  = useAppSelector((st) => st.chatSession.messages)
-  // const messages  = [] as ChatMessage[]
-  const [inputValue, setInputValue] = useState("")
-
-  const { isRawModeSupported } = useStdin()
-
-  const handleSubmit = (value: string) => {
-    setInputValue("")
-  }
-
   const isDebugMode = useAppSelector((st) => st.debugMode)
 
   return (
@@ -31,7 +21,7 @@ export const View: FC = withAppProvider(() => {
       <Box flexDirection="row" flexGrow={1}>
         {/* MessageList (Left or Full width depending on debug mode) */}
         <Box width={isDebugMode ? "50%" : "100%"} flexGrow={1}>
-          <MessageList messages={messages} />
+          <MessageList />
         </Box>
 
         {/* Debug View (Right, only if debug mode is enabled) */}
