@@ -2,9 +2,13 @@ import * as TReduxSaga from 'typed-redux-saga'
 import * as ReactRedux from 'react-redux'
 
 import type { AppEvent } from './AppEvent'
-import type { AppState } from './AppReducer'
 import type { Xf } from '../Types'
+import type { AppState } from './AppState'
 
+
+// @ts-expect-error
+import { eventChannel } from '@redux-saga/core'
+import { Channel } from 'redux-saga'
 
 
 // ----------------------------------------------------------------- //
@@ -21,6 +25,19 @@ export const takeEvery   = TReduxSaga.takeEvery
 export const takeLatest  = TReduxSaga.takeLatest
 export const takeLeading = TReduxSaga.takeLeading
 
+// Custom Redux-Saga Functions
+export function channelFromAsyncIterable<T>(iterable: AsyncIterable<T>) {
+  let cancelled = false;
+
+  const a = eventChannel(async (emit: any) => {
+    for await (const value of iterable) {
+      emit(value);
+    }
+  });
+
+  return a as Channel
+}
+
 
 
 // ----------------------------------------------------------------- //
@@ -28,3 +45,4 @@ export const takeLeading = TReduxSaga.takeLeading
 // ----------------------------------------------------------------- //
 export const useSelector = <T>(selector: (state: AppState) => T) =>
   ReactRedux.useSelector<AppState, T>(selector)
+

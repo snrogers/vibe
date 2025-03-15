@@ -3,15 +3,18 @@ import type { Stream } from "openai/streaming"
 
 import { pp } from "@/lib/Utils";
 import type { ChatMessage } from "@/lib/Domain/ChatSession";
+import { channelFromAsyncIterable } from "@/lib/App/Utils";
 
 
 type Delta         = ChatCompletionChunk.Choice.Delta;
 type DeltaToolCall = NonNullable<Delta['tool_calls']>[number]
 
 
-export async function processStream(stream: Stream<ChatCompletionChunk>, emit: (chunk: {}) => void) {
+export async function * processStream(stream: Stream<ChatCompletionChunk>, emit: (chunk: {}) => void) {
   let sum: ChatCompletionChunk.Choice.Delta = { };
   let accumulatedContent = '';
+
+  const chunkChannel = channelFromAsyncIterable(stream);
 
   for await (const chunk of stream) {
     console.log('chunk', pp(chunk));
