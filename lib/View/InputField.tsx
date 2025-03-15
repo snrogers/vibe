@@ -1,8 +1,7 @@
-import React, { type FC } from 'react'
+import React, { useState, type FC } from 'react'
 import { Box, Text, useStdin } from 'ink'
 import { useInput } from 'ink'
-
-
+import { appStore } from '../App'
 
 
 // ----------------------------------------------------------------- //
@@ -17,8 +16,11 @@ const DummyInputField: FC = () => {
   )
 }
 
-export const LiveInputField: FC<InputFieldProps> = (props) => {
-  const { value, onChange, onSubmit } = props
+const onSubmit = (value: string) => {
+  appStore.dispatch({ type: 'PROMPT_SUBMITTED', payload: { prompt: value } })
+}
+export const LiveInputField: FC = () => {
+  const [value, onChange] = useState("")
 
   useInput((input, key) => {
     if (key.return) {
@@ -35,7 +37,7 @@ export const LiveInputField: FC<InputFieldProps> = (props) => {
   return (
     <Box borderStyle="round" borderColor="cyan" padding={1} width="100%">
       <Text color="white" dimColor>{'>'}</Text>
-      <Text> {value}</Text>
+      <Text>{value}</Text>
       <Text color="cyan">▋</Text>
     </Box>
   )
@@ -45,17 +47,11 @@ export const LiveInputField: FC<InputFieldProps> = (props) => {
 // ----------------------------------------------------------------- //
 // Public Component
 // ----------------------------------------------------------------- //
-interface InputFieldProps {
-  value: string
-  onChange: (value: string) => void
-  onSubmit: (value: string) => void
-}
-export const InputField: FC<InputFieldProps> = ({ value, onChange, onSubmit }) => {
+export const InputField: FC = () => {
   const { isRawModeSupported } = useStdin()
 
-
   if (isRawModeSupported) {
-    return <LiveInputField value={value} onChange={onChange} onSubmit={onSubmit} />
+    return <LiveInputField />
   } else {
     return <DummyInputField />
   }

@@ -3,7 +3,7 @@ import { Provider as ReactReduxProvider } from 'react-redux'
 
 import { appStore, type AppStore } from "./AppStore"
 import type { Xf } from "../Types"
-import type { AppState } from "./AppReducer"
+import type { AppState } from "./AppState"
 
 const AppReactContext = createContext({ store: appStore })
 

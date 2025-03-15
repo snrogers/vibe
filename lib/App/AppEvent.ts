@@ -6,6 +6,7 @@ export type AppEvent =
   | CHAT_COMPLETION_SUCCESS
   | CHAT_COMPLETION_FAILURE
   | CHAT_COMPLETION_STREAM_PARTIAL
+  | DEBUG_MODE_SET
 
 
 export type PROMPT_SUBMITTED =
@@ -19,6 +20,9 @@ export type CHAT_COMPLETION_FAILURE =
 
 export type CHAT_COMPLETION_STREAM_PARTIAL =
   Event<'CHAT_COMPLETION_STREAM_PARTIAL', { chunk: never }> // TODO: Implement
+
+export type DEBUG_MODE_SET =
+  Event<'DEBUG_MODE_SET', { debugMode: boolean }>
 
 
 // ----------------------------------------------------------------- //
