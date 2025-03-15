@@ -13,7 +13,17 @@ export type AppState = {
 
 export const INITIAL_APP_STATE: AppState = {
   awaitingConfirmation: false,
-  chatSession: { messages: [ { role: 'system', content: 'You are extremely laconic.' } ] },
+  chatSession: {
+    messages: [
+      {
+        role: 'system',
+        content: `
+          You are a helpful assistant that is extremely laconic.
+          When using tools, briefly explain your actions to clarify intent.
+        `,
+      }
+    ]
+  },
   completionDelta: undefined,
   debugMode: false,
   events: [],
