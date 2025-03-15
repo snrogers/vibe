@@ -1,12 +1,18 @@
 import { Box, Text } from "ink"
+
 import { InputField } from './InputField'
 import { useState, type FC } from "react"
 import { MessageList } from "./MessageList"
 import { Header } from "./Header"
+import { type appStore } from "../App"
+import type { AppStore } from "../App/AppStore"
+import { withAppProvider } from '../App/AppProvider'
+import type { AppState } from '../App/AppReducer'
+import { useSelector } from "@/lib/App/Utils"
 
-const messages = Array(20).fill(0).map((_, i) => ({ id: i, text: `Message ${i}` }))
 
-export const View: FC = () => {
+export const View: FC = withAppProvider(() => {
+  const messages  = useSelector((st) => st.chatSession.messages)
   const [inputValue, setInputValue] = useState("")
 
   const handleSubmit = (value: string) => {
@@ -26,4 +32,4 @@ export const View: FC = () => {
       />
     </Box>
   )
-}
+})

@@ -1,5 +1,5 @@
-import { AppStore } from './AppStore'
+import { appStore } from './AppStore'
 
 export const dispatchEvent = (event: string) => {
-  AppStore.dispatch({ type: event })
+  appStore.dispatch({ type: event })
 }

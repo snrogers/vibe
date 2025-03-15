@@ -1,12 +1,14 @@
 import React, { type FC } from 'react'
 import { Box } from 'ink'
 import { Message } from './Message';
+import type { ChatMessage } from '../Domain/ChatSession';
 
 interface MessageListProps {
-  messages: Array<{ id: number; text: string }>
+  messages: ChatMessage[]
 }
 
 export const MessageList: FC<MessageListProps> = ({ messages }) => {
+
   return (
     <Box
       flexDirection="column"
@@ -15,7 +17,7 @@ export const MessageList: FC<MessageListProps> = ({ messages }) => {
       overflowY="hidden"
     >
       {messages.map(message => (
-        <Message key={message.id} text={message.text} />
+        <Message key={message.id} message={message} />
       ))}
     </Box>
   )

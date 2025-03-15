@@ -3,16 +3,18 @@ import createSagaMiddleware from 'redux-saga'
 
 import { appReducer } from './AppReducer'
 import { rootSaga } from './Saga'
+import { createContext, type ComponentProps, type FC } from 'react'
 
-// create the saga middleware
 const sagaMiddleware = createSagaMiddleware()
-// mount it on the Store
-export const AppStore = configureStore({
-  reducer,
+
+export type AppStore  = typeof appStore
+export const appStore = configureStore({
+  reducer: appReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
 })
 
-// then run the saga
-sagaMiddleware.run(mySaga)
+sagaMiddleware.run(rootSaga)
 
-// render the application
+
+
+

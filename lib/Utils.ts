@@ -11,8 +11,6 @@ type ObjectSpecForPath<Path extends [...string[]], T = unknown> =
     : { [key in Head]: ObjectSpecForPath<Tail> }
   : never
 
-
-
 type setDeep =
   <Path extends [...string[]], Val>(...path: Path) =>
     <Val>(value: Val) =>
@@ -92,23 +90,15 @@ type overDeep2 =
       <T extends ObjectSpecForPathString<Path, T>>(obj: T) => T
 
 export const overDeep2: overDeep2 = (path, xf) => (obj) => {
-  // No path, return the object as is
-  if (path.length === 0) return obj;
+  // Split the path string by dots
+  const pathParts = path.split('.');
+  
+  // Use the existing overDeep function with the split path
+  return overDeep(...pathParts)(xf)(obj);
+}
 
-  // First key in the path
-  const [head, ...tail] = path;
+export const eternity = new Promise(() => {})
 
-  // If this is the last key in the path, apply the transformation function
-  if (tail.length === 0) {
-    return {
-      ...obj,
-      [head]: xf(obj[head] as any)
-    };
-  }
-
-  // Otherwise, recursively apply the transformation in the nested object
-  return {
-    ...obj,
-    [head]: overDeep(...tail) (xf)(obj[head] as never)
-  };
+export function exhaustiveCheck(x: never): never {
+  throw new Error(`Unhandled case: ${x}`)
 }
