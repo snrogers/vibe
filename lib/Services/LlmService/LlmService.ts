@@ -37,7 +37,7 @@ export const streamChatCompletion = async (chatSession: ChatSession) => {
     model: MODEL,
     messages,
     temperature: 0.5,
-    max_tokens: 1000,
+    max_tokens: 8192 / 2,
     tools: [BashTool],
     stream: true,
   });

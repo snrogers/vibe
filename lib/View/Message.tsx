@@ -1,8 +1,9 @@
 import React, { type FC } from 'react'
 import { Box, Text } from 'ink'
-import type { ChatMessage } from '../Domain/ChatSession'
+import type { AssistantMessage, ChatMessage, ToolMessage } from '../Domain/ChatSession'
 import { pp } from '../Utils'
 import { useAppSelector } from '../App/AppProvider'
+import { Frame } from './Frame'
 
 // ----------------------------------------------------------------- //
 // Role Badges and Styling
@@ -91,12 +92,34 @@ interface MessageContentProps {
 }
 const MessageContent: FC<MessageContentProps> = ({ message }) => {
   const { role, content } = message
+
+  const toolCalls = (message as AssistantMessage).tool_calls
+
   if (typeof content === 'string') {
     const style = getRoleStyle(role)
     return <Text {...style.text}>{content}</Text>
   }
 
-  return <Text>UNIMPLEMENTED CONTENT: {pp(content)}</Text>
+  return (
+    <>
+      <Frame>
+        { typeof content === 'string'
+          ? <Text>{content}</Text>
+          : <Text>UNIMPLEMENTED CONTENT: {pp(content)}</Text>
+        }
+      </Frame>
+
+      { toolCalls && toolCalls.length > 0 &&
+        <Frame>
+          <Text>TOOL CALLS: {pp(toolCalls)}</Text>
+        </Frame>
+      }
+
+      <Frame>
+        { pp(message) }
+      </Frame>
+    </>
+  )
 }
 
 // ----------------------------------------------------------------- //
@@ -130,7 +153,7 @@ const MessageCard: FC<MessageCardProps> = ({ role, children }) => {
 // ----------------------------------------------------------------- //
 // Private Components
 // ----------------------------------------------------------------- //
-const UserMessage: FC<MessageProps> = (props) => {
+const UserMessageView: FC<MessageProps> = (props) => {
   const { message } = props
 
   return (
@@ -140,7 +163,7 @@ const UserMessage: FC<MessageProps> = (props) => {
   )
 }
 
-const AssistantMessage: FC<MessageProps> = (props) => {
+const AssistantMessageView: FC<MessageProps> = (props) => {
   const { message } = props
 
   return (
@@ -150,7 +173,7 @@ const AssistantMessage: FC<MessageProps> = (props) => {
   )
 }
 
-const SystemMessage: FC<MessageProps> = (props) => {
+const SystemMessageView: FC<MessageProps> = (props) => {
   const { message } = props
 
   return (
@@ -160,7 +183,7 @@ const SystemMessage: FC<MessageProps> = (props) => {
   )
 }
 
-const ToolMessage: FC<MessageProps> = (props) => {
+const ToolMessageView: FC<MessageProps> = (props) => {
   const { message } = props
 
   return (
@@ -180,10 +203,10 @@ interface MessageProps {
 export const Message: FC<MessageProps> = ({ message }) => {
   const { role } = message
 
-  if (role === 'user')      return <UserMessage      message={message} />
-  if (role === 'assistant') return <AssistantMessage message={message} />
-  if (role === 'system')    return <SystemMessage    message={message} />
-  if (role === 'tool')      return <ToolMessage      message={message} />
+  if (role === 'user')      return <UserMessageView      message={message} />
+  if (role === 'assistant') return <AssistantMessageView message={message} />
+  if (role === 'system')    return <SystemMessageView    message={message} />
+  if (role === 'tool')      return <ToolMessageView      message={message} />
   if (role === 'function')  return <Text>UNIMPLEMENTED ROLE</Text>
 
   return <Text>UNIMPLEMENTED ROLE</Text>

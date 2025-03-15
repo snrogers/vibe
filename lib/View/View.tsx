@@ -9,7 +9,7 @@ import { Frame } from "./Frame";
 import { useAppSelector, withAppProvider } from "../App/AppProvider";
 import { pp } from "../Utils";
 
-export const View: FC = withAppProvider(() => {
+export const View: FC = () => {
   const isDebugMode = useAppSelector((st) => st.debugMode);
   const isAwaitingConfirmation = useAppSelector((st) => st.awaitingConfirmation);
   const lastEvent = useAppSelector((st) => st.events.slice(-1)[0]);
@@ -27,7 +27,9 @@ export const View: FC = withAppProvider(() => {
             </Box>
             {isDebugMode && <DebugView />}
           </Box>
+
           <InputField />
+
           {lastEvent && (
             <Frame>
               <Text>{pp(lastEvent)}</Text>
@@ -37,4 +39,4 @@ export const View: FC = withAppProvider(() => {
       )}
     </Box>
   );
-});
+}

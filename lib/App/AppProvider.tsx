@@ -36,19 +36,17 @@ export const withAppProvider =
 // Hooks
 // ----------------------------------------------------------------- //
 export const useAppSelector = <T extends any>(selector: Xf<AppState, T>) => {
-  const { store } = useContext(AppReactContext)
-
-  const [state, setState] = useState(store.getState())
+  const [state, setState] = useState(appStore.getState())
 
   const substate = useMemo(() => selector(state), [state, selector])
 
   useEffect(() => {
-    const unsubscribe = store.subscribe(() => {
-      setState(store.getState())
+    const unsubscribe = appStore.subscribe(() => {
+      setState(appStore.getState())
     })
     return unsubscribe
   },
-  [store])
+  [appStore])
 
   return substate
 }
