@@ -10,6 +10,7 @@ export type AppEvent =
   | CHAT_COMPLETION_FAILURE
   | CHAT_COMPLETION_STREAM_PARTIAL
   | DEBUG_MODE_SET
+  | GENERIC_DEBUG_EVENT
 
 
 export type PROMPT_SUBMITTED =
@@ -27,6 +28,8 @@ export type CHAT_COMPLETION_STREAM_PARTIAL =
 export type DEBUG_MODE_SET =
   Event<'DEBUG_MODE_SET', { debugMode: boolean }>
 
+export type GENERIC_DEBUG_EVENT =
+  Event<`debug/${string}`, { error: unknown }>
 
 // ----------------------------------------------------------------- //
 // Helpers
@@ -47,4 +50,5 @@ export type Event<EventType extends string, Payload = never> = Equal<
 > extends true
   ? { type: EventType; payload?: never }
   : { type: EventType; payload: Payload };
+
 

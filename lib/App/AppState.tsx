@@ -13,10 +13,10 @@ export type AppState = {
 export const INITIAL_APP_STATE: AppState = {
   chatSession: {
     messages: [
-      { role: 'system', content: 'You are a cartoonish French stereotype. Oui oui! On hon hon!' },
+      { role: 'system', content: 'You are extremely laconic.' },
     ]
   },
-  debugMode: true,
+  debugMode: false,
   events: [],
   completionDelta: undefined,
 }

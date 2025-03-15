@@ -1,9 +1,11 @@
 import * as TReduxSaga from 'typed-redux-saga'
 import * as ReactRedux from 'react-redux'
 // @ts-expect-error
+import * as RSCore from '@redux-saga/core'
+// @ts-expect-error
 import { eventChannel } from '@redux-saga/core'
 // @ts-expect-error
-import { Channel, END } from 'redux-saga'
+import { Channel } from 'redux-saga'
 
 import type { AppEvent } from './AppEvent'
 import type { Xf } from '../Types'
@@ -11,6 +13,7 @@ import type { AppState } from './AppState'
 
 
 
+type AnySagaGeneratorFn = (...args: any[]) => TReduxSaga.SagaGenerator<any, any>
 
 // ----------------------------------------------------------------- //
 // Typed Redux Functions
@@ -38,13 +41,32 @@ export function channelFromAsyncIterable<T>(iterable: AsyncIterable<T>) {
         emit(value);
       }
 
-      emit(END);
+      emit(RSCore.END);
     })();
 
     return () => { cancelled = true };
   });
 
   return a as Channel
+}
+
+export function * mapAsyncIterable<T, U extends AnySagaGeneratorFn>(iterable: AsyncIterable<T>, mapperSaga: U) {
+  const asyncIterator:AsyncIterator<any> = iterable[Symbol.asyncIterator]()
+  const values = []
+
+  while (true) {
+    const iterResultP = asyncIterator.next()
+    // @ts-expect-error
+    const iterResult = (yield iterResultP)
+    const value = iterResult.value
+    const done = iterResult.done
+    if (done) break
+
+    const mappedValue = yield * mapperSaga(value)
+    values.push(mappedValue)
+  }
+
+  return values
 }
 
 
@@ -55,3 +77,4 @@ export function channelFromAsyncIterable<T>(iterable: AsyncIterable<T>) {
 export const useSelector = <T>(selector: (state: AppState) => T) =>
   ReactRedux.useSelector<AppState, T>(selector)
 
+export const END = RSCore.END as any

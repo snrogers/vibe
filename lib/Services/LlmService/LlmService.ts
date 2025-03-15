@@ -30,7 +30,7 @@ export const client = new OpenAI({
 export const streamChatCompletion = async (chatSession: ChatSession) => {
   const { messages } = chatSession
 
-  const completion = await DEEPSEEK_CLIENT.chat.completions.create({
+  const completionStream = await DEEPSEEK_CLIENT.chat.completions.create({
     model: MODEL,
     messages,
     temperature: 0.5,
@@ -38,7 +38,7 @@ export const streamChatCompletion = async (chatSession: ChatSession) => {
     stream: true,
   });
 
-  return completion;
+  return completionStream;
 };
 
 export const fetchChatCompletion = async (chatSession: ChatSession) => {
