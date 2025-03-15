@@ -9,7 +9,7 @@ import type {
   ChatCompletionChunk
 } from 'openai/resources';
 import type { ChatCompletionStream } from 'openai/lib/ChatCompletionStream.mjs';
-import type { Stream } from 'openai/streaming.mjs';
+import type { Stream } from 'openai/streaming';
 
 import type { ChatCompletionMessageToolCall } from 'openai/resources';
 import { dump } from '@/lib/Utils';

@@ -1,27 +1,42 @@
 
-import { call, put, select, take, takeEvery } from 'typed-redux-saga'
+import { call, select, take, takeEvery } from 'typed-redux-saga'
 
 import { LlmService } from '@/lib/Services/LlmService'
 import type { AppEvent } from '@/lib/App/AppEvent'
 import type { AppState } from '../AppState'
+import type { ChatMessage, ChatSession } from '@/lib/Domain/ChatSession'
+import { channelFromAsyncIterable, put } from '../Utils'
+import type { ChatCompletionChunk } from 'openai/resources'
+import { mergeDeltas } from '@/lib/Services/LlmService/processStream'
 
 
-export function * StreamCompletionSaga() {
-  while (true) {
-    try {
-      const completion  = yield * call(
-        LlmService.streamChatCompletion,
-        chatSession,
-      )
+export type PartialCompletion = ChatCompletionChunk.Choice.Delta
 
-      const response = completion.choices[0].message
+type StreamCompletionSagaOpts = {
+  chatSession: ChatSession
+}
+export function * StreamCompletionSaga({ chatSession }: StreamCompletionSagaOpts) {
+  let partialCompletion: PartialCompletion = {}
 
-      // TODO: Handle Tool Calls
+  try {
+    const completion  = yield * call(
+      LlmService.streamChatCompletion,
+      chatSession,
+    )
 
-      yield * put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: response } })
-    } catch (error) {
-      yield * put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error } })
-      console.error(error)
+    const channel = channelFromAsyncIterable(completion)
+
+
+    // Rely on the channel END-ing to exit the loop
+    while (true) {
+      const chunk = yield * take(channel)
+      partialCompletion = mergeDeltas(partialCompletion, chunk as any)
+
+      yield * put({ type: 'CHAT_COMPLETION_STREAM_PARTIAL', payload: { partialCompletion } })
     }
+  } catch (error) {
+    yield * put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: error as Error } })
+  } finally {
+    yield * put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: partialCompletion as ChatMessage } })
   }
 }

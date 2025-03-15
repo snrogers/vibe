@@ -28,7 +28,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@redux-saga/core": ["node_modules/@redux-saga/core/dist/redux-saga-core.esm.js"]
+      "@redux-saga/core": ["node_modules/@redux-saga/core/dist/redux-saga-core.esm.js"],
+      "redux-saga/effect": ["node_modules/redux-saga/dist/redux-saga-effect-npm-proxy.esm.js"],
+      "redux-saga": ["node_modules/redux-saga/dist/redux-saga-core-npm-proxy.esm.js"]
     }
   }
 }
