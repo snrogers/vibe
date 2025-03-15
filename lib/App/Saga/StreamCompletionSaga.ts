@@ -10,13 +10,13 @@ import type { ChatCompletionChunk } from 'openai/resources'
 import { mergeDeltas } from '@/lib/Services/LlmService/processStream'
 
 
-export type PartialCompletion = ChatCompletionChunk.Choice.Delta
+export type CompletionDelta = ChatCompletionChunk.Choice.Delta
 
 type StreamCompletionSagaOpts = {
   chatSession: ChatSession
 }
 export function * StreamCompletionSaga({ chatSession }: StreamCompletionSagaOpts) {
-  let partialCompletion: PartialCompletion = {}
+  let partialCompletion: CompletionDelta = {}
 
   try {
     const completion  = yield * call(
@@ -37,6 +37,6 @@ export function * StreamCompletionSaga({ chatSession }: StreamCompletionSagaOpts
     yield * put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: serializeError(error) } })
   } finally {
     return partialCompletion as ChatMessage
-    // yield * put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: partialCompletion as ChatMessage } })
+    yield * put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: partialCompletion as ChatMessage } })
   }
 }

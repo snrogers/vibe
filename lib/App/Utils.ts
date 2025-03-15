@@ -33,12 +33,15 @@ export function channelFromAsyncIterable<T>(iterable: AsyncIterable<T>) {
   const a = eventChannel((emit: any) => {
     (async () => {
       for await (const value of iterable) {
+        if (cancelled) return;
+
         emit(value);
       }
+
       emit(END);
     })();
 
-    return () => { };
+    return () => { cancelled = true };
   });
 
   return a as Channel

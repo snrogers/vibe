@@ -1,5 +1,5 @@
 import type { ChatCompletionChunk, ChatCompletionMessage } from "openai/resources/index.mjs";
-import type { PartialCompletion } from "./Saga/StreamCompletionSaga";
+import type { CompletionDelta } from "./Saga/StreamCompletionSaga";
 import type { ChatMessage } from "../Domain/ChatSession";
 import type { ErrorObject } from "serialize-error";
 
@@ -22,7 +22,7 @@ export type CHAT_COMPLETION_FAILURE =
   Event<'CHAT_COMPLETION_FAILURE', { error: unknown }>
 
 export type CHAT_COMPLETION_STREAM_PARTIAL =
-  Event<'CHAT_COMPLETION_STREAM_PARTIAL', { partialCompletion: PartialCompletion }> // TODO: Implement
+  Event<'CHAT_COMPLETION_STREAM_PARTIAL', { partialCompletion: CompletionDelta }> // TODO: Implement
 
 export type DEBUG_MODE_SET =
   Event<'DEBUG_MODE_SET', { debugMode: boolean }>

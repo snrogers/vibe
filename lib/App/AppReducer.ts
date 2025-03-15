@@ -17,6 +17,22 @@ export const appReducer = (state: AppState = INITIAL_APP_STATE, event: AppEvent)
 
   // Handle the event
   switch (type) {
+
+    case 'CHAT_COMPLETION_FAILURE': {
+      return { ...state, completionDelta: undefined }
+    }
+
+    case 'CHAT_COMPLETION_SUCCESS': {
+      const { message } = payload
+      const chatSession = addAssistantMessage(state.chatSession, message)
+      return { ...state, chatSession, completionDelta: undefined }
+    }
+
+    case 'CHAT_COMPLETION_STREAM_PARTIAL': {
+      const { partialCompletion } = payload
+      return { ...state, completionDelta: partialCompletion }
+    }
+
     case 'DEBUG_MODE_SET': {
       const { debugMode } = payload
       return { ...state, debugMode }
@@ -26,12 +42,6 @@ export const appReducer = (state: AppState = INITIAL_APP_STATE, event: AppEvent)
       const { prompt } = payload
 
       const chatSession = addUserMessage(state.chatSession, prompt)
-      return { ...state, chatSession }
-    }
-
-    case 'CHAT_COMPLETION_SUCCESS': {
-      const { message } = payload
-      const chatSession = addAssistantMessage(state.chatSession, message)
       return { ...state, chatSession }
     }
 
