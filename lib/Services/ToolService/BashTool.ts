@@ -22,10 +22,10 @@ export const BashTool: ChatCompletionTool = {
 
 export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall): Promise<ToolMessage> => {
   const { name, arguments: argString } = toolCall.function
-  const args = JSON.parse(argString)
+  const args = argString
   const cwd = process.cwd()
 
-  const { stdout: stdoutBuffer, stderr: stderrBuffer } = Bun.spawnSync(args, {
+  const { stdout: stdoutBuffer, stderr: stderrBuffer } = Bun.spawnSync([args], {
     // args:  ['-c', args.command],
     cwd,
     // env:   process.env,
