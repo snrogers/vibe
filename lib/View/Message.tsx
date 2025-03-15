@@ -228,5 +228,10 @@ export const Message: FC<MessageProps> = ({ message }) => {
   if (role === 'tool')      return <ToolMessageView      message={message} />
   if (role === 'function')  return <Text>UNIMPLEMENTED ROLE</Text>
 
-  return <Text>UNIMPLEMENTED ROLE</Text>
+  return (
+    <Frame>
+      <MessageBadge role={role} />
+      <Text>{ pp(message) }</Text>
+    </Frame>
+  )
 }

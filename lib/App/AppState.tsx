@@ -1,7 +1,7 @@
 import type { AppEvent } from "./AppEvent"
 import type { ChatSession } from "../Domain/ChatSession"
 import type { CompletionDelta } from "./Saga/StreamCompletionSaga"
-import { generalCLIPrompt } from "../Services/LlmService/Prompt.example"
+import { getPrompt } from "../Services/LlmService/Prompt/getPrompt"
 
 export type AppState = {
   chatSession: ChatSession
@@ -17,12 +17,12 @@ export const INITIAL_APP_STATE: AppState = {
   chatSession: {
     messages: [
       {
-        role: 'system',
-        content: generalCLIPrompt.join('\n\n\n--------------------------------------------------------------------------------\n\n\n'),
+        role:   'system',
+        content: await getPrompt()
       }
     ]
   },
   completionDelta: undefined,
-  debugMode: true,
+  debugMode: false,
   events: [],
 }

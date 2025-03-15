@@ -1,0 +1,1 @@
+export { getPrompt } from './getPrompt'

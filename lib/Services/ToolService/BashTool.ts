@@ -6,7 +6,10 @@ export const BashTool: ChatCompletionTool = {
   type: 'function',
   function: {
     name: 'bash',
-    description: 'Execute bash commands to access shell functionality (e.g., file operations, system info). Returns command output or error if it fails.',
+    description: `
+      Execute bash commands to access shell functionality (e.g., file operations, system info).
+      Returns command output or error if it fails.',
+    `,
     parameters: {
       type: 'object',
       properties: {
@@ -37,13 +40,16 @@ export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall
   appStore.dispatch({ type: 'debug/log', payload: { message: `Running command: ${commandToRun}` } })
   const cwd = process.cwd();
 
-  const { stdout: stdoutBuffer, stderr: stderrBuffer, exitCode } = Bun.spawnSync({
+  const spawnResult = Bun.spawn({
     cmd: ['bash', '-c', commandToRun],
     cwd,
-  });
+  })
 
-  const stdout = new TextDecoder().decode(stdoutBuffer);
-  const stderr = new TextDecoder().decode(stderrBuffer);
+  await spawnResult.exited
+
+  const { stdout: stdoutBuffer, stderr: stderrBuffer, exitCode } = spawnResult;
+  const stdout = await new Response(stdoutBuffer).text();
+  const stderr = await new Response(stderrBuffer).text();
 
   // Provide informative content even if empty
   let content = exitCode === 0 ? stdout : `Error: Command failed with exit code ${exitCode}\n${stderr}`;

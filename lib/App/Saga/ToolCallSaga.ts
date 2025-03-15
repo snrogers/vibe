@@ -16,11 +16,13 @@ export function * ToolCallSaga(opts: ToolCallSagaOpts) {
 
   const toolHandler = ToolService.getToolHandler(name)
 
-  yield * put({ type: 'TOOL_REQUEST_CONFIRMATION', payload: { toolCall } })
-  const confirmationEvent = (yield * take('TOOL_CONFIRMED')) as TOOL_CONFIRMED
-  const { isConfirmed } = confirmationEvent.payload
+  // // Wait for confirmation
+  // yield * put({ type: 'TOOL_REQUEST_CONFIRMATION', payload: { toolCall } })
+  // const confirmationEvent = (yield * take('TOOL_CONFIRMED')) as TOOL_CONFIRMED
+  // const { isConfirmed } = confirmationEvent.payload
 
-  if (!isConfirmed) process.exit(420)
+  // // If not confirmed, exit
+  // if (!isConfirmed) process.exit(420)
 
   const result = yield * call(toolHandler, toolCall)
 

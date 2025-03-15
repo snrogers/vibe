@@ -30,16 +30,12 @@ if (Args.help) {
 // ----------------------------------------------------------------- //
 // Render CLI
 // ----------------------------------------------------------------- //
-const cliInterface = render(createElement(View))
+const cliInterface = render(
+  createElement(View),
+  { debug: true }
+)
 
 await new Promise(resolve => setTimeout(resolve, 1000))
-
-appStore.dispatch({
-  "type": "PROMPT_SUBMITTED",
-  "payload": {
-    "prompt": "yo what's up? I'd like you to try out your bash tool by calling `ls` and tell me what you see!"
-  }
-})
 
 // Wait for the CLI to process.exit
 await eternity
