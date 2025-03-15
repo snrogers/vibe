@@ -4,6 +4,7 @@ import { Box, Text } from 'ink'
 import { pp } from '../Utils'
 import type { AnyEvent } from '../App/AppEvent'
 import { useAppSelector } from '../App/AppProvider'
+import { Frame } from './Frame'
 
 
 export const DebugView: FC = () => {
@@ -11,15 +12,7 @@ export const DebugView: FC = () => {
   const { events } = appState
 
   return (
-    <Box
-      flexDirection="column"
-      flexGrow={1}
-      width="50%"
-      borderStyle="round"
-      borderColor="yellow"
-      overflowY="hidden"
-      padding={1}
-    >
+    <Frame height="80%">
       <Box marginBottom={1}>
         <Text bold color="yellow">Debug Mode</Text>
       </Box>
@@ -39,6 +32,6 @@ export const DebugView: FC = () => {
           ))
         )}
       </Box>
-    </Box>
+    </Frame>
   )
 }

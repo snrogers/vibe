@@ -18,9 +18,9 @@ export const View: FC = withAppProvider(() => {
     <Box flexDirection="column" width="100%" height="100%">
       <Header />
 
-      <Box flexDirection="row" flexGrow={1}>
+      <Box flexDirection="row" flexGrow={1} height="80%">
         {/* MessageList (Left or Full width depending on debug mode) */}
-        <Box width={isDebugMode ? "50%" : "100%"} flexGrow={1}>
+        <Box width={isDebugMode ? "50%" : "100%"} height="100%">
           <MessageList />
         </Box>
 
