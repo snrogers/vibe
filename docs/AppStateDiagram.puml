@@ -1,0 +1,68 @@
+@startuml
+
+'' ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ''
+'' Styles
+'' ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ''
+skinparam backgroundColor white
+
+skinparam state {
+  BackgroundColor LightYellow
+  BorderColor     Black
+  ArrowColor      DarkGreen
+}
+
+'' ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ''
+'' States
+'' ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ''
+
+state Initializing {
+  Initializing : entry / initializeComponents()
+}
+
+state Running {
+  Running : entry / startChatInterface()
+}
+
+state Exiting {
+  Exiting : entry / performCleanup()
+}
+
+'' ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ''
+'' Transitions
+'' ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ''
+
+[*] --> Initializing
+
+Initializing -[#DarkGreen]d->  Running : [setup complete]
+Initializing -[#Red,dashed]l-> [*]     : [setup fails]
+
+Running -[#DarkGreen]d-> Exiting : [user exits via "exit" or Ctrl+C]
+
+Exiting -[#DarkGreen]d-> [*]
+
+'' ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ''
+'' Notes
+'' ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ''
+
+note right of Initializing #LightYellow
+  Setup may fail due to missing dependencies
+  or config errors.
+end note
+
+note right of Running #LightYellow
+  Chat interface runs until user terminates it.
+end note
+
+note right of Exiting #LightYellow
+  Cleanup includes saving state and closing connections.
+end note
+
+note bottom #LightGray
+  This diagram models a chat application's lifecycle with user-initiated exits and error handling.
+  - Green = Happy Path
+  - Red (dashed) = Sad Path
+end note
+
+skinparam monochrome false
+
+@enduml

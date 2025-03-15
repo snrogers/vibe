@@ -1,0 +1,88 @@
+@startuml
+
+'' ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ''
+'' Styles
+'' ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ''
+skinparam backgroundColor white
+
+skinparam state {
+  BackgroundColor LightYellow
+  BorderColor     Black
+  ArrowColor      DarkGreen
+}
+
+'' ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ''
+'' States
+'' ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ''
+
+state "Ready" as Ready {
+  state "Waiting for input" as ReadyInner
+  ReadyInner : Status: "Type a message..."
+}
+
+state "Processing Command" as ProcessingCommand {
+  state "Executing command" as CommandInner
+  CommandInner : Status: "Processing..."
+}
+
+state "Streaming Message" as StreamingMessage {
+  state "Receiving response chunks" as StreamingInner
+  StreamingInner : Status: "Thinking..."
+}
+
+state "Exiting" as Exiting {
+  state "Shutting down" as ExitingInner
+  ExitingInner : Application terminating
+}
+
+' Define choice point
+state "Input Type" as InputChoice <<choice>>
+
+'' ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ''
+'' Transitions
+'' ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ''
+
+[*] --> Ready : Application starts
+
+Ready -d-> InputChoice : User submits input
+InputChoice -l-> ProcessingCommand : [Input is command (e.g., /clear)]
+InputChoice -r-> StreamingMessage  : [Input is message]
+
+ProcessingCommand --> Ready : Command execution completes
+StreamingMessage  --> Ready : Response streaming completes
+
+Ready --> Exiting : [Ctrl+C or 'exit']
+ProcessingCommand -[#Red,dashed]-> Exiting : [Ctrl+C]
+StreamingMessage  -[#Red,dashed]-> Exiting : [Ctrl+C]
+
+'' ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ''
+'' Notes
+'' ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ''
+
+note right of Ready
+  Initial state where the app awaits user input.
+  Displays chat history and input prompt.
+end note
+
+note right of ProcessingCommand
+  Handles commands like /clear, /feature via CommandHandler.
+  Updates state based on command result.
+end note
+
+note right of StreamingMessage
+  Streams AI response chunks from BotMaster.
+  Updates UI in real-time with each chunk.
+end note
+
+note right of Exiting
+  Triggered by Ctrl+C (via useInput) or 'exit' (via tty-wrapper).
+  Terminates the Ink application.
+end note
+
+note bottom #LightGray
+  This diagram models a chat application's lifecycle with user-initiated exits and error handling.
+  - Green = Happy Path
+  - Red (dashed) = Sad Path
+end note
+
+@enduml

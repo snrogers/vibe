@@ -17,6 +17,9 @@ export function * ChatSaga() {
       )
 
       const response = completion.choices[0].message
+
+      // TODO: Handle Tool Calls
+
       yield * put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: response } })
     } catch (error) {
       yield * put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error } })
