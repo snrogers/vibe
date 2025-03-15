@@ -1,6 +1,6 @@
 import type { ChatCompletionChunk, ChatCompletionMessage } from "openai/resources/index.mjs";
 import type { CompletionDelta } from "./Saga/StreamCompletionSaga";
-import type { ChatMessage } from "../Domain/ChatSession";
+import type { ChatMessage, ToolMessage } from "../Domain/ChatSession";
 import type { ErrorObject } from "serialize-error";
 
 
@@ -11,6 +11,7 @@ export type AppEvent =
   | CHAT_COMPLETION_STREAM_PARTIAL
   | DEBUG_MODE_SET
   | GENERIC_DEBUG_EVENT
+  | TOOLS_COMPLETE
 
 
 export type PROMPT_SUBMITTED =
@@ -29,7 +30,10 @@ export type DEBUG_MODE_SET =
   Event<'DEBUG_MODE_SET', { debugMode: boolean }>
 
 export type GENERIC_DEBUG_EVENT =
-  Event<`debug/${string}`, { error: unknown }>
+  Event<`debug/${string}`, {}>
+
+export type TOOLS_COMPLETE =
+  Event<'TOOLS_COMPLETE', { messages: ToolMessage[] }>
 
 // ----------------------------------------------------------------- //
 // Helpers

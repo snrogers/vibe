@@ -4,7 +4,7 @@ import { serializeError } from 'serialize-error'
 import { LlmService } from '@/lib/Services/LlmService'
 import type { AppEvent } from '@/lib/App/AppEvent'
 import type { AppState } from '@/lib/App/AppState'
-import type { ChatMessage, ChatSession } from '@/lib/Domain/ChatSession'
+import type { AssistantMessage, ChatMessage, ChatSession } from '@/lib/Domain/ChatSession'
 import { channelFromAsyncIterable, END, mapAsyncIterable, put } from '@/lib/App/Utils'
 import type { ChatCompletionChunk } from 'openai/resources'
 import { mergeDeltas } from '@/lib/Services/LlmService/processStream'
@@ -17,6 +17,7 @@ type StreamCompletionSagaOpts = {
 }
 export function * StreamCompletionSaga({ chatSession }: StreamCompletionSagaOpts) {
   let partialCompletion: CompletionDelta = {}
+
   try {
     const completion  = yield * call(
       LlmService.streamChatCompletion,
@@ -26,6 +27,7 @@ export function * StreamCompletionSaga({ chatSession }: StreamCompletionSagaOpts
     yield * mapAsyncIterable(
       completion,
       function * (chunk: ChatCompletionChunk) {
+        yield * put({ type: 'debug/chunk' as const, payload: { chunk, partialCompletion } })
         partialCompletion = mergeDeltas(partialCompletion, chunk.choices[0]?.delta)
         yield * put({ type: 'CHAT_COMPLETION_STREAM_PARTIAL', payload: { partialCompletion } })
       }
@@ -34,5 +36,5 @@ export function * StreamCompletionSaga({ chatSession }: StreamCompletionSagaOpts
     yield * put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: serializeError(error) } })
   }
 
-  return partialCompletion as ChatMessage
+  return partialCompletion as AssistantMessage
 }

@@ -15,6 +15,7 @@ import type { ChatCompletionMessageToolCall } from 'openai/resources';
 import { dump } from '@/lib/Utils';
 import { DEEPSEEK_API_KEY } from '@/lib/Constants';
 import type { ChatSession } from '@/lib/Domain/ChatSession';
+import { BashTool } from '../ToolService/BashTool';
 
 const MODEL = 'deepseek-chat';
 const DEEPSEEK_CLIENT = new OpenAI({
@@ -27,6 +28,8 @@ export const client = new OpenAI({
   baseURL: 'https://api.deepseek.com/v1',
 });
 
+client.chat.completions.create
+
 export const streamChatCompletion = async (chatSession: ChatSession) => {
   const { messages } = chatSession
 
@@ -35,6 +38,7 @@ export const streamChatCompletion = async (chatSession: ChatSession) => {
     messages,
     temperature: 0.5,
     max_tokens: 1000,
+    tools: [BashTool],
     stream: true,
   });
 

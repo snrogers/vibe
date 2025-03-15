@@ -9,7 +9,10 @@ import type {
 } from 'openai/resources';
 
 
-export type ChatMessage = ChatCompletionMessageParam
+export type ChatMessage      = ChatCompletionMessageParam
+
+export type AssistantMessage = ChatCompletionAssistantMessageParam
+export type ToolMessage      = ChatCompletionToolMessageParam
 
 export type ChatMessageRole = ChatMessage['role']
 
@@ -34,5 +37,12 @@ export const addAssistantMessage = (session: ChatSession, message: ChatMessage) 
   return {
     ...session,
     messages: [...session.messages, message],
+  }
+}
+
+export const addToolCallResults = (session: ChatSession, toolCallResults: ChatMessage[]) => {
+  return {
+    ...session,
+    messages: [...session.messages, ...toolCallResults],
   }
 }

@@ -1,6 +1,6 @@
 import { append, compose, flow, lensPath, lensProp, over } from 'ramda'
 import type { AppEvent } from './AppEvent';
-import { addAssistantMessage, addUserMessage, type ChatMessage, type ChatSession } from '../Domain/ChatSession';
+import { addAssistantMessage, addToolCallResults, addUserMessage, type ChatMessage, type ChatSession } from '../Domain/ChatSession';
 import { exhaustiveCheck, overDeep2, setDeep } from '../Utils';
 import { INITIAL_APP_STATE, type AppState } from './AppState';
 
@@ -42,6 +42,12 @@ export const appReducer = (state: AppState = INITIAL_APP_STATE, event: AppEvent)
       const { prompt } = payload
 
       const chatSession = addUserMessage(state.chatSession, prompt)
+      return { ...state, chatSession }
+    }
+
+    case 'TOOLS_COMPLETE': {
+      const { messages } = payload
+      const chatSession = addToolCallResults(state.chatSession, messages)
       return { ...state, chatSession }
     }
 
