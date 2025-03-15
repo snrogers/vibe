@@ -1,3 +1,1 @@
-export const rootSaga = function * () {
-  console.log('Saga started')
-}
+export { RootSaga } from './RootSaga'

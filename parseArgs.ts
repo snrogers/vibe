@@ -4,16 +4,19 @@ const parseResult = parseArgs({
   allowPositionals: true,
   args: Bun.argv,
   options: {
-    nonInteractive: { type: 'string' },
+    d:              { type: 'boolean' },
+    debug:          { type: 'boolean' },
     n:              { type: 'string' },
-    help: { type: 'boolean' },
-    h:    { type: 'boolean' },
+    nonInteractive: { type: 'string' },
+    h:              { type: 'boolean' },
+    help:           { type: 'boolean' },
   },
   strict: true,
 });
 
 const { values } = parseResult;
-export const args = {
+export const Args = {
+  debug:          values.debug          || values.d,
   nonInteractive: values.nonInteractive || values.n,
   help:           values.help           || values.h,
 }

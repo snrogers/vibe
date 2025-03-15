@@ -5,7 +5,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import createSagaMiddleware from '@redux-saga/core'
 
 import { appReducer } from './AppReducer'
-import { rootSaga } from './Saga'
+import { RootSaga } from './Saga'
 import { createContext, type ComponentProps, type FC } from 'react'
 
 const sagaMiddleware = createSagaMiddleware()
@@ -16,4 +16,4 @@ export const appStore = configureStore({
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
 })
 
-sagaMiddleware.run(rootSaga)
+sagaMiddleware.run(RootSaga)

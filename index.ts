@@ -5,18 +5,19 @@ import { View } from "./lib/View"
 import { appStore } from "./lib/App"
 import { eternity } from "./lib/Utils"
 
-import { args } from "./parseArgs"
+import { Args } from "./parseArgs"
 
 
 // ----------------------------------------------------------------- //
 // Init
 // ----------------------------------------------------------------- //
 
-if (args.help) {
+if (Args.help) {
   console.log(`
     Usage: vibe [options]
 
     Options:
+      -d, --debug                           Enable debug mode [UNIMPLMENTED]
       -n=, --non-interactive="YOUR_PROMPT"  Run in non-interactive mode [UNIMPLMENTED]
       -h, --help                            Show this help message
   `)
