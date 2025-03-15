@@ -130,7 +130,7 @@ const MessageCard: FC<MessageCardProps> = ({ role, children }) => {
 // ----------------------------------------------------------------- //
 // Private Components
 // ----------------------------------------------------------------- //
-const MessageUser: FC<MessageProps> = (props) => {
+const UserMessage: FC<MessageProps> = (props) => {
   const { message } = props
 
   return (
@@ -140,7 +140,7 @@ const MessageUser: FC<MessageProps> = (props) => {
   )
 }
 
-const MessageAssistant: FC<MessageProps> = (props) => {
+const AssistantMessage: FC<MessageProps> = (props) => {
   const { message } = props
 
   return (
@@ -150,11 +150,21 @@ const MessageAssistant: FC<MessageProps> = (props) => {
   )
 }
 
-const MessageSystem: FC<MessageProps> = (props) => {
+const SystemMessage: FC<MessageProps> = (props) => {
   const { message } = props
 
   return (
     <MessageCard role="system">
+      <MessageContent message={message} />
+    </MessageCard>
+  )
+}
+
+const ToolMessage: FC<MessageProps> = (props) => {
+  const { message } = props
+
+  return (
+    <MessageCard role="tool">
       <MessageContent message={message} />
     </MessageCard>
   )
@@ -170,9 +180,10 @@ interface MessageProps {
 export const Message: FC<MessageProps> = ({ message }) => {
   const { role } = message
 
-  if (role === 'user')      return <MessageUser      message={message} />
-  if (role === 'assistant') return <MessageAssistant message={message} />
-  if (role === 'system')    return <MessageSystem    message={message} />
+  if (role === 'user')      return <UserMessage      message={message} />
+  if (role === 'assistant') return <AssistantMessage message={message} />
+  if (role === 'system')    return <SystemMessage    message={message} />
+  if (role === 'tool')      return <ToolMessage      message={message} />
   if (role === 'function')  return <Text>UNIMPLEMENTED ROLE</Text>
 
   return <Text>UNIMPLEMENTED ROLE</Text>

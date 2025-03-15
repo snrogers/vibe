@@ -8,15 +8,13 @@ export type AppState = {
   /** Event Log */
   events: AppEvent[]
   completionDelta?: CompletionDelta
+  awaitingConfirmation: boolean
 }
 
 export const INITIAL_APP_STATE: AppState = {
-  chatSession: {
-    messages: [
-      { role: 'system', content: 'You are extremely laconic.' },
-    ]
-  },
-  debugMode: true,
-  events: [],
+  awaitingConfirmation: false,
+  chatSession: { messages: [ { role: 'system', content: 'You are extremely laconic.' } ] },
   completionDelta: undefined,
+  debugMode: false,
+  events: [],
 }
