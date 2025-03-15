@@ -17,6 +17,7 @@ export const DebugView: FC = () => {
       width="50%"
       borderStyle="round"
       borderColor="yellow"
+      overflowY="hidden"
       padding={1}
     >
       <Box marginBottom={1}>

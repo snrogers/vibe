@@ -25,6 +25,9 @@ export const LiveInputField: FC = () => {
   }
 
   useInput((input, key) => {
+    // Pipe all key events to the store
+    appStore.dispatch({ type: 'KEY_INPUT', payload: { key } })
+
     if (key.return) {
       onSubmit(value)
     } else if (key.backspace || key.delete) {

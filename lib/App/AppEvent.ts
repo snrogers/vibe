@@ -1,7 +1,8 @@
-import type { ChatCompletionChunk, ChatCompletionMessage } from "openai/resources/index.mjs";
+import type { ChatCompletionChunk, ChatCompletionMessage, ChatCompletionMessageToolCall } from "openai/resources/index.mjs";
 import type { CompletionDelta } from "./Saga/StreamCompletionSaga";
 import type { ChatMessage, ToolMessage } from "../Domain/ChatSession";
 import type { ErrorObject } from "serialize-error";
+import type { Key } from "ink";
 
 
 export type AppEvent =
@@ -11,6 +12,9 @@ export type AppEvent =
   | CHAT_COMPLETION_STREAM_PARTIAL
   | DEBUG_MODE_SET
   | GENERIC_DEBUG_EVENT
+  | KEY_INPUT
+  | TOOL_CONFIRMED
+  | TOOL_REQUEST_CONFIRMATION
   | TOOLS_COMPLETE
 
 
@@ -32,8 +36,18 @@ export type DEBUG_MODE_SET =
 export type GENERIC_DEBUG_EVENT =
   Event<`debug/${string}`, {}>
 
+export type KEY_INPUT =
+  Event<'KEY_INPUT', { key: Key }>
+
+export type TOOL_CONFIRMED =
+  Event<'TOOL_CONFIRMED', { isConfirmed: boolean }>
+
+export type TOOL_REQUEST_CONFIRMATION =
+  Event<'TOOL_REQUEST_CONFIRMATION', { toolCall: ChatCompletionMessageToolCall }>
+
 export type TOOLS_COMPLETE =
   Event<'TOOLS_COMPLETE', { messages: ToolMessage[] }>
+
 
 // ----------------------------------------------------------------- //
 // Helpers
