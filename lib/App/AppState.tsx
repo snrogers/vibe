@@ -16,7 +16,7 @@ export const INITIAL_APP_STATE: AppState = {
       { role: 'system', content: 'You are extremely laconic.' },
     ]
   },
-  debugMode: false,
+  debugMode: true,
   events: [],
   completionDelta: undefined,
 }

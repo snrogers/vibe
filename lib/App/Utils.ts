@@ -37,7 +37,6 @@ export function channelFromAsyncIterable<T>(iterable: AsyncIterable<T>) {
     (async () => {
       for await (const value of iterable) {
         if (cancelled) return;
-
         emit(value);
       }
 
@@ -68,7 +67,6 @@ export function * mapAsyncIterable<T, U extends AnySagaGeneratorFn>(iterable: As
 
   return values
 }
-
 
 
 // ----------------------------------------------------------------- //
