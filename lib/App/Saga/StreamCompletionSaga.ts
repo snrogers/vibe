@@ -1,11 +1,10 @@
-
 import { call, select, take, takeEvery } from 'typed-redux-saga'
 
 import { LlmService } from '@/lib/Services/LlmService'
 import type { AppEvent } from '@/lib/App/AppEvent'
-import type { AppState } from '../AppState'
+import type { AppState } from '@/lib/App/AppState'
 import type { ChatMessage, ChatSession } from '@/lib/Domain/ChatSession'
-import { channelFromAsyncIterable, put } from '../Utils'
+import { channelFromAsyncIterable, put } from '@/lib/App/Utils'
 import type { ChatCompletionChunk } from 'openai/resources'
 import { mergeDeltas } from '@/lib/Services/LlmService/processStream'
 
@@ -25,7 +24,6 @@ export function * StreamCompletionSaga({ chatSession }: StreamCompletionSagaOpts
     )
 
     const channel = channelFromAsyncIterable(completion)
-
 
     // Rely on the channel END-ing to exit the loop
     while (true) {

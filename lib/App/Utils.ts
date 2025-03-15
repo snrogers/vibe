@@ -8,7 +8,8 @@ import type { AppState } from './AppState'
 
 // @ts-expect-error
 import { eventChannel } from '@redux-saga/core'
-import { Channel } from 'redux-saga'
+// @ts-expect-error
+import { Channel, END } from 'redux-saga'
 
 
 // ----------------------------------------------------------------- //
@@ -33,6 +34,8 @@ export function channelFromAsyncIterable<T>(iterable: AsyncIterable<T>) {
     for await (const value of iterable) {
       emit(value);
     }
+
+    emit(END);
   });
 
   return a as Channel
