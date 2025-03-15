@@ -28,7 +28,6 @@ export const client = new OpenAI({
 });
 
 export const streamChatCompletion = async (chatSession: ChatSession) => {
-  throw new Error('Not implemented');
   const { messages } = chatSession
 
   const completion = await DEEPSEEK_CLIENT.chat.completions.create({

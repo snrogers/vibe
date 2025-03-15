@@ -1,15 +1,15 @@
 import * as TReduxSaga from 'typed-redux-saga'
 import * as ReactRedux from 'react-redux'
+// @ts-expect-error
+import { eventChannel } from '@redux-saga/core'
+// @ts-expect-error
+import { Channel, END } from 'redux-saga'
 
 import type { AppEvent } from './AppEvent'
 import type { Xf } from '../Types'
 import type { AppState } from './AppState'
 
 
-// @ts-expect-error
-import { eventChannel } from '@redux-saga/core'
-// @ts-expect-error
-import { Channel, END } from 'redux-saga'
 
 
 // ----------------------------------------------------------------- //
@@ -30,12 +30,15 @@ export const takeLeading = TReduxSaga.takeLeading
 export function channelFromAsyncIterable<T>(iterable: AsyncIterable<T>) {
   let cancelled = false;
 
-  const a = eventChannel(async (emit: any) => {
-    for await (const value of iterable) {
-      emit(value);
-    }
+  const a = eventChannel((emit: any) => {
+    (async () => {
+      for await (const value of iterable) {
+        emit(value);
+      }
+      emit(END);
+    })();
 
-    emit(END);
+    return () => { };
   });
 
   return a as Channel

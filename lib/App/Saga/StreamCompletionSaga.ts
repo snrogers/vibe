@@ -1,4 +1,5 @@
 import { call, select, take, takeEvery } from 'typed-redux-saga'
+import { serializeError } from 'serialize-error'
 
 import { LlmService } from '@/lib/Services/LlmService'
 import type { AppEvent } from '@/lib/App/AppEvent'
@@ -33,8 +34,9 @@ export function * StreamCompletionSaga({ chatSession }: StreamCompletionSagaOpts
       yield * put({ type: 'CHAT_COMPLETION_STREAM_PARTIAL', payload: { partialCompletion } })
     }
   } catch (error) {
-    yield * put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: error as Error } })
+    yield * put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: serializeError(error) } })
   } finally {
-    yield * put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: partialCompletion as ChatMessage } })
+    return partialCompletion as ChatMessage
+    // yield * put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: partialCompletion as ChatMessage } })
   }
 }
