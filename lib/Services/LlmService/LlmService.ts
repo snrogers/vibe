@@ -39,6 +39,7 @@ export const streamChatCompletion = async (chatSession: ChatSession) => {
     temperature: 0.5,
     max_tokens: 8192 / 2,
     tools: [BashTool],
+    tool_choice: 'auto',
     stream: true,
   });
 

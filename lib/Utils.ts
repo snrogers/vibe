@@ -1,3 +1,4 @@
+import { is, mergeWith } from "rambdax";
 import type { AnyKey, Xf } from "./Types";
 
 export function dump(obj: unknown) {

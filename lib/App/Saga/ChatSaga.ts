@@ -7,6 +7,7 @@ import { StreamCompletionSaga } from './StreamCompletionSaga'
 import { serializeError } from 'serialize-error'
 import { ToolService } from '@/lib/Services/ToolService'
 import type { ToolMessage } from '@/lib/Domain/ChatSession'
+import { ToolCallSaga } from './ToolCallSaga'
 
 
 export function * ChatSaga() {
@@ -22,7 +23,7 @@ export function * ChatSaga() {
       let toolCalls = assistantMessage.tool_calls ?? []
       while (toolCalls.length) {
         const toolMessages: ToolMessage[] = yield * all(toolCalls.map(
-          (toolCall) => call(ToolService.getToolHandler(toolCall.function.name), toolCall)
+          (toolCall) => ToolCallSaga({ toolCall })
         ))
 
         yield * put({ type: 'TOOLS_COMPLETE', payload: { messages: toolMessages } })

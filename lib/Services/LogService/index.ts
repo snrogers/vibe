@@ -7,10 +7,10 @@ import { serializeError } from "serialize-error";
  */
 export class LogService {
   private static instance: LogService;
-  private memoryLogs: Array<{ timestamp: string; event: AppEvent }> = [];
-  private consoleEnabled: boolean = true;
-  private fileEnabled: boolean = false;
-  private logFile: string = 'vibe-app.log';
+  private memoryLogs:     Array<{ timestamp: string; event: AppEvent }> = [];
+  private consoleEnabled: boolean = false;
+  private fileEnabled:    boolean = true;
+  private logFile:        string = 'vibe-app.log';
 
   private constructor() {
     // Initialize the logger

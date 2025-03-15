@@ -4,6 +4,7 @@ import type { ChatCompletionMessageToolCall } from 'openai/resources'
 import { call, put } from 'typed-redux-saga'
 import { take } from '../Utils'
 import type { TOOL_CONFIRMED } from '../AppEvent'
+import { eternity } from '@/lib/Utils'
 
 type ToolCallSagaOpts = {
   toolCall: ChatCompletionMessageToolCall
@@ -19,15 +20,7 @@ export function * ToolCallSaga(opts: ToolCallSagaOpts) {
   const confirmationEvent = (yield * take('TOOL_CONFIRMED')) as TOOL_CONFIRMED
   const { isConfirmed } = confirmationEvent.payload
 
-  if (!isconfirmed) process.exit(420)
-
-  console.log('WE MADE IT WOOOOOOOOOOOOOOOO')
-  console.log(toolCall)
-  console.log(args)
-  process.exit(420)
-
-  await eternity
-
+  if (!isConfirmed) process.exit(420)
 
   const result = yield * call(toolHandler, toolCall)
 

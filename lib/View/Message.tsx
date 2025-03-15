@@ -116,9 +116,25 @@ const MessageContent: FC<MessageContentProps> = ({ message }) => {
       }
 
       <Frame>
-        { pp(message) }
+        <Text>{ pp(message) }</Text>
       </Frame>
     </>
+  )
+}
+
+const ToolCallContent: FC<{ message: AssistantMessage }> = (props) => {
+  const { message } = props
+
+  const toolCalls = message.tool_calls ?? []
+
+  return (
+    <Frame>
+      { toolCalls.map((toolCall, idx) => (
+        <Text key={idx}>
+          {toolCall.function.name}: ({toolCall.function.arguments})
+        </Text>
+      ))}
+    </Frame>
   )
 }
 
@@ -163,12 +179,15 @@ const UserMessageView: FC<MessageProps> = (props) => {
   )
 }
 
-const AssistantMessageView: FC<MessageProps> = (props) => {
+const AssistantMessageView: FC<{ message: AssistantMessage }> = (props) => {
   const { message } = props
+
+  const toolCalls = message.tool_calls ?? []
 
   return (
     <MessageCard role="assistant">
       <MessageContent message={message} />
+      { toolCalls.length > 0 && <ToolCallContent message={message} /> }
     </MessageCard>
   )
 }

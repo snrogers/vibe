@@ -8,6 +8,9 @@ import type { AssistantMessage, ChatMessage, ChatSession } from '@/lib/Domain/Ch
 import { channelFromAsyncIterable, END, mapAsyncIterable, put } from '@/lib/App/Utils'
 import type { ChatCompletionChunk } from 'openai/resources'
 import { mergeDeltas } from '@/lib/Services/LlmService/processStream'
+import { logger, LogService } from '@/lib/Services/LogService'
+import { mergeLeft } from 'rambdax'
+import { pp } from '@/lib/Utils'
 
 
 export type CompletionDelta = ChatCompletionChunk.Choice.Delta
@@ -27,7 +30,9 @@ export function * StreamCompletionSaga({ chatSession }: StreamCompletionSagaOpts
     yield * mapAsyncIterable(
       completion,
       function * (chunk: ChatCompletionChunk) {
+        logger.log('info', `Received chunk: ${pp(chunk.choices[0]?.delta)}`);
         partialCompletion = mergeDeltas(partialCompletion, chunk.choices[0]?.delta)
+        logger.log('info', `Merged chunk: ${pp(partialCompletion)}`);
         yield * put({ type: 'CHAT_COMPLETION_STREAM_PARTIAL', payload: { partialCompletion } })
       }
     )

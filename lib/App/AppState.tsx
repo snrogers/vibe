@@ -16,13 +16,13 @@ export const INITIAL_APP_STATE: AppState = {
   awaitingConfirmation: false,
   chatSession: {
     messages: [
-      // {
-      //   role: 'system',
-      //   content: generalCLIPrompt.join('\n\n\n--------------------------------------------------------------------------------\n\n\n'),
-      // }
+      {
+        role: 'system',
+        content: generalCLIPrompt.join('\n\n\n--------------------------------------------------------------------------------\n\n\n'),
+      }
     ]
   },
   completionDelta: undefined,
-  debugMode: false,
+  debugMode: true,
   events: [],
 }
