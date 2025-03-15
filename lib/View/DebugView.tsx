@@ -34,7 +34,7 @@ export const DebugView: FC = () => {
           <Text color="gray">No events dispatched yet</Text>
         ) : (
           events.map((event, idx) => (
-            <Text key={idx} color="white">{`${idx + 1}. ${event.type}`}</Text>
+            <Text key={idx} color="white">{pp(event)}</Text>
           ))
         )}
       </Box>

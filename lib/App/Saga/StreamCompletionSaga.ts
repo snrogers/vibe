@@ -28,8 +28,8 @@ export function * StreamCompletionSaga({ chatSession }: StreamCompletionSagaOpts
 
     // Rely on the channel END-ing to exit the loop
     while (true) {
-      const chunk = yield * take(channel)
-      partialCompletion = mergeDeltas(partialCompletion, chunk as any)
+      const chunk = (yield * take(channel)) as any
+      partialCompletion = mergeDeltas(partialCompletion, chunk.choices[0]?.delta)
 
       yield * put({ type: 'CHAT_COMPLETION_STREAM_PARTIAL', payload: { partialCompletion } })
     }
