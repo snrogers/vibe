@@ -9,16 +9,6 @@ import { INITIAL_APP_STATE, type AppState } from './AppState';
 export const appReducer = (state: AppState = INITIAL_APP_STATE, event: AppEvent): AppState => {
   const { type, payload } = event
 
-  // If debug mode is enabled, add the event to the state,
-  // in addition to whatever else happens
-  if (true || state.debugMode) {
-    if (type === 'KEY_INPUT') {
-      // lmao no
-    } else {
-      state = { ...state, events: [...state.events, event] }
-    }
-  }
-
   // Handle the event
   switch (type) {
 
@@ -42,11 +32,25 @@ export const appReducer = (state: AppState = INITIAL_APP_STATE, event: AppEvent)
       return { ...state, debugMode }
     }
 
+    case 'EVENT_LOG': {
+      const { event } = payload
+      return { ...state, events: [...state.events, event] }
+    }
+
     case 'PROMPT_SUBMITTED': {
       const { prompt } = payload
 
       const chatSession = addUserMessage(state.chatSession, prompt)
       return { ...state, chatSession }
+    }
+
+    case 'TOOL_CONFIRMED': {
+      const { isConfirmed } = payload
+      return { ...state, awaitingConfirmation: !isConfirmed }
+    }
+
+    case 'TOOL_REQUEST_CONFIRMATION': {
+      return { ...state, awaitingConfirmation: true }
     }
 
     case 'TOOLS_COMPLETE': {

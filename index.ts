@@ -32,5 +32,14 @@ if (Args.help) {
 // ----------------------------------------------------------------- //
 const cliInterface = render(createElement(View))
 
+await new Promise(resolve => setTimeout(resolve, 1000))
+
+appStore.dispatch({
+  "type": "PROMPT_SUBMITTED",
+  "payload": {
+    "prompt": "yo try a tool call"
+  }
+})
+
 // Wait for the CLI to process.exit
 await eternity

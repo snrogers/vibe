@@ -11,6 +11,7 @@ export type AppEvent =
   | CHAT_COMPLETION_FAILURE
   | CHAT_COMPLETION_STREAM_PARTIAL
   | DEBUG_MODE_SET
+  | EVENT_LOG
   | GENERIC_DEBUG_EVENT
   | KEY_INPUT
   | TOOL_CONFIRMED
@@ -32,6 +33,9 @@ export type CHAT_COMPLETION_STREAM_PARTIAL =
 
 export type DEBUG_MODE_SET =
   Event<'DEBUG_MODE_SET', { debugMode: boolean }>
+
+export type EVENT_LOG =
+  Event<'EVENT_LOG', { event: AppEvent }>
 
 export type GENERIC_DEBUG_EVENT =
   Event<`debug/${string}`, {}>
