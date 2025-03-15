@@ -21,3 +21,4 @@ out
 report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 **/*.example
 **/*.example.ts
+VIBE.md

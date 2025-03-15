@@ -1,5 +1,5 @@
 import { Box, Text } from "ink";
-import { type FC } from "react";
+import { useMemo, type FC } from "react";
 import { Header } from "./Header";
 import { InputField } from "./InputField";
 import { MessageList } from "./MessageList";
@@ -10,22 +10,22 @@ import { useAppSelector, withAppProvider } from "../App/AppProvider";
 import { pp } from "../Utils";
 
 export const View: FC = () => {
-  const isDebugMode = useAppSelector((st) => st.debugMode);
-  const isAwaitingConfirmation = useAppSelector((st) => st.awaitingConfirmation);
-  const lastEvent = useAppSelector((st) => st.events.slice(-1)[0]);
+  const state = useAppSelector((st) => st)
+  const { awaitingConfirmation, debugMode, events } = state
+  const lastEvent = useMemo(() => events[events.length - 1], [events])
 
   return (
     <Box flexDirection="column" width="100%" height="100%">
-      {isAwaitingConfirmation ? (
+      {awaitingConfirmation ? (
         <ConfirmationModal />
       ) : (
         <>
           <Header />
           <Box flexDirection="row" flexGrow={1}>
-            <Box width={isDebugMode ? "50%" : "100%"} height="100%">
+            <Box width={debugMode ? "50%" : "100%"} height="100%">
               <MessageList />
             </Box>
-            {isDebugMode && <DebugView />}
+            {debugMode && <DebugView />}
           </Box>
 
           <InputField />
