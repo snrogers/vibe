@@ -21,7 +21,16 @@ export const BashTool: ChatCompletionTool = {
 };
 
 export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall): Promise<ToolMessage> => {
-  const { command } = JSON.parse(toolCall.function.arguments);
+  let command;
+
+  try {
+    command = JSON.parse(toolCall.function.arguments);
+  } catch (error) {}
+
+  if (!command) {
+    command = toolCall.function.arguments;
+  }
+
   const cwd = process.cwd();
 
   const { stdout: stdoutBuffer, stderr: stderrBuffer, exitCode } = Bun.spawnSync({

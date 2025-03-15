@@ -11,7 +11,7 @@ export const appReducer = (state: AppState = INITIAL_APP_STATE, event: AppEvent)
 
   // If debug mode is enabled, add the event to the state,
   // in addition to whatever else happens
-  if (state.debugMode) {
+  if (true || state.debugMode) {
     if (type === 'KEY_INPUT') {
       // lmao no
     } else {

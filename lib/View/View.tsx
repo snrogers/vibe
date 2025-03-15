@@ -11,11 +11,14 @@ import { useAppSelector, withAppProvider } from '../App/AppProvider'
 import { DebugView } from "./DebugView"
 import { ConfirmInput } from "@inkjs/ui"
 import { ConfirmationModal } from "./ConfirmationModal"
+import { pp } from "../Utils"
+import { Frame } from "./Frame"
 
 
 export const View: FC = withAppProvider(() => {
   const isDebugMode = useAppSelector((st) => st.debugMode)
   const isAwaitingConfirmation = useAppSelector((st) => st.awaitingConfirmation)
+  const lastEvent = useAppSelector((st) => st.events.slice(-1)[0])
 
   return (
     <Box flexDirection="column" width="100%" height="100%">
@@ -36,6 +39,8 @@ export const View: FC = withAppProvider(() => {
           </Box>
 
           <InputField />
+
+          { lastEvent && <Frame><Text>{pp(lastEvent)}</Text></Frame> }
         </>
       )}
     </Box>

@@ -25,6 +25,6 @@ export const INITIAL_APP_STATE: AppState = {
     ]
   },
   completionDelta: undefined,
-  debugMode: false,
+  debugMode: true,
   events: [],
 }
