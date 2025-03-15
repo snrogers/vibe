@@ -16,8 +16,8 @@ export const MessageList: FC<MessageListProps> = ({ messages }) => {
       width="100%"
       overflowY="hidden"
     >
-      {messages.map(message => (
-        <Message key={message.id} message={message} />
+      {messages.map((message, idx) => (
+        <Message key={idx} message={message} />
       ))}
     </Box>
   )

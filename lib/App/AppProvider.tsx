@@ -1,18 +1,28 @@
-import { createContext, type ComponentProps, type ComponentType, type FC } from "react"
+import { createContext, useContext, useEffect, useMemo, useState, type ComponentProps, type ComponentType, type FC, type PropsWithChildren } from "react"
 import { Provider as ReactReduxProvider } from 'react-redux'
 
-import { appStore } from "./AppStore"
+import { appStore, type AppStore } from "./AppStore"
+import type { Xf } from "../Types"
+import type { AppState } from "./AppReducer"
 
-const AppReactContext = createContext(appStore)
-type AppProviderProps = Omit<
-  ComponentProps<typeof ReactReduxProvider>,
-  'store'
->
-export const AppProvider: FC<AppProviderProps> = (props) => (
-  <ReactReduxProvider store={appStore} {...props }>
-    {props.children}
-  </ReactReduxProvider>
-)
+const AppReactContext = createContext({ store: appStore })
+
+
+// ----------------------------------------------------------------- //
+// Provider Component
+// ----------------------------------------------------------------- //
+type AppProviderProps = PropsWithChildren<{
+  store: AppStore
+}>
+export const AppProvider: FC<AppProviderProps> = (props) => {
+  const { store, children } = props
+
+  return (
+    <AppReactContext.Provider value={{ store }} >
+      {children}
+    </AppReactContext.Provider>
+  )
+}
 
 export const withAppProvider =
   <C extends ComponentType, P extends ComponentProps<C>>(Component: FC<P>) =>
@@ -21,3 +31,24 @@ export const withAppProvider =
         {(store) => (<Component {...props} store={store} />)}
       </AppReactContext.Consumer>
     )
+
+// ----------------------------------------------------------------- //
+// Hooks
+// ----------------------------------------------------------------- //
+export const useAppSelector = <T extends any>(selector: Xf<AppState, T>) => {
+  const { store } = useContext(AppReactContext)
+
+  const [state, setState] = useState(store.getState())
+
+  const substate = useMemo(() => selector(state), [state, selector])
+
+  useEffect(() => {
+    const unsubscribe = store.subscribe(() => {
+      setState(store.getState())
+    })
+    return unsubscribe
+  },
+  [store])
+
+  return substate
+}

@@ -1,8 +1,7 @@
 import { append, compose, flow, lensPath, lensProp, over } from 'ramda'
 import type { AppEvent } from './AppEvent';
 import { addUserMessage, type ChatMessage, type ChatSession } from '../Domain/ChatSession';
-import { overDeep2 } from '../Utils';
-
+import { exhaustiveCheck, overDeep2 } from '../Utils';
 
 
 export type AppState = {
@@ -11,8 +10,13 @@ export type AppState = {
 
 const initialState: AppState = {
   chatSession: {
-    messages: [],
-  },
+    messages: [
+      { content: 'Hello World!', role: 'user' },
+      { content: 'Hello World!', role: 'assistant' },
+      { content: 'Hello World!', role: 'user' },
+      { content: 'Hello World!', role: 'assistant' },
+    ]
+  }
 }
 
 export const appReducer = (state: AppState = initialState, event: AppEvent) => {
@@ -27,6 +31,7 @@ export const appReducer = (state: AppState = initialState, event: AppEvent) => {
     }
 
     default:
+      exhaustiveCheck(type)
       return state
   }
 }

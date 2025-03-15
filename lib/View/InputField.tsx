@@ -1,14 +1,25 @@
 import React, { type FC } from 'react'
-import { Box, Text } from 'ink'
+import { Box, Text, useStdin } from 'ink'
 import { useInput } from 'ink'
 
-interface InputFieldProps {
-  value: string
-  onChange: (value: string) => void
-  onSubmit: (value: string) => void
+
+
+
+// ----------------------------------------------------------------- //
+// Private Components
+// ----------------------------------------------------------------- //
+const DummyInputField: FC = () => {
+  return (
+    <Box borderStyle="round" borderColor="cyan" padding={1} width="100%">
+      <Text color="white" dimColor>{'>'}</Text>
+      <Text color="gray"> Input Disabled without TTY / Raw Mode! </Text>
+    </Box>
+  )
 }
 
-export const InputField: FC<InputFieldProps> = ({ value, onChange, onSubmit }) => {
+export const LiveInputField: FC<InputFieldProps> = (props) => {
+  const { value, onChange, onSubmit } = props
+
   useInput((input, key) => {
     if (key.return) {
       onSubmit(value)
@@ -28,4 +39,24 @@ export const InputField: FC<InputFieldProps> = ({ value, onChange, onSubmit }) =
       <Text color="cyan">▋</Text>
     </Box>
   )
+}
+
+
+// ----------------------------------------------------------------- //
+// Public Component
+// ----------------------------------------------------------------- //
+interface InputFieldProps {
+  value: string
+  onChange: (value: string) => void
+  onSubmit: (value: string) => void
+}
+export const InputField: FC<InputFieldProps> = ({ value, onChange, onSubmit }) => {
+  const { isRawModeSupported } = useStdin()
+
+
+  if (isRawModeSupported) {
+    return <LiveInputField value={value} onChange={onChange} onSubmit={onSubmit} />
+  } else {
+    return <DummyInputField />
+  }
 }

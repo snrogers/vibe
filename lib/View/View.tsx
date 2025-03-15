@@ -1,19 +1,22 @@
-import { Box, Text } from "ink"
-
-import { InputField } from './InputField'
+import { Box, Text, useStdin } from "ink"
 import { useState, type FC } from "react"
-import { MessageList } from "./MessageList"
-import { Header } from "./Header"
-import { type appStore } from "../App"
-import type { AppStore } from "../App/AppStore"
-import { withAppProvider } from '../App/AppProvider'
+
 import type { AppState } from '../App/AppReducer'
-import { useSelector } from "@/lib/App/Utils"
+import type { AppStore } from "../App/AppStore"
+import type { ChatMessage } from "../Domain/ChatSession"
+import { Header } from "./Header"
+import { InputField } from './InputField'
+import { MessageList } from "./MessageList"
+import { type appStore } from "../App"
+import { useAppSelector, withAppProvider } from '../App/AppProvider'
 
 
 export const View: FC = withAppProvider(() => {
-  const messages  = useSelector((st) => st.chatSession.messages)
+  const messages  = useAppSelector((st) => st.chatSession.messages)
+  // const messages  = [] as ChatMessage[]
   const [inputValue, setInputValue] = useState("")
+
+  const { isRawModeSupported } = useStdin()
 
   const handleSubmit = (value: string) => {
     setInputValue("")

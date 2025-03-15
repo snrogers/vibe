@@ -27,7 +27,8 @@
     // Path aliases
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@redux-saga/core": ["node_modules/@redux-saga/core/dist/redux-saga-core.esm.js"]
     }
   }
 }
