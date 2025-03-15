@@ -69,25 +69,34 @@ const getRoleStyle = (role: string) => {
   }
 }
 
-// ----------------------------------------------------------------- //
-// Message Badge Component
-// ----------------------------------------------------------------- //
 interface MessageBadgeProps {
   role: string
 }
-
 const MessageBadge: FC<MessageBadgeProps> = ({ role }) => {
   const style = getRoleStyle(role)
 
   return (
     <Box
-      paddingX={1}
       borderStyle="round"
       borderColor={style.border.color}
+      paddingRight={1}
     >
       <Text bold color={style.badge.color}>{style.badge.text}</Text>
     </Box>
   )
+}
+
+interface MessageContentProps {
+  message: ChatMessage
+}
+const MessageContent: FC<MessageContentProps> = ({ message }) => {
+  const { role, content } = message
+  if (typeof content === 'string') {
+    const style = getRoleStyle(role)
+    return <Text {...style.text}>{content}</Text>
+  }
+
+  return <Text>UNIMPLEMENTED CONTENT: {pp(content)}</Text>
 }
 
 // ----------------------------------------------------------------- //
@@ -104,7 +113,6 @@ const MessageCard: FC<MessageCardProps> = ({ role, children }) => {
   return (
     <Box
       flexDirection="column"
-      padding={1}
       marginBottom={1}
       borderStyle={style.border.style as any}
       borderColor={style.border.color}
@@ -124,49 +132,30 @@ const MessageCard: FC<MessageCardProps> = ({ role, children }) => {
 // ----------------------------------------------------------------- //
 const MessageUser: FC<MessageProps> = (props) => {
   const { message } = props
-  const { content } = message
-  const style = getRoleStyle('user')
-
-  if (content === undefined) return <Text>NO CONTENT</Text>
-  if (typeof content !== 'string') return <Text>UNIMPLEMENTED CONTENT: {pp(content)}</Text>
 
   return (
     <MessageCard role="user">
-      <Text {...style.text}>{content}</Text>
+      <MessageContent message={message} />
     </MessageCard>
   )
 }
 
 const MessageAssistant: FC<MessageProps> = (props) => {
   const { message } = props
-  const { content } = message
-  const style = getRoleStyle('assistant')
-
-  if (content === undefined) return <Text>NO CONTENT</Text>
-  if (typeof content !== 'string') return <Text>UNIMPLEMENTED CONTENT: {pp(content)}</Text>
 
   return (
     <MessageCard role="assistant">
-      <Text {...style.text}>{content}</Text>
+      <MessageContent message={message} />
     </MessageCard>
   )
 }
 
 const MessageSystem: FC<MessageProps> = (props) => {
   const { message } = props
-  const { content } = message
-  const style = getRoleStyle('system')
-
-  const isDebugMode = useAppSelector((st) => st.debugMode)
-
-  if (!isDebugMode) return null
-
-  if (content === undefined) return <Text>NO CONTENT</Text>
-  if (typeof content !== 'string') return <Text>UNIMPLEMENTED CONTENT: {pp(content)}</Text>
 
   return (
     <MessageCard role="system">
-      <Text {...style.text}>{content}</Text>
+      <MessageContent message={message} />
     </MessageCard>
   )
 }
