@@ -3,9 +3,9 @@ import { Args } from "@/parseArgs";
 export const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 export const GROK_API_KEY     = process.env.GROK_API_KEY;
 export const ENV              = process.env.NODE_ENV;
-export const PWD =
+export const cwd =
   Args.pwd
-  ?? process.env.PWD
+  ?? process.env.cwd
   ?? process.cwd()
 
 export const V_DEBUG =
