@@ -2,7 +2,7 @@ import type { ToolMessage } from "@/lib/Domain/ChatSession";
 import type { ChatCompletionMessageToolCall } from "openai/resources";
 
 import { logger } from "@/lib/Services/LogService";
-import { StringifiedReadFileArgumentsSchema } from "./Schema";
+import { StringifiedReadFileArgumentsSchema } from "./Args";
 
 export async function handleReadFileToolCall(
   toolCall: ChatCompletionMessageToolCall

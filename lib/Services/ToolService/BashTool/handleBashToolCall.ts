@@ -1,27 +1,7 @@
-import { appStore } from "@/lib/App";
 import type { ToolMessage } from "@/lib/Domain/ChatSession";
-import type { ChatCompletionMessageToolCall, ChatCompletionTool } from "openai/resources";
-
-export const BashTool = {
-  type: 'function',
-  function: {
-    name: 'bash',
-    description: `
-      Execute bash commands to access shell functionality (e.g., file operations, system info).
-      Returns command output or error if it fails.',
-    `,
-    parameters: {
-      type: 'object',
-      properties: {
-        command: {
-          type: 'string',
-          description: 'The bash command to execute (e.g., "ls -l", "cat file.txt").',
-        },
-      },
-      required: ['command'],
-    },
-  },
-} satisfies ChatCompletionTool;
+import type { z } from "zod";
+import type { BashToolArgsSchema } from "./Args";
+import type { ChatCompletionMessageToolCall } from "openai/resources";
 
 export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall): Promise<ToolMessage> => {
   console.log(`Handling bash tool call: ${JSON.stringify(toolCall, null, 2)}`);

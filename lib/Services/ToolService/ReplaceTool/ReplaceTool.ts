@@ -5,7 +5,7 @@ import { z } from "zod";
 import { zu } from "zod_utilz";
 
 import type { Tool } from "../Types";
-import { ReplaceToolSchema, StringifiedReplaceArgumentsSchema } from "./Schema";
+import { ReplaceToolSchema, StringifiedReplaceArgumentsSchema } from "./Args";
 import { handleReplaceToolCall } from "./handleReplaceToolCall";
 
 // FIXME: IMPORTANT: REPLACE ONLY THE FIRST OCCURRENCE OF THE SEARCH STRING

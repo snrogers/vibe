@@ -1,7 +1,7 @@
 import type { ToolMessage } from '@/lib/Domain/ChatSession';
 import type { ChatCompletionMessageToolCall } from 'openai/resources';
 import { logger } from '../../LogService';
-import { StringifiedReplaceArgumentsSchema } from './Schema';
+import { StringifiedReplaceArgumentsSchema } from './Args';
 
 /**
  * Creates a safe regex from a string by escaping special characters

@@ -1,1 +1,1 @@
-export { ProjectOverviewTool, handleProjectOverviewToolCall } from './ProjectOverviewTool'
+export { ProjectOverviewTool } from './ProjectOverviewTool';

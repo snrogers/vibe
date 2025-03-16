@@ -1,7 +1,7 @@
 import { zu } from "zod_utilz";
 import type { ToolMessage } from "@/lib/Domain/ChatSession";
 import type { ChatCompletionMessageToolCall, ChatCompletionTool } from "openai/resources";
-import { ReadFileArgumentsSchema } from "./Schema";
+import { ReadFileArgumentsSchema } from "./Args";
 import { logger } from "@/lib/Services/LogService";
 import { z } from "zod";
 import type { Tool } from "../Types";

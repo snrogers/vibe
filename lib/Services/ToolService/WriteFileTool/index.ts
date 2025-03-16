@@ -1,2 +1,1 @@
-export * from './WriteFileTool';
-export * from './Schema';
+export { WriteFileTool } from './WriteFileTool';

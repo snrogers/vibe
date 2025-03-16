@@ -1,1 +1,1 @@
-export { ReplaceTool, handleReplaceToolCall } from './ReplaceTool';
+export { ReplaceTool } from './ReplaceTool';

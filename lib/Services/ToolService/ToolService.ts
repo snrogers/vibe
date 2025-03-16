@@ -1,14 +1,16 @@
 import type { ChatCompletionMessageToolCall } from 'openai/resources';
 import { ZodError } from 'zod';
 
-import { ALL_TOOLS, ReplaceTool }                     from '.';
-import { CurlTool }                      from './CurlTool';
 import { ENV }                           from '@/lib/Constants';
-import { ReadFileTool }                  from './ReadFileTool/ReadFileTool';
 import { exhaustiveCheck }               from '@/lib/Utils';
-import { handleBashToolCall }            from './BashTool';
-import { handleProjectOverviewToolCall } from './ProjectOverviewTool';
-import { handleWriteFileToolCall }       from './WriteFileTool';
+
+import { ALL_TOOLS }                     from '.';
+import { CurlTool }                      from './CurlTool';
+import { ReadFileTool }                  from './ReadFileTool/ReadFileTool';
+import { ProjectOverviewTool }           from './ProjectOverviewTool';
+import { ReplaceTool }                   from './ReplaceTool/ReplaceTool';
+import { BashTool }                      from './BashTool';
+import { WriteFileTool }                 from './WriteFileTool';
 import { withStandardErrorHandling }     from './withStandardErrorHandling';
 
 export const ToolService = {
@@ -28,15 +30,15 @@ type ToolName = (typeof ALL_TOOLS)[number]['function']['name']
 function getToolHandler (name: string) {
   switch (name) {
     case 'bash':
-      return handleBashToolCall;
+      return BashTool.handler;
     case 'curl':
       return CurlTool.handler;
     case 'project_overview':
-      return handleProjectOverviewToolCall;
+      return ProjectOverviewTool.handler;
     case 'read_file':
       return ReadFileTool.handler;
     case 'write_file':
-      return handleWriteFileToolCall;
+      return WriteFileTool.handler;
     case 'replace':
       return ReplaceTool.handler;
     default:

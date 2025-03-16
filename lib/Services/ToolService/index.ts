@@ -18,13 +18,10 @@ export { WriteFileTool } from './WriteFileTool'
 
 
 export const ALL_TOOLS: ChatCompletionTool[] = [
-  // Old Format
-  BashTool,
-  ProjectOverviewTool,
-  WriteFileTool,
-
-  // New Format
+  openAiChatCompletionToolFromTool(BashTool),
   openAiChatCompletionToolFromTool(CurlTool),
+  openAiChatCompletionToolFromTool(ProjectOverviewTool),
   openAiChatCompletionToolFromTool(ReadFileTool),
   openAiChatCompletionToolFromTool(ReplaceTool),
+  openAiChatCompletionToolFromTool(WriteFileTool),
 ]
