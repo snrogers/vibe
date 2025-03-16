@@ -18,13 +18,11 @@ export const View: FC = () => {
   const { columns, rows } = useTerminalDimensions()
 
   return (
-    <Box flexDirection="column" width={columns} height={rows} overflowY="hidden">
+    <Box flexDirection="column">
       {awaitingConfirmation ? (
         <ConfirmationModal />
       ) : (
         <>
-          <Header />
-
           <MessageList />
 
           <InputField />
