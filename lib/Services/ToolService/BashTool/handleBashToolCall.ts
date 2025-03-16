@@ -1,10 +1,10 @@
 import type { ToolMessage } from "@/lib/Domain/ChatSession";
-import type { z } from "zod";
-import type { BashToolArgsSchema } from "./Args";
 import type { ChatCompletionMessageToolCall } from "openai/resources";
+import { appStore } from "@/lib/App";
+import { logger } from "@/lib/Services/LogService";
 
 export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall): Promise<ToolMessage> => {
-  console.log(`Handling bash tool call: ${JSON.stringify(toolCall, null, 2)}`);
+  logger.log('info', `Handling bash tool call: ${JSON.stringify(toolCall, null, 2)}`);
 
   // Parse arguments properly
   let commandToRun = "";
@@ -17,15 +17,15 @@ export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall
     commandToRun = toolCall.function.arguments.trim() || "echo 'No command specified'";
   }
 
-  appStore.dispatch({ type: 'debug/log', payload: { message: `Running command: ${commandToRun}` } })
+  logger.log('debug', `Running command: ${commandToRun}`);
   const cwd = process.cwd();
 
   const spawnResult = Bun.spawn({
     cmd: ['bash', '-c', commandToRun],
     cwd,
-  })
+  });
 
-  await spawnResult.exited
+  await spawnResult.exited;
 
   const { stdout: stdoutBuffer, stderr: stderrBuffer, exitCode } = spawnResult;
   const stdout = await new Response(stdoutBuffer).text();
@@ -38,7 +38,7 @@ export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall
     content = "Command executed successfully but produced no output.";
   }
 
-  console.log(`Command result (exitCode=${exitCode}): ${content.substring(0, 100)}${content.length > 100 ? '...' : ''}`);
+  logger.log('info', `Command result (exitCode=${exitCode}): ${content.substring(0, 100)}${content.length > 100 ? '...' : ''}`);
 
   return {
     tool_call_id: toolCall.id,
