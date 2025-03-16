@@ -20,7 +20,7 @@ export const MessageList: FC = () => {
       <Box width={debugMode ? "50%" : "100%"}>
         <Frame>
           {trimmedMessages.map((message, idx) => (
-            <Message message={message} />
+            <Message key={idx} message={message} />
           ))}
 
           {completionDelta && <MessagePartial partial={completionDelta} />}

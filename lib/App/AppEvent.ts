@@ -3,7 +3,14 @@ import type { CompletionDelta } from "./Saga/StreamCompletionSaga";
 import type { ChatMessage, ToolMessage } from "../Domain/ChatSession";
 import type { ErrorObject } from "serialize-error";
 import type { Key } from "ink";
+import type { Simplify } from "../Types";
 
+
+// ----------------------------------------------------------------- //
+// Type Unions
+// ----------------------------------------------------------------- //
+export type AppEventType    = EventType<AppEvent>
+export type AppEventPayload = EventPayload<AppEvent>
 
 export type AppEvent =
   | PROMPT_SUBMITTED
@@ -21,8 +28,24 @@ export type AppEvent =
   | TOOLS_COMPLETE
 
 
+// ----------------------------------------------------------------- //
+// Type Helpers
+// ----------------------------------------------------------------- //
+export type AppEventDict<T extends AppEventType> =
+  Simplify<AppEvent & { type: T }>
+
+export type AppEventPayloadDict<T extends AppEventType> =
+  Simplify<EventPayload<AppEvent & { type: T }>>
+
+
+// ----------------------------------------------------------------- //
+// Types
+// ----------------------------------------------------------------- //
 export type PROMPT_SUBMITTED =
   Event<'PROMPT_SUBMITTED', { prompt: string }>
+
+export type CHAT_COMPLETION_PEP_TALK =
+  Event<'CHAT_COMPLETION_PEP_TALK'>
 
 export type CHAT_COMPLETION_STARTED =
   Event<'CHAT_COMPLETION_STARTED', { message: string }>
@@ -81,4 +104,5 @@ export type Event<EventType extends string, Payload = never> = Equal<
   ? { type: EventType; payload?: never }
   : { type: EventType; payload: Payload };
 
-
+export type EventType<EventType extends AppEvent> = EventType['type']
+export type EventPayload<EventType extends AppEvent> = EventType['payload']
