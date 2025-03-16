@@ -11,15 +11,16 @@ let eventCount = 0;
  * for debugging purposes
  */
 export function* EventLogSaga(event: AppEvent) {
-
   try {
-    if (event.type === 'KEY_INPUT') return // lmao no
+    // lmao no
+    if (event.type === 'KEY_INPUT') return
+    // Skip stream partial events unless in debug mode
+    if (event.type === 'CHAT_COMPLETION_STREAM_PARTIAL' && !V_DEBUG) return;
 
     eventCount++;
 
     // Log the event to our Logger service
     logger.logEvent(event);
-
 
     // ----------------------------------------------------------------- //
     // After this, we're doing client-side loggin which involves
@@ -33,10 +34,6 @@ export function* EventLogSaga(event: AppEvent) {
 
     // Skip 'EVENT_LOG' events to prevent infinite loops
     if (type === 'EVENT_LOG') return;
-
-    // Skip stream partial events unless in debug mode
-    if (type === 'CHAT_COMPLETION_STREAM_PARTIAL' && !V_DEBUG) return;
-
 
     // Add event to the Redux store event log
     yield * put({
