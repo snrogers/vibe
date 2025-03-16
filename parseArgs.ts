@@ -10,6 +10,7 @@ const parseResult = parseArgs({
     nonInteractive: { type: 'string' },
     h:              { type: 'boolean' },
     help:           { type: 'boolean' },
+    pwd:            { type: 'string' },
   },
   strict: true,
 });
@@ -19,4 +20,5 @@ export const Args = {
   debug:          values.debug          || values.d,
   nonInteractive: values.nonInteractive || values.n,
   help:           values.help           || values.h,
+  pwd:            values.pwd,
 }

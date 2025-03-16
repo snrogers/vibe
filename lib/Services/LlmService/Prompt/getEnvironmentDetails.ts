@@ -1,4 +1,5 @@
-const PWD = process.cwd()
+import { PWD } from "@/lib/Constants"
+
 const d = true // FIXME:
 const platform = process.platform
 
