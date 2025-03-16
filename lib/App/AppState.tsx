@@ -2,6 +2,7 @@ import type { AppEvent } from "./AppEvent"
 import type { ChatSession } from "../Domain/ChatSession"
 import type { CompletionDelta } from "./Saga/StreamCompletionSaga"
 import { getPrompt } from "../Services/LlmService/Prompt/getPrompt"
+import { ALL_COMPLETION_TOOLS, ALL_TOOLS } from "../Services/ToolService"
 
 export type AppState = {
   chatSession: ChatSession
@@ -19,7 +20,7 @@ export const INITIAL_APP_STATE: AppState = {
     messages: [
       {
         role:   'system',
-        content: await getPrompt()
+        content: await getPrompt({ tools: ALL_TOOLS }),
       }
     ]
   },

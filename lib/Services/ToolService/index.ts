@@ -17,7 +17,17 @@ export { ToolService } from './ToolService'
 export { WriteFileTool } from './WriteFileTool'
 
 
-export const ALL_TOOLS: ChatCompletionTool[] = [
+
+export const ALL_TOOLS = [
+  BashTool,
+  CurlTool,
+  ProjectOverviewTool,
+  ReadFileTool,
+  ReplaceTool,
+  WriteFileTool,
+]
+
+export const ALL_COMPLETION_TOOLS: ChatCompletionTool[] = [
   openAiChatCompletionToolFromTool(BashTool),
   openAiChatCompletionToolFromTool(CurlTool),
   openAiChatCompletionToolFromTool(ProjectOverviewTool),

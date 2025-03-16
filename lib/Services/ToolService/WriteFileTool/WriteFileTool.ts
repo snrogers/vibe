@@ -10,6 +10,7 @@ import type { Tool } from '../Types';
 import { StringifiedWriteFileArgumentsSchema } from './Args';
 import { handleWriteFileToolCall } from './handleWriteFileToolCall';
 
+
 const description = `
   Write content to a file given its path.
   Returns the path of the file written to.
@@ -28,5 +29,3 @@ export const WriteFileTool = {
   argsSchema: WriteFileArgumentsSchema,
   handler: handleWriteFileToolCall,
 } as const satisfies Tool
-
-

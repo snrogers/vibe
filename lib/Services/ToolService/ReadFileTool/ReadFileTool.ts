@@ -1,11 +1,13 @@
 import { zu } from "zod_utilz";
 import type { ToolMessage } from "@/lib/Domain/ChatSession";
-import type { ChatCompletionMessageToolCall, ChatCompletionTool } from "openai/resources";
-import { ReadFileArgumentsSchema } from "./Args";
 import { logger } from "@/lib/Services/LogService";
+import type { ChatCompletionMessageToolCall, ChatCompletionTool } from "openai/resources";
 import { z } from "zod";
+
+import { ReadFileArgumentsSchema } from "./Args";
 import type { Tool } from "../Types";
 import { handleReadFileToolCall } from "./handleReadFileToolCall";
+
 
 const description = `
   Read the contents of a file given its path.
@@ -23,5 +25,3 @@ export const ReadFileTool = {
   argsSchema: ReadFileArgumentsSchema,
   handler:    handleReadFileToolCall,
 } as const satisfies Tool
-
-

@@ -3,6 +3,10 @@ import type { z } from "zod";
 
 import type { AnyZodType } from "@/lib/Types";
 import type { ToolMessage } from "@/lib/Domain/ChatSession";
+import type { BashTool } from "./BashTool";
+
+
+
 
 /**
  * A function that handles a tool call with the given arguments.
@@ -58,5 +62,5 @@ export type AnyTool = Tool<any, any, any>
  * @returns {T extends Tool<any, any, infer ArgsSchema> ? ArgsSchema : never} The argument schema type.
  */
 export type ToolArgsSchema<
-  T extends Tool = Tool,
+  T extends AppTool = AppTool,
 > = T extends Tool<any, any, infer ArgsSchema> ? ArgsSchema : never

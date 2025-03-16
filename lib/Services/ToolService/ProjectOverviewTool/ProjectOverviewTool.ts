@@ -7,8 +7,8 @@ import { logger } from "@/lib/Services/LogService";
 
 import { ProjectOverviewArgumentsSchema } from "./Args";
 import { buildTree, getIgnoreFunction, printTree } from "./Utils";
-import type { Tool } from "../Types";
 import { handleProjectOverviewToolCall } from "./handleProjectOverviewToolCall";
+import type { Tool } from "../Types";
 
 
 const description = `

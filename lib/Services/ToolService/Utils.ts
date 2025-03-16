@@ -1,9 +1,9 @@
 import { zodToJsonSchema } from "zod-to-json-schema";
 import type { ChatCompletionTool } from "openai/resources/index.mjs";
-import type { Tool } from "./Types";
+import type { AppTool } from "./Types";
 
 
-export const openAiChatCompletionToolFromTool = (tool: Tool): ChatCompletionTool => {
+export const openAiChatCompletionToolFromTool = (tool: AppTool): ChatCompletionTool => {
   const { name, description, argsSchema } = tool;
 
   const parameters = zodToJsonSchema(argsSchema, `${name}Arguments`);

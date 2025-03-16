@@ -4,7 +4,7 @@ import { ZodError } from 'zod';
 import { ENV }                           from '@/lib/Constants';
 import { exhaustiveCheck }               from '@/lib/Utils';
 
-import { ALL_TOOLS }                     from '.';
+import { ALL_COMPLETION_TOOLS }                     from '.';
 import { CurlTool }                      from './CurlTool';
 import { ReadFileTool }                  from './ReadFileTool/ReadFileTool';
 import { ProjectOverviewTool }           from './ProjectOverviewTool';
@@ -12,27 +12,31 @@ import { ReplaceTool }                   from './ReplaceTool/ReplaceTool';
 import { BashTool }                      from './BashTool';
 import { WriteFileTool }                 from './WriteFileTool';
 import { withStandardErrorHandling }     from './withStandardErrorHandling';
+import { GithubTool } from './GithubTool';
+import type { AppTool } from './AppTool';
 
 export const ToolService = {
-  getTools: () => ALL_TOOLS,
+  getTools: () => ALL_COMPLETION_TOOLS,
   /** @deprecated use executeToolCall instead */
   getToolHandler,
   executeToolCall: async (toolCall: ChatCompletionMessageToolCall) => {
     const { name, arguments: args } = toolCall.function;
 
-    const toolHandler = withStandardErrorHandling(getToolHandler(name));
+    const toolHandler = withStandardErrorHandling(getToolHandler(name as ToolName));
 
     return await toolHandler(toolCall);
   }
 };
 
-type ToolName = (typeof ALL_TOOLS)[number]['function']['name']
-function getToolHandler (name: string) {
+type ToolName = AppTool['name'];
+function getToolHandler (name: ToolName) {
   switch (name) {
     case 'bash':
       return BashTool.handler;
     case 'curl':
       return CurlTool.handler;
+    case 'github':
+      return GithubTool.handler;
     case 'project_overview':
       return ProjectOverviewTool.handler;
     case 'read_file':
@@ -42,6 +46,7 @@ function getToolHandler (name: string) {
     case 'replace':
       return ReplaceTool.handler;
     default:
+      exhaustiveCheck(name);
       throw new ToolNotFoundError(`Unknown tool: ${name}`);
   }
 }

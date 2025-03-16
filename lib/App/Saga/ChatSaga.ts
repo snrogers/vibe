@@ -21,18 +21,25 @@ export function * ChatSaga() {
       const assistantMessage = yield * StreamCompletionSaga({ chatSession })
       yield * put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: assistantMessage } })
 
-      // Execute Tool Calls
+
+      // ----------------------------------------------------------------- //
+      // Handle Tool Calls
+      // ----------------------------------------------------------------- //
+
+      let numSteps = 0
       let toolCalls = assistantMessage.tool_calls ?? []
+
       while (toolCalls.length) {
+        numSteps++
+
         const toolMessages: ToolMessage[] = yield * all(toolCalls.map(
           (toolCall) => ToolCallSaga({ toolCall })
         ))
-
         yield * put({ type: 'TOOLS_COMPLETE', payload: { messages: toolMessages } })
 
-        const chatSessionWithToolCallResults = yield * select((state: AppState) => state.chatSession)
 
         // Respond with Tool Call Results
+        const chatSessionWithToolCallResults = yield * select((state: AppState) => state.chatSession)
         const assistantMessage = yield * StreamCompletionSaga({ chatSession: chatSessionWithToolCallResults })
         yield * put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: assistantMessage } })
 

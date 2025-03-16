@@ -8,6 +8,7 @@ import type { Tool } from "../Types";
 import { ReplaceToolSchema, StringifiedReplaceArgumentsSchema } from "./Args";
 import { handleReplaceToolCall } from "./handleReplaceToolCall";
 
+
 // FIXME: IMPORTANT: REPLACE ONLY THE FIRST OCCURRENCE OF THE SEARCH STRING
 const description = `
   Replace EVERY occurrence of a search string with a replacement string in a file.
@@ -21,7 +22,6 @@ const description = `
     }
   </example>
 `
-
 
 export const ReplaceTool = {
   name:        'replace',
