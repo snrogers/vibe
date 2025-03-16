@@ -1,7 +1,7 @@
 import type { ChatCompletionMessageToolCall } from "openai/resources/index.mjs";
 import { ALL_TOOLS }                     from ".";
 import { handleBashToolCall }            from "./BashTool";
-import { handleCurlToolCall }            from "./CurlTool";
+import { CurlTool }            from "./CurlTool";
 import { handleProjectOverviewToolCall } from "./ProjectOverviewTool";
 import { handleReadFileToolCall }        from "./ReadFileTool/ReadFileTool";
 import { handleReplaceToolCall }         from "./ReplaceTool/ReplaceTool";
@@ -11,16 +11,14 @@ import { ENV } from "@/lib/Constants";
 import { exhaustiveCheck } from "@/lib/Utils";
 
 export const ToolService = {
-  getTools: () => {
-    return ALL_TOOLS;
-  },
+  getTools: () => ALL_TOOLS,
   /** @deprecated use executeToolCall instead */
   getToolHandler: (name: string) => {
     switch (name) {
       case "bash":
         return handleBashToolCall;
       case "curl":
-        return handleCurlToolCall;
+        return CurlTool.handler;
       case "project_overview":
         return handleProjectOverviewToolCall;
       case "read_file":
@@ -47,7 +45,7 @@ function getToolHandler (name: string) {
     case "bash":
       return handleBashToolCall;
     case "curl":
-      return handleCurlToolCall;
+      return CurlTool.handler;
     case "project_overview":
       return handleProjectOverviewToolCall;
     case "read_file":
@@ -57,7 +55,6 @@ function getToolHandler (name: string) {
     case "replace":
       return handleReplaceToolCall;
     default:
-      exhaustiveCheck(name);
       throw new ToolNotFoundError(`Unknown tool: ${name}`);
   }
 }

@@ -1,1 +1,1 @@
-export { CurlTool, handleCurlToolCall } from './CurlTool'
+export { CurlTool } from './CurlTool'

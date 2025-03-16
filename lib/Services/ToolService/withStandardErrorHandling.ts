@@ -1,24 +1,24 @@
 import { ZodError } from "zod";
 
 import type { AnyAsyncFn } from "@/lib/Types";
-import type { ToolCallHandler } from "./Types";
 import { ENV } from "@/lib/Constants";
 import { ToolNotFoundError } from "./ToolService";
+import type { AnyToolCallHandler, ToolCallHandler, ToolCallHandlerArgs } from "./Types";
 
 
-export function withStandardErrorHandling<T extends ToolCallHandler = ToolCallHandler>(
+export function withStandardErrorHandling<T extends AnyToolCallHandler>(
   fn: T
 ): T {
-  return async function (toolCall) {
+  return async function (args: any) {
     try {
-      const result = await fn(toolCall);
+      const result = await fn(args);
       return result
     } catch (error) {
       // Handle ParseError on the ToolCall
       if (error instanceof ZodError) {
         return {
           role: 'tool',
-          tool_call_id: toolCall.id,
+          tool_call_id: args.id,
           content: `Error parsing arguments: ${error.message}`,
         };
       }
@@ -27,7 +27,7 @@ export function withStandardErrorHandling<T extends ToolCallHandler = ToolCallHa
       if (error instanceof ToolNotFoundError) {
         return {
           role: 'tool',
-          tool_call_id: toolCall.id,
+          tool_call_id: args.id,
           content: `Error: ${error.message}`,
         };
       }
@@ -37,7 +37,7 @@ export function withStandardErrorHandling<T extends ToolCallHandler = ToolCallHa
         if (ENV === 'development') {
           return {
             role: 'tool',
-            tool_call_id: toolCall.id,
+            tool_call_id: args.id,
             content: `Error: ${error.message}`,
           };
         }
@@ -45,7 +45,7 @@ export function withStandardErrorHandling<T extends ToolCallHandler = ToolCallHa
 
       return {
         role: 'tool',
-        tool_call_id: toolCall.id,
+        tool_call_id: args.id,
         content: `Error: Internal Tool Error`,
       };
     }

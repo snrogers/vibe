@@ -1,9 +1,12 @@
+import type { ChatCompletionTool } from 'openai/resources'
+
 import { BashTool } from './BashTool'
 import { ProjectOverviewTool } from './ProjectOverviewTool'
 import { ReadFileTool } from './ReadFileTool'
 import { WriteFileTool } from './WriteFileTool'
 import { ReplaceTool } from './ReplaceTool/ReplaceTool'
 import { CurlTool } from './CurlTool'
+import { openAiChatCompletionToolFromTool } from './Utils'
 
 export { BashTool } from './BashTool'
 export { CurlTool } from './CurlTool'
@@ -13,11 +16,15 @@ export { ReplaceTool } from './ReplaceTool/ReplaceTool'
 export { ToolService } from './ToolService'
 export { WriteFileTool } from './WriteFileTool'
 
-export const ALL_TOOLS = [
+
+export const ALL_TOOLS: ChatCompletionTool[] = [
+  // Old Format
   BashTool,
-  CurlTool,
   ProjectOverviewTool,
   ReadFileTool,
   ReplaceTool,
   WriteFileTool,
+
+  // New Format
+  openAiChatCompletionToolFromTool(CurlTool),
 ]

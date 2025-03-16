@@ -45,6 +45,7 @@
     "terminal-kit": "^3.1.2",
     "typed-redux-saga": "^1.5.0",
     "zod": "^3.24.2",
+    "zod-to-json-schema": "^3.24.4",
     "zod_utilz": "^0.8.3"
   }
 }
