@@ -4,17 +4,26 @@ import { Frame } from "./Frame";
 import { Message } from "./Message";
 import { MessagePartial } from "./MessagePartial";
 import { useAppSelector } from "../App/AppProvider";
+import { DebugView } from "./DebugView";
 
 export const MessageList: FC = () => {
   const messages = useAppSelector((st) => st.chatSession.messages);
   const completionDelta = useAppSelector((st) => st.completionDelta);
+  const debugMode = useAppSelector((st) => st.debugMode);
 
   return (
-    <Frame height="100%" overflow="hidden">
-      {messages.map((message, idx) => (
-        <Message key={idx} message={message} />
-      ))}
-      {completionDelta && <MessagePartial partial={completionDelta} />}
-    </Frame>
+    <Box flexDirection="row" flexGrow={1}>
+      <Box width={debugMode ? "50%" : "100%"} height="100%">
+        <Frame height="100%" overflow="hidden">
+          {messages.map((message, idx) => (
+            <Message key={idx} message={message} />
+          ))}
+
+          {completionDelta && <MessagePartial partial={completionDelta} />}
+        </Frame>
+      </Box>
+
+      {debugMode && <DebugView />}
+    </Box>
   );
 };

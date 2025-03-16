@@ -32,8 +32,9 @@ if (Args.help) {
 // ----------------------------------------------------------------- //
 const cliInterface = render(
   createElement(View),
-  { patchConsole: false }
+  {  }
 )
+
 
 await new Promise(resolve => setTimeout(resolve, 1000))
 

@@ -1,4 +1,4 @@
-import React, { type FC } from 'react'
+import React, { memo, type FC } from 'react'
 import { Box, Text } from 'ink'
 import type { AssistantMessage, ChatMessage, ToolMessage } from '../Domain/ChatSession'
 import { pp } from '../Utils'
@@ -219,7 +219,7 @@ interface MessageProps {
   message: ChatMessage
 }
 
-export const Message: FC<MessageProps> = ({ message }) => {
+export const Message: FC<MessageProps> = memo(({ message }) => {
   const { role } = message
 
   if (role === 'user')      return <UserMessageView      message={message} />
@@ -234,4 +234,4 @@ export const Message: FC<MessageProps> = ({ message }) => {
       <Text>{ pp(message) }</Text>
     </Frame>
   )
-}
+})

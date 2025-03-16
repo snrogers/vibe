@@ -1,5 +1,5 @@
 import { Box, Text } from "ink";
-import { useMemo, type FC } from "react";
+import { memo, useMemo, type FC } from "react";
 import { Header } from "./Header";
 import { InputField } from "./InputField";
 import { MessageList } from "./MessageList";
@@ -15,26 +15,16 @@ export const View: FC = () => {
   const lastEvent = useMemo(() => events[events.length - 1], [events])
 
   return (
-    <Box flexDirection="column" width="100%" height="100%">
+    <Box flexDirection="column" width="100%" height="100%" overflowY="hidden">
       {awaitingConfirmation ? (
         <ConfirmationModal />
       ) : (
         <>
           <Header />
-          <Box flexDirection="row" flexGrow={1}>
-            <Box width={debugMode ? "50%" : "100%"} height="100%">
-              <MessageList />
-            </Box>
-            {debugMode && <DebugView />}
-          </Box>
+
+          <MessageList />
 
           <InputField />
-
-          {lastEvent && (
-            <Frame>
-              <Text>{pp(lastEvent)}</Text>
-            </Frame>
-          )}
         </>
       )}
     </Box>
