@@ -32,45 +32,23 @@ const StringifiedArgumentsSchema = zu.stringToJSON().pipe(WriteFileArgumentsSche
 export const handleWriteFileToolCall = async (
   toolCall: ChatCompletionMessageToolCall
 ): Promise<ToolMessage> => {
-  try {
-    const { function: { arguments: argsJson }, id: tool_call_id } = toolCall;
-    const args = StringifiedArgumentsSchema.parse(argsJson);
-    const { file_path, content } = args;
+  const { function: { arguments: argsJson }, id: tool_call_id } = toolCall;
+  const args = StringifiedArgumentsSchema.parse(argsJson);
+  const { file_path, content } = args;
 
-    logger.log('info', 'Handling WriteFileToolCall', { file_path });
+  logger.log('info', 'Handling WriteFileToolCall', { file_path });
 
-    const file = Bun.file(file_path);
-    await Bun.write(file, content);
+  const file = Bun.file(file_path);
+  await Bun.write(file, content);
 
-    logger.log('info', 'Handled WriteFileToolCall', {
-      file_path,
-      content: content.substring(0, 100),
-    });
+  logger.log('info', 'Handled WriteFileToolCall', {
+    file_path,
+    content: content.substring(0, 100),
+  });
 
-    return {
-      role: 'tool',
-      tool_call_id,
-      content: 'File written successfully.',
-    };
-  } catch (error) {
-    logger.log('error', 'Error handling WriteFileToolCall', error);
-
-    if (error instanceof z.ZodError) {
-      return {
-        role: 'tool',
-        tool_call_id: toolCall.id,
-        content: error.message,
-      };
-    }
-
-    if (error instanceof Error) {
-      return {
-        role: 'tool',
-        tool_call_id: toolCall.id,
-        content: error.message,
-      };
-    }
-
-    throw error;
-  }
+  return {
+    role: 'tool',
+    tool_call_id,
+    content: 'File written successfully.',
+  };
 };

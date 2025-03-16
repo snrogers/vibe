@@ -33,9 +33,9 @@ export const ReplaceTool: ChatCompletionTool = {
 
 // Create a Zod schema for validating the replacement arguments
 const ReplaceArgumentsSchema = z.object({
-  file_path: z.string(),
-  search_string: z.string(),
+  file_path:      z.string(),
   replace_string: z.string(),
+  search_string:  z.string(),
 });
 
 const StringifiedArgumentsSchema = zu.stringToJSON().pipe(
@@ -55,58 +55,38 @@ const createSafeRegex = (str: string): RegExp => {
 export const handleReplaceToolCall = async (
   toolCall: ChatCompletionMessageToolCall
 ): Promise<ToolMessage> => {
-  try {
-    const { function: { arguments: argsJson }, id: tool_call_id } = toolCall;
-    const args = StringifiedArgumentsSchema.parse(argsJson);
-    const { file_path, search_string, replace_string } = args;
+  const { function: { arguments: argsJson }, id: tool_call_id } = toolCall;
+  const args = StringifiedArgumentsSchema.parse(argsJson);
+  const { file_path, search_string, replace_string } = args;
 
-    logger.log('info', 'Handling ReplaceToolCall', {
-      file_path,
-      search_string: search_string.substring(0, 100),
-      replace_string: replace_string.substring(0, 100)
-    });
+  logger.log('info', 'Handling ReplaceToolCall', {
+    file_path,
+    search_string:  search_string.substring(0, 100),
+    replace_string: replace_string.substring(0, 100)
+  });
 
-    const fileContent    = await Bun.file(file_path).text();
-    const newFileContent = await replaceInText(file_path, search_string, replace_string);
+  const fileContent    = await Bun.file(file_path).text();
+  const newFileContent = await replaceInText(file_path, search_string, replace_string);
 
-    await Bun.write(file_path, newFileContent);
+  await Bun.write(file_path, newFileContent);
 
-    logger.log('info', 'Handled ReplaceToolCall', {
-      file_path,
-      newFileContent
-    });
+  logger.log('info', 'Handled ReplaceToolCall', {
+    file_path,
+    newFileContent
+  });
 
-    return {
-      role: 'tool',
-      tool_call_id,
-      content: newFileContent,
-    };
-  } catch (error) {
-    logger.log('error', 'Error handling ReplaceToolCall', error);
-
-    if (error instanceof z.ZodError) {
-      return {
-        role: 'tool',
-        tool_call_id: toolCall.id,
-        content: `Error parsing arguments: ${error.message}`,
-      };
-    }
-
-    if (error instanceof Error) {
-      return {
-        role: 'tool',
-        tool_call_id: toolCall.id,
-        content: `Error handling ReplaceToolCall: ${error.message}`,
-      };
-    }
-
-    throw error;
-  }
+  return {
+    role: 'tool',
+    tool_call_id,
+    content: newFileContent,
+  };
 };
 
 // ----------------------------------------------------------------- //
 // Helpers
 // ----------------------------------------------------------------- //
+// FIXME: IMPORTANT: REPLACE ONLY THE FIRST OCCURRENCE OF THE SEARCH STRING
+// FIXME: IMPORTANT: RETURN THE DIFF
 const replaceInText = async (content: string, search_string: string, replace_string: string): Promise<string> => {
   const safeRegex = createSafeRegex(search_string);
 
@@ -119,5 +99,5 @@ const replaceInText = async (content: string, search_string: string, replace_str
   // Perform the replacement
   const newContent = content.replace(safeRegex, replace_string);
 
-  return `Successfully replaced ${matches.length} occurrences of the search string in ${file_path}.`;
+  return newContent
 };
