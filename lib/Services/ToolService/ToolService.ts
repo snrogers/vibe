@@ -1,14 +1,13 @@
 import type { ChatCompletionMessageToolCall } from 'openai/resources';
 import { ZodError } from 'zod';
 
-import { ALL_TOOLS }                     from '.';
+import { ALL_TOOLS, ReplaceTool }                     from '.';
 import { CurlTool }                      from './CurlTool';
 import { ENV }                           from '@/lib/Constants';
 import { ReadFileTool }                  from './ReadFileTool/ReadFileTool';
 import { exhaustiveCheck }               from '@/lib/Utils';
 import { handleBashToolCall }            from './BashTool';
 import { handleProjectOverviewToolCall } from './ProjectOverviewTool';
-import { handleReplaceToolCall }         from './ReplaceTool/ReplaceTool';
 import { handleWriteFileToolCall }       from './WriteFileTool';
 import { withStandardErrorHandling }     from './withStandardErrorHandling';
 
@@ -39,7 +38,7 @@ function getToolHandler (name: string) {
     case 'write_file':
       return handleWriteFileToolCall;
     case 'replace':
-      return handleReplaceToolCall;
+      return ReplaceTool.handler;
     default:
       throw new ToolNotFoundError(`Unknown tool: ${name}`);
   }

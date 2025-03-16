@@ -21,10 +21,10 @@ export const ALL_TOOLS: ChatCompletionTool[] = [
   // Old Format
   BashTool,
   ProjectOverviewTool,
-  ReplaceTool,
   WriteFileTool,
 
   // New Format
   openAiChatCompletionToolFromTool(CurlTool),
   openAiChatCompletionToolFromTool(ReadFileTool),
+  openAiChatCompletionToolFromTool(ReplaceTool),
 ]
