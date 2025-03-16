@@ -29,26 +29,26 @@ const HEADERS = {
 
 
 
-console.log('just a fetch')
-const response = await fetch(NEW_CONVERSATION_URL, {
-  method: 'GET',
+// console.log('just a fetch')
+// const response = await fetch(NEW_CONVERSATION_URL, {
+//   method: 'GET',
+//   headers: HEADERS,
+// })
+//
+// console.log(await response.text())
+
+
+
+console.log('creating event source')
+const es = createEventSource({
   headers: HEADERS,
+  url:     NEW_CONVERSATION_URL,
 })
 
-console.log(await response.text())
+console.log('listening')
+for await (const event of es) {
+  console.log(event)
+}
 
-
-
-// console.log('creating event source')
-// const es = createEventSource({
-//   headers: HEADERS,
-//   url:     NEW_CONVERSATION_URL,
-// })
-// 
-// console.log('listening')
-// for await (const event of es) {
-//   console.log(event)
-// }
-// 
-// console.log('closing')
-// es.close()
+console.log('closing')
+es.close()
