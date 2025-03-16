@@ -17,8 +17,8 @@ if (Args.help) {
     Usage: vibe [options]
 
     Options:
-      -d, --debug                           Enable debug mode [UNIMPLMENTED]
-      -n=, --non-interactive="YOUR_PROMPT"  Run in non-interactive mode [UNIMPLMENTED]
+      -d, --debug                           Enable debug mode
+      -n=, --non-interactive="YOUR_PROMPT"  Run in non-interactive mode
       -h, --help                            Show this help message
   `)
   process.exit(0)
@@ -34,6 +34,10 @@ const cliInterface = render(
   createElement(View),
   {  }
 )
+
+if (Args.nonInteractive) {
+  appStore.dispatch({ type: 'PROMPT_SUBMITTED', payload: { message: Args.nonInteractive } })
+}
 
 await new Promise(resolve => setTimeout(resolve, 1000))
 
