@@ -1,16 +1,16 @@
 import type { ChatCompletionMessageToolCall } from 'openai/resources';
+import { ZodError } from 'zod';
 
 import { ALL_TOOLS }                     from '.';
+import { CurlTool }                      from './CurlTool';
+import { ENV }                           from '@/lib/Constants';
+import { ReadFileTool }                  from './ReadFileTool/ReadFileTool';
+import { exhaustiveCheck }               from '@/lib/Utils';
 import { handleBashToolCall }            from './BashTool';
-import { CurlTool }            from './CurlTool';
 import { handleProjectOverviewToolCall } from './ProjectOverviewTool';
-import { ReadFileTool }        from './ReadFileTool/ReadFileTool';
 import { handleReplaceToolCall }         from './ReplaceTool/ReplaceTool';
 import { handleWriteFileToolCall }       from './WriteFileTool';
-import { ZodError } from 'zod';
-import { ENV } from '@/lib/Constants';
-import { exhaustiveCheck } from '@/lib/Utils';
-import { withStandardErrorHandling } from './withStandardErrorHandling';
+import { withStandardErrorHandling }     from './withStandardErrorHandling';
 
 export const ToolService = {
   getTools: () => ALL_TOOLS,

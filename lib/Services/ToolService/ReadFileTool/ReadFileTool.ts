@@ -23,28 +23,4 @@ export const ReadFileTool = {
   handler:    handleReadFileToolCall,
 } as const satisfies Tool
 
-const StringifiedArgumentsSchema = zu.stringToJSON().pipe(ReadFileArgumentsSchema);
 
-export async function handleReadFileToolCall(
-  toolCall: ChatCompletionMessageToolCall
-): Promise<ToolMessage> {
-  const { function: { arguments: argsJson }, id: tool_call_id } = toolCall;
-  const args = StringifiedArgumentsSchema.parse(argsJson);
-  const { file_path } = args;
-
-  logger.log("info", "Handling ReadFileToolCall", { file_path });
-
-  const file    = Bun.file(file_path);
-  const content = await file.text();
-
-  logger.log("info", "Handled ReadFileToolCall", {
-    file_path,
-    content: content.substring(0, 100),
-  });
-
-  return {
-    role: "tool",
-    tool_call_id,
-    content,
-  };
-};
