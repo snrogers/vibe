@@ -16,6 +16,8 @@ export function * ChatSaga() {
       const userPrompt  = yield * take<AppEvent>('PROMPT_SUBMITTED')
       const chatSession = yield * select((state: AppState) => state.chatSession)
 
+      yield * put({ type: 'CHAT_COMPLETION_STARTED', payload: { message: userPrompt } })
+
       const assistantMessage = yield * StreamCompletionSaga({ chatSession })
       yield * put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: assistantMessage } })
 
@@ -36,6 +38,8 @@ export function * ChatSaga() {
 
         toolCalls = assistantMessage.tool_calls ?? []
       }
+
+      yield * put({ type: 'CHAT_COMPLETION_FINISHED', payload: { message: assistantMessage } })
     } catch (error) {
       if (yield * cancelled()) {
         yield * put({ type: 'debug/cancelled', payload: { error: serializeError(new Error('wtf why are we here in ChatSaga->cancelled?')) } })

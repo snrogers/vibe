@@ -7,8 +7,10 @@ import type { Key } from "ink";
 
 export type AppEvent =
   | PROMPT_SUBMITTED
+  | CHAT_COMPLETION_STARTED
   | CHAT_COMPLETION_SUCCESS
   | CHAT_COMPLETION_FAILURE
+  | CHAT_COMPLETION_FINISHED
   | CHAT_COMPLETION_STREAM_PARTIAL
   | DEBUG_MODE_SET
   | EVENT_LOG
@@ -22,11 +24,17 @@ export type AppEvent =
 export type PROMPT_SUBMITTED =
   Event<'PROMPT_SUBMITTED', { prompt: string }>
 
+export type CHAT_COMPLETION_STARTED =
+  Event<'CHAT_COMPLETION_STARTED', { message: string }>
+
 export type CHAT_COMPLETION_SUCCESS =
   Event<'CHAT_COMPLETION_SUCCESS', { message: ChatMessage }>
 
 export type CHAT_COMPLETION_FAILURE =
   Event<'CHAT_COMPLETION_FAILURE', { error: unknown }>
+
+export type CHAT_COMPLETION_FINISHED =
+  Event<'CHAT_COMPLETION_FINISHED', null>
 
 export type CHAT_COMPLETION_STREAM_PARTIAL =
   Event<'CHAT_COMPLETION_STREAM_PARTIAL', { partialCompletion: CompletionDelta }> // TODO: Implement
