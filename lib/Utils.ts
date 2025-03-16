@@ -70,34 +70,6 @@ export const pp = (obj: unknown) => {
   return JSON.stringify(obj, null, 2);
 }
 
-type PathFromString<S extends string> =
-  S extends `${infer Head extends string}.${infer Tail extends string}`
-  ? [Head, ...PathFromString<Tail>]
-  : [S]
-
-type _pathfromstringtest = PathFromString<'a.b.c'>
-
-type ObjectSpecForPathString<Path extends string, T = unknown> =
-  PathFromString<Path> extends [infer Head extends AnyKey, ...infer Tail extends string[]]
-  ? Tail extends []
-    ? { [key in Head]: T }
-    : { [key in Head]: ObjectSpecForPath<Tail> }
-  : never
-
-type _objspec2test = ObjectSpecForPathString<'a.b.c'>
-
-type overDeep2 =
-  <Path extends string, Val>(path: Path, xf: Xf<Val, Val>) =>
-      <T extends ObjectSpecForPathString<Path, T>>(obj: T) => T
-
-export const overDeep2: overDeep2 = (path, xf) => (obj) => {
-  // Split the path string by dots
-  const pathParts = path.split('.');
-
-  // Use the existing overDeep function with the split path
-  return overDeep(...pathParts)(xf)(obj);
-}
-
 export const eternity = new Promise(() => {})
 
 

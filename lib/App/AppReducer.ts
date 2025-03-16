@@ -1,7 +1,7 @@
 import { append, compose, flow, lensPath, lensProp, over } from 'ramda'
 import type { AppEvent } from './AppEvent';
 import { addAssistantMessage, addToolCallResults, addUserMessage, type ChatMessage, type ChatSession } from '../Domain/ChatSession';
-import { exhaustiveCheck, overDeep2, setDeep } from '../Utils';
+import { exhaustiveCheck } from '../Utils';
 import { INITIAL_APP_STATE, type AppState } from './AppState';
 
 type IgnoredEventTypes =

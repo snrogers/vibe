@@ -62,5 +62,5 @@ export type AnyTool = Tool<any, any, any>
  * @returns {T extends Tool<any, any, infer ArgsSchema> ? ArgsSchema : never} The argument schema type.
  */
 export type ToolArgsSchema<
-  T extends AppTool = AppTool,
+  T extends Tool = Tool,
 > = T extends Tool<any, any, infer ArgsSchema> ? ArgsSchema : never

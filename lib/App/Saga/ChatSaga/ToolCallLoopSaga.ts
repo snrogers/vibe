@@ -63,10 +63,10 @@ export function * ToolCallLoopSaga(opts: ToolCallLoopSagaOpts) {
     if (yield* cancelled()) {
       yield* put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: serializeError(error) } })
       return
+    }
 
     yield* put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: serializeError(error) } })
     console.error(error)
   }
 
 }
-
