@@ -43,7 +43,7 @@
         "@types/react": "^19.0.10",
       },
       "peerDependencies": {
-        "typescript": "^5",
+        "typescript": "^5.8.2",
       },
     },
   },

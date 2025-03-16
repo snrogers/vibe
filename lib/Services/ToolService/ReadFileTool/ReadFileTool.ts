@@ -4,6 +4,7 @@ import type { ChatCompletionMessageToolCall, ChatCompletionTool } from "openai/r
 import { ReadFileArgumentsSchema } from "./Schema";
 import { logger } from "@/lib/Services/LogService";
 import { z } from "zod";
+import type { Tool } from "../Types";
 
 const description = `
   Read the contents of a file given its path.
@@ -15,29 +16,18 @@ const description = `
   </example>
 `
 
-export const ReadFileTool: ChatCompletionTool = {
-  type: "function",
-  function: {
-    name: "read_file",
-    description,
-    parameters: {
-      type: "object",
-      properties: {
-        file_path: {
-          type: "string",
-          description: "The path to the file to read.",
-        },
-      },
-      required: ["file_path"],
-    },
-  },
-};
+export const ReadFileTool = {
+  name: 'read_file',
+  description,
+  argsSchema: ReadFileArgumentsSchema,
+  handler:    handleReadFileToolCall,
+} as const satisfies Tool
 
 const StringifiedArgumentsSchema = zu.stringToJSON().pipe(ReadFileArgumentsSchema);
 
-export const handleReadFileToolCall = async (
+export async function handleReadFileToolCall(
   toolCall: ChatCompletionMessageToolCall
-): Promise<ToolMessage> => {
+): Promise<ToolMessage> {
   const { function: { arguments: argsJson }, id: tool_call_id } = toolCall;
   const args = StringifiedArgumentsSchema.parse(argsJson);
   const { file_path } = args;

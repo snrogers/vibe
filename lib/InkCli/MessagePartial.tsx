@@ -1,12 +1,11 @@
 import React, { type FC } from 'react'
 import { Box, Text } from 'ink'
-import type { PartialCompletion } from '../App/Saga/StreamCompletionSaga'
 import { pp } from '../Utils'
+import type { ChatCompletionChunk } from 'openai/resources'
 
 interface MessagePartialProps {
-  partial: PartialCompletion
+  partial: ChatCompletionChunk.Choice.Delta
 }
-
 export const MessagePartial: FC<MessagePartialProps> = ({ partial }) => {
   const style = {
     badge: {

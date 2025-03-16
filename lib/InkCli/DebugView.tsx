@@ -46,10 +46,10 @@ export const DebugView: FC = () => {
           <Text color={viewMode === 'state' ? 'green' : 'gray'}>
             [1] State
           </Text>
-          <Text color={viewMode === 'events' ? 'green' : 'gray'} marginLeft={2}>
+          <Text color={viewMode === 'events' ? 'green' : 'gray'}>
             [2] Events
           </Text>
-          <Text color={viewMode === 'logs' ? 'green' : 'gray'} marginLeft={2}>
+          <Text color={viewMode === 'logs' ? 'green' : 'gray'}>
             [3] Logs
           </Text>
         </Box>

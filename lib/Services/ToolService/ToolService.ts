@@ -1,39 +1,25 @@
-import type { ChatCompletionMessageToolCall } from "openai/resources/index.mjs";
-import { ALL_TOOLS }                     from ".";
-import { handleBashToolCall }            from "./BashTool";
-import { CurlTool }            from "./CurlTool";
-import { handleProjectOverviewToolCall } from "./ProjectOverviewTool";
-import { handleReadFileToolCall }        from "./ReadFileTool/ReadFileTool";
-import { handleReplaceToolCall }         from "./ReplaceTool/ReplaceTool";
-import { handleWriteFileToolCall }       from "./WriteFileTool";
-import { ZodError } from "zod";
-import { ENV } from "@/lib/Constants";
-import { exhaustiveCheck } from "@/lib/Utils";
+import type { ChatCompletionMessageToolCall } from 'openai/resources';
+
+import { ALL_TOOLS }                     from '.';
+import { handleBashToolCall }            from './BashTool';
+import { CurlTool }            from './CurlTool';
+import { handleProjectOverviewToolCall } from './ProjectOverviewTool';
+import { ReadFileTool }        from './ReadFileTool/ReadFileTool';
+import { handleReplaceToolCall }         from './ReplaceTool/ReplaceTool';
+import { handleWriteFileToolCall }       from './WriteFileTool';
+import { ZodError } from 'zod';
+import { ENV } from '@/lib/Constants';
+import { exhaustiveCheck } from '@/lib/Utils';
+import { withStandardErrorHandling } from './withStandardErrorHandling';
 
 export const ToolService = {
   getTools: () => ALL_TOOLS,
   /** @deprecated use executeToolCall instead */
-  getToolHandler: (name: string) => {
-    switch (name) {
-      case "bash":
-        return handleBashToolCall;
-      case "curl":
-        return CurlTool.handler;
-      case "project_overview":
-        return handleProjectOverviewToolCall;
-      case "read_file":
-        return handleReadFileToolCall;
-      case "write_file":
-        return handleWriteFileToolCall;
-      case "replace":
-        return handleReplaceToolCall;
-      default:
-        throw new Error(`Unknown tool: ${name}`);
-    }
-  },
+  getToolHandler,
   executeToolCall: async (toolCall: ChatCompletionMessageToolCall) => {
     const { name, arguments: args } = toolCall.function;
-    const toolHandler = getToolHandler(name);
+
+    const toolHandler = withStandardErrorHandling(getToolHandler(name));
 
     return await toolHandler(toolCall);
   }
@@ -42,17 +28,17 @@ export const ToolService = {
 type ToolName = (typeof ALL_TOOLS)[number]['function']['name']
 function getToolHandler (name: string) {
   switch (name) {
-    case "bash":
+    case 'bash':
       return handleBashToolCall;
-    case "curl":
+    case 'curl':
       return CurlTool.handler;
-    case "project_overview":
+    case 'project_overview':
       return handleProjectOverviewToolCall;
-    case "read_file":
-      return handleReadFileToolCall;
-    case "write_file":
+    case 'read_file':
+      return ReadFileTool.handler;
+    case 'write_file':
       return handleWriteFileToolCall;
-    case "replace":
+    case 'replace':
       return handleReplaceToolCall;
     default:
       throw new ToolNotFoundError(`Unknown tool: ${name}`);
