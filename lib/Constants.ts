@@ -5,7 +5,7 @@ export const GROK_API_KEY     = process.env.GROK_API_KEY;
 export const ENV              = process.env.NODE_ENV;
 export const cwd =
   Args.pwd
-  ?? process.env.cwd
+  ?? process.env.CWD
   ?? process.cwd()
 
 export const V_DEBUG =
