@@ -1,4 +1,6 @@
-# vibe2
+# Vibe
+
+Vibe is a command-line tool that uses LLM Agents to help you write code, manage your projects, and automate tasks.
 
 To install dependencies:
 

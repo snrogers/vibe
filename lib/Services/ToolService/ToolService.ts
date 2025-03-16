@@ -1,6 +1,7 @@
 import { handleBashToolCall } from "./BashTool";
 import { handleProjectOverviewToolCall } from "./ProjectOverviewTool";
 import { handleReadFileToolCall } from "./ReadFileTool/ReadFileTool";
+import { handleWriteFileToolCall } from "./WriteFileTool";
 
 export const ToolService = {
   getToolHandler: (name: string) => {
@@ -11,6 +12,8 @@ export const ToolService = {
         return handleProjectOverviewToolCall;
       case "read_file":
         return handleReadFileToolCall;
+      case "write_file":
+        return handleWriteFileToolCall;
       default:
         throw new Error(`Unknown tool: ${name}`);
     }
