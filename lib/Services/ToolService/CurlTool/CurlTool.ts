@@ -2,7 +2,9 @@ import type { ToolMessage } from "@/lib/Domain/ChatSession";
 import type { ChatCompletionMessageToolCall, ChatCompletionTool } from "openai/resources/index.mjs";
 import { z } from "zod";
 import { zu } from "zod_utilz";
+
 import { logger } from "../../LogService";
+import { StringifiedCurlArgumentsSchema } from "./Schema";
 
 export const CurlTool: ChatCompletionTool = {
   type: 'function',
@@ -45,77 +47,49 @@ export const CurlTool: ChatCompletionTool = {
 // Handler
 // ----------------------------------------------------------------- //
 
-export const CurlArgumentsSchema = z.object({
-  url: z.string(),
-  method: z.enum(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS']),
-  headers: z.record(z.string()).optional(),
-  query_params: z.record(z.string()).optional(),
-  body: z.string().optional(),
-});
-const StringifiedArgumentsSchema = zu.stringToJSON().pipe(CurlArgumentsSchema);
 
 export const handleCurlToolCall = async (
   toolCall: ChatCompletionMessageToolCall
 ): Promise<ToolMessage> => {
-  try {
-    const { function: { arguments: argsJson }, id: tool_call_id } = toolCall;
-    const args = StringifiedArgumentsSchema.parse(argsJson);
-    const { url, method, headers = {}, query_params = {}, body } = args;
+  const { function: { arguments: argsJson }, id: tool_call_id } = toolCall;
+  const args = StringifiedCurlArgumentsSchema.parse(argsJson);
+  const { url, method, headers = {}, query_params = {}, body } = args;
 
-    logger.log('info', 'Handling CurlToolCall', { url, method });
+  logger.log('info', 'Handling CurlToolCall', { url, method });
 
-    // Build the URL with query parameters
-    const fullUrl = buildUrl(url, query_params);
+  // Build the URL with query parameters
+  const fullUrl = buildUrl(url, query_params);
 
-    // Construct headers options for curl
-    const headersOptions = Object.entries(headers).flatMap(([key, value]) => ['-H', `${key}: ${value}`]);
+  // Construct headers options for curl
+  const headersOptions = Object.entries(headers).flatMap(([key, value]) => ['-H', `${key}: ${value}`]);
 
-    // Construct body option if present
-    const bodyOption = body ? ['-d', body] : [];
+  // Construct body option if present
+  const bodyOption = body ? ['-d', body] : [];
 
-    // Build curl command arguments
-    const curlArgs = ['-X', method, ...headersOptions, ...bodyOption, fullUrl];
+  // Build curl command arguments
+  const curlArgs = ['-X', method, ...headersOptions, ...bodyOption, fullUrl];
 
-    // Execute curl using Bun.spawn
-    const spawnResult = Bun.spawn(['curl', ...curlArgs]);
-    await spawnResult.exited;
+  // Execute curl using Bun.spawn
+  const spawnResult = Bun.spawn(['curl', ...curlArgs]);
+  await spawnResult.exited;
 
-    const { stdout: stdoutBuffer, stderr: stderrBuffer, exitCode } = spawnResult;
-    const stdout = await new Response(stdoutBuffer).text();
-    const stderr = await new Response(stderrBuffer).text();
+  const { stdout: stdoutBuffer, stderr: stderrBuffer, exitCode } = spawnResult;
+  const stdout = await new Response(stdoutBuffer).text();
+  const stderr = await new Response(stderrBuffer).text();
 
-    // Determine response content
-    let content = exitCode === 0 ? stdout : `Error: Curl failed with exit code ${exitCode}\n${stderr}`;
-    if (!content.trim()) {
-      content = 'Curl executed successfully but produced no output.';
-    }
-
-    logger.log('info', 'Handled CurlToolCall', { url, method, content: content.substring(0, 100) });
-
-    return {
-      role: 'tool',
-      tool_call_id,
-      content,
-    };
-  } catch (error) {
-    logger.log('error', 'Error handling CurlToolCall', error);
-
-    if (error instanceof z.ZodError) {
-      return {
-        role: 'tool',
-        tool_call_id: toolCall.id,
-        content: `Error parsing arguments: ${error.message}`,
-      };
-    }
-    if (error instanceof Error) {
-      return {
-        role: 'tool',
-        tool_call_id: toolCall.id,
-        content: `Error handling CurlToolCall: ${error.message}`,
-      };
-    }
-    throw error;
+  // Determine response content
+  let content = exitCode === 0 ? stdout : `Error: Curl failed with exit code ${exitCode}\n${stderr}`;
+  if (!content.trim()) {
+    content = 'Curl executed successfully but produced no output.';
   }
+
+  logger.log('info', 'Handled CurlToolCall', { url, method, content: content.substring(0, 100) });
+
+  return {
+    role: 'tool',
+    tool_call_id,
+    content,
+  };
 };
 
 // ----------------------------------------------------------------- //

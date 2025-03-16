@@ -1,13 +1,13 @@
+import type { ChatCompletionMessageToolCall, ChatCompletionTool } from "openai/resources";
+import type { ToolMessage } from "@/lib/Domain/ChatSession";
+import { z } from "zod";
 import { zu } from "zod_utilz";
 
-import type { ToolMessage } from "@/lib/Domain/ChatSession";
-import type { ChatCompletionMessageToolCall, ChatCompletionTool } from "openai/resources";
 import { ProjectOverviewArgumentsSchema } from "./Schema";
 import { buildTree, getIgnoreFunction, printTree } from "./Utils";
 import { logger } from "../../LogService";
-import { z } from "zod";
 
-export const ProjectOverviewTool: ChatCompletionTool = {
+export const ProjectOverviewTool = {
   type: 'function',
   function: {
     name: 'project_overview',
@@ -26,7 +26,7 @@ export const ProjectOverviewTool: ChatCompletionTool = {
       required: ['root_dir'],
     },
   },
-};
+} satisfies ChatCompletionTool
 
 const StringifiedArgumentsSchema = zu.stringToJSON().pipe(
   ProjectOverviewArgumentsSchema,

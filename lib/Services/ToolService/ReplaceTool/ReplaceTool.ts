@@ -66,17 +66,20 @@ export const handleReplaceToolCall = async (
       replace_string: replace_string.substring(0, 100)
     });
 
-    const result = await replaceInFile(file_path, search_string, replace_string);
+    const fileContent    = await Bun.file(file_path).text();
+    const newFileContent = await replaceInText(file_path, search_string, replace_string);
+
+    await Bun.write(file_path, newFileContent);
 
     logger.log('info', 'Handled ReplaceToolCall', {
       file_path,
-      result
+      newFileContent
     });
 
     return {
       role: 'tool',
       tool_call_id,
-      content: result,
+      content: newFileContent,
     };
   } catch (error) {
     logger.log('error', 'Error handling ReplaceToolCall', error);
@@ -101,8 +104,10 @@ export const handleReplaceToolCall = async (
   }
 };
 
-export const replaceInFile = async (file_path: string, search_string: string, replace_string: string): Promise<string> => {
-  const content = await Bun.file(file_path).text();
+// ----------------------------------------------------------------- //
+// Helpers
+// ----------------------------------------------------------------- //
+const replaceInText = async (content: string, search_string: string, replace_string: string): Promise<string> => {
   const safeRegex = createSafeRegex(search_string);
 
   // Check if the search string exists in the file using regex
@@ -113,7 +118,6 @@ export const replaceInFile = async (file_path: string, search_string: string, re
 
   // Perform the replacement
   const newContent = content.replace(safeRegex, replace_string);
-  await Bun.write(file_path, newContent);
 
   return `Successfully replaced ${matches.length} occurrences of the search string in ${file_path}.`;
 };

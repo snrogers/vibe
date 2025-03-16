@@ -2,7 +2,7 @@ import { appStore } from "@/lib/App";
 import type { ToolMessage } from "@/lib/Domain/ChatSession";
 import type { ChatCompletionMessageToolCall, ChatCompletionTool } from "openai/resources";
 
-export const BashTool: ChatCompletionTool = {
+export const BashTool = {
   type: 'function',
   function: {
     name: 'bash',
@@ -21,7 +21,7 @@ export const BashTool: ChatCompletionTool = {
       required: ['command'],
     },
   },
-};
+} satisfies ChatCompletionTool;
 
 export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall): Promise<ToolMessage> => {
   console.log(`Handling bash tool call: ${JSON.stringify(toolCall, null, 2)}`);
