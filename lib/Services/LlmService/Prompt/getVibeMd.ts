@@ -10,8 +10,8 @@ export async function getVibeMd() {
   const file = Bun.file(absolutePath)
   const text = await file.text().catch(() => '')
   return `
-<AgentNotes>
+<VIBE.md>
 ${text}
-</AgentNotes>
+</VIBE.md>
   `.trim()
 }

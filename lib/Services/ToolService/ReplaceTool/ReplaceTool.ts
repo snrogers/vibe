@@ -4,7 +4,6 @@ import type { ChatCompletionMessageToolCall, ChatCompletionTool } from "openai/r
 import { ReplaceToolSchema } from "./Schema";
 import { logger } from "@/lib/Services/LogService";
 import { z } from "zod";
-import fs from "fs/promises";
 
 export const ReplaceTool: ChatCompletionTool = {
   type: 'function',
@@ -43,6 +42,16 @@ const StringifiedArgumentsSchema = zu.stringToJSON().pipe(
   ReplaceArgumentsSchema,
 );
 
+/**
+ * Creates a safe regex from a string by escaping special characters
+ * @param str The string to escape for regex
+ * @returns A RegExp object with the escaped string
+ */
+const createSafeRegex = (str: string): RegExp => {
+  const escapedString = str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(escapedString, 'g');
+};
+
 export const handleReplaceToolCall = async (
   toolCall: ChatCompletionMessageToolCall
 ): Promise<ToolMessage> => {
@@ -57,47 +66,18 @@ export const handleReplaceToolCall = async (
       replace_string: replace_string.substring(0, 100)
     });
 
-    try {
-      const content = await fs.readFile(file_path, 'utf-8');
+    const result = await replaceInFile(file_path, search_string, replace_string);
 
-      // Check if the search string exists in the file
-      if (!content.includes(search_string)) {
-        return {
-          role: 'tool',
-          tool_call_id,
-          content: `Error: The search string was not found in the file.`,
-        };
-      }
+    logger.log('info', 'Handled ReplaceToolCall', {
+      file_path,
+      result
+    });
 
-      // Perform the replacement
-      const newContent = content.replace(new RegExp(search_string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), replace_string);
-
-      // Write the new content back to the file
-      await fs.writeFile(file_path, newContent);
-
-      logger.log('info', 'Handled ReplaceToolCall successfully', {
-        file_path,
-        occurrences: (content.match(new RegExp(search_string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length
-      });
-
-      return {
-        role: 'tool',
-        tool_call_id,
-        content: `Successfully replaced occurrences of the search string in ${file_path}.`,
-      };
-    } catch (fileError) {
-      logger.log('error', 'File operation error in ReplaceToolCall', fileError);
-
-      if (fileError instanceof Error) {
-        return {
-          role: 'tool',
-          tool_call_id,
-          content: `Error performing file operation: ${fileError.message}`,
-        };
-      }
-
-      throw fileError;
-    }
+    return {
+      role: 'tool',
+      tool_call_id,
+      content: result,
+    };
   } catch (error) {
     logger.log('error', 'Error handling ReplaceToolCall', error);
 
@@ -122,25 +102,18 @@ export const handleReplaceToolCall = async (
 };
 
 export const replaceInFile = async (file_path: string, search_string: string, replace_string: string): Promise<string> => {
-  try {
-    const content = await fs.readFile(file_path, 'utf-8');
+  const content = await Bun.file(file_path).text();
+  const safeRegex = createSafeRegex(search_string);
 
-    // Escape special regex characters in the search string
-    const escapedSearchString = search_string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-    // Check if the search string exists in the file
-    if (!content.match(new RegExp(escapedSearchString, 'g'))) {
-      return `Error: The search string was not found in the file.`;
-    }
-
-    const newContent = content.replace(new RegExp(escapedSearchString, 'g'), replace_string);
-    await fs.writeFile(file_path, newContent);
-
-    return 'File modified successfully.';
-  } catch (error) {
-    if (error instanceof Error) {
-      return `Error: ${error.message}`;
-    }
-    return `Error: An unknown error occurred.`;
+  // Check if the search string exists in the file using regex
+  const matches = content.match(safeRegex);
+  if (!matches) {
+    return `Error: The search string was not found in the file.`;
   }
+
+  // Perform the replacement
+  const newContent = content.replace(safeRegex, replace_string);
+  await Bun.write(file_path, newContent);
+
+  return `Successfully replaced ${matches.length} occurrences of the search string in ${file_path}.`;
 };

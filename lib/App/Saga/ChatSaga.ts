@@ -42,8 +42,7 @@ export function * ChatSaga() {
       yield * put({ type: 'CHAT_COMPLETION_FINISHED', payload: { message: assistantMessage } })
     } catch (error) {
       if (yield * cancelled()) {
-        yield * put({ type: 'debug/cancelled', payload: { error: serializeError(new Error('wtf why are we here in ChatSaga->cancelled?')) } })
-        yield * put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: serializeError(new Error('wtf why are we here in ChatSaga->cancelled?')) } })
+        yield * put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: serializeError(error) } })
         return
       }
       yield * put({ type: 'debug/error', payload: { error: serializeError(new Error('wtf why are we here in ChatSaga->error?NOTcancelled')) } })
