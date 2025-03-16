@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import type { ToolMessage } from '@/lib/Domain/ChatSession';
 import type { ChatCompletionMessageToolCall, ChatCompletionTool } from 'openai/resources';
-import { WriteFileArgumentsSchema } from './Schema';
+import { WriteFileArgumentsSchema } from './Args';
 import { logger } from '@/lib/Services/LogService';
 import { z } from 'zod';
 import type { Tool } from '../Types';
