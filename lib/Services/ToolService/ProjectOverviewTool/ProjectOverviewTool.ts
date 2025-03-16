@@ -37,10 +37,10 @@ export const handleProjectOverviewToolCall = async (toolCall: ChatCompletionMess
     const args = StringifiedArgumentsSchema.parse(argsJson);
     logger.log('info', 'Handling ProjectOverviewToolCall', args)
 
-    const rootDir = process.cwd();
+    const rootDir    = process.cwd();
     const ignoreFunc = await getIgnoreFunction(rootDir);
-    const tree = await buildTree(rootDir, ignoreFunc, rootDir);
-    const result = printTree(tree);
+    const tree       = await buildTree(rootDir, ignoreFunc, rootDir);
+    const result     = printTree(tree);
 
     logger.log('info', 'Handled ProjectOverviewToolCall', result)
 
@@ -53,6 +53,14 @@ export const handleProjectOverviewToolCall = async (toolCall: ChatCompletionMess
     logger.log('error', 'Error handling ProjectOverviewToolCall', error)
 
     if (error instanceof z.ZodError) {
+      return {
+        role: 'tool',
+        tool_call_id: toolCall.id,
+        content: `Error handling ProjectOverviewToolCall: ${error.message}`
+      }
+    }
+
+    if (error instanceof Error) {
       return {
         role: 'tool',
         tool_call_id: toolCall.id,
