@@ -1,8 +1,8 @@
-import React, { useState, type FC } from 'react'
+import React, { useMemo, useState, type FC } from 'react'
 import { Box, Text, useStdin } from 'ink'
 import { useInput } from 'ink'
 import { appStore } from '../App'
-
+import { useAppSelector } from '../App/AppProvider'
 
 // ----------------------------------------------------------------- //
 // Private Components
@@ -17,30 +17,36 @@ const DummyInputField: FC = () => {
 }
 
 export const LiveInputField: FC = () => {
-  const [value, onChange] = useState("")
+  const [textInput, setTextInput] = useState("")
+  const inProgress = useAppSelector((state) => state.inProgress)
 
-  const onSubmit = (value: string) => {
-    appStore.dispatch({ type: 'PROMPT_SUBMITTED', payload: { prompt: value } })
-    onChange('')
-  }
+  const onSubmit = useMemo(() =>
+    (value: string) => {
+      if (!appStore.getState().inProgress) {
+        appStore.dispatch({ type: 'PROMPT_SUBMITTED', payload: { prompt: value } })
+        setTextInput('')
+      }
+    },
+    [setTextInput]
+  )
 
   useInput((input, key) => {
     if (key.return) {
-      onSubmit(value)
+      onSubmit(textInput)
     } else if (key.backspace || key.delete) {
-      onChange(value.slice(0, -1))
+      setTextInput(textInput.slice(0, -1))
     } else if (key.escape) {
-      onChange('')
+      setTextInput('')
     } else if (input && !key.ctrl && !key.meta) {
-      onChange(value + input)
+      setTextInput(textInput + input)
     }
   })
 
   return (
-    <Box borderStyle="round" borderColor="cyan" padding={1} width="100%">
+    <Box borderStyle="round" borderColor={appStore.getState().inProgress ? 'gray' : 'cyan'} padding={1} width="100%">
       <Text color="white" dimColor>{'>'}</Text>
-      <Text>{value}</Text>
-      <Text color="cyan">▋</Text>
+      <Text color={appStore.getState().inProgress ? 'gray' : 'white'}>{textInput}</Text>
+      <Text color={appStore.getState().inProgress ? 'gray' : 'cyan'}>▋</Text>
     </Box>
   )
 }

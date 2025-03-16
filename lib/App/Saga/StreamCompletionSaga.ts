@@ -36,16 +36,15 @@ export function * StreamCompletionSaga({ chatSession }: StreamCompletionSagaOpts
     yield * mapAsyncIterable(
       completion,
       function * (chunk: ChatCompletionChunk) {
-        // logger.log('info', `Received chunk: ${pp(chunk.choices[0]?.delta)}`);
+        logger.log('info', `Received chunk: ${pp(chunk.choices[0]?.delta)}`);
 
         const maybeRole       = chunk.choices[0]?.delta?.role
         const maybeContent    = chunk.choices[0]?.delta?.content
         const maybeTool_calls = chunk.choices[0]?.delta?.tool_calls
 
         if (maybeRole)       role           ??= maybeRole
-        if (maybeContent)    partialContent ??= maybeContent
+        if (maybeContent)    partialContent += maybeContent
         if (maybeTool_calls) toolCalls      ??= maybeTool_calls
-
 
         toolCalls = chunk.choices[0]?.delta?.tool_calls
 
