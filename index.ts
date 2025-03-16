@@ -11,7 +11,6 @@ import { Args } from "./parseArgs"
 // ----------------------------------------------------------------- //
 // Init
 // ----------------------------------------------------------------- //
-
 if (Args.help) {
   console.log(`
     Usage: vibe [options]
@@ -25,8 +24,6 @@ if (Args.help) {
 }
 
 
-
-
 // ----------------------------------------------------------------- //
 // Render CLI
 // ----------------------------------------------------------------- //
@@ -35,11 +32,14 @@ const cliInterface = render(
   {  }
 )
 
+
+// ----------------------------------------------------------------- //
+// Maybe Submit Prompt if Non-Interactive
+// ----------------------------------------------------------------- //
 if (Args.nonInteractive) {
   appStore.dispatch({ type: 'PROMPT_SUBMITTED', payload: { message: Args.nonInteractive } })
 }
 
-await new Promise(resolve => setTimeout(resolve, 1000))
 
 // Wait for the CLI to process.exit
 await eternity

@@ -3,18 +3,21 @@ import { ProjectOverviewTool } from './ProjectOverviewTool'
 import { ReadFileTool } from './ReadFileTool'
 import { WriteFileTool } from './WriteFileTool'
 import { ReplaceTool } from './ReplaceTool/ReplaceTool'
+import { CurlTool } from './CurlTool'
 
-export { ToolService } from './ToolService'
 export { BashTool } from './BashTool'
-export { ReadFileTool } from './ReadFileTool'
+export { CurlTool } from './CurlTool'
 export { ProjectOverviewTool } from './ProjectOverviewTool'
-export { WriteFileTool } from './WriteFileTool'
+export { ReadFileTool } from './ReadFileTool'
 export { ReplaceTool } from './ReplaceTool/ReplaceTool'
+export { ToolService } from './ToolService'
+export { WriteFileTool } from './WriteFileTool'
 
 export const ALL_TOOLS = [
   BashTool,
-  ReadFileTool,
+  CurlTool,
   ProjectOverviewTool,
-  WriteFileTool,
+  ReadFileTool,
   ReplaceTool,
+  WriteFileTool,
 ]
