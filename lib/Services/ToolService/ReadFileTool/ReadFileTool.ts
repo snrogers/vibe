@@ -5,11 +5,21 @@ import { ReadFileArgumentsSchema } from "./Schema";
 import { logger } from "@/lib/Services/LogService";
 import { z } from "zod";
 
+const description = `
+  Read the contents of a file given its path.
+  Returns the contents of the file as a string.
+  ALWAYS use the absolute path to the file.
+
+  <example>
+    { "file_path": "/Users/someDude/hisProject/thatFile.txt" }
+  </example>
+`
+
 export const ReadFileTool: ChatCompletionTool = {
   type: "function",
   function: {
     name: "read_file",
-    description: "Read the contents of a file given its path.",
+    description,
     parameters: {
       type: "object",
       properties: {

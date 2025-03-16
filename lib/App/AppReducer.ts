@@ -4,16 +4,29 @@ import { addAssistantMessage, addToolCallResults, addUserMessage, type ChatMessa
 import { exhaustiveCheck, overDeep2, setDeep } from '../Utils';
 import { INITIAL_APP_STATE, type AppState } from './AppState';
 
-
+type IgnoredEventTypes =
+  | 'KEY_INPUT'
+  | `debug/${string}`
 
 export const appReducer = (state: AppState = INITIAL_APP_STATE, event: AppEvent): AppState => {
   const { type, payload } = event
 
   // Handle the event
   switch (type) {
-
     case 'CHAT_COMPLETION_FAILURE': {
-      return { ...state, completionDelta: undefined }
+      return {
+        ...state,
+        completionDelta: undefined,
+        inProgress:      false
+      }
+    }
+
+    case 'CHAT_COMPLETION_FINISHED': {
+      return { ...state, inProgress: false }
+    }
+
+    case 'CHAT_COMPLETION_STARTED': {
+      return { ...state, inProgress: true }
     }
 
     case 'CHAT_COMPLETION_SUCCESS': {
@@ -60,7 +73,7 @@ export const appReducer = (state: AppState = INITIAL_APP_STATE, event: AppEvent)
     }
 
     default:
-      exhaustiveCheck(type)
+      exhaustiveCheck<IgnoredEventTypes>(type)
       return state
   }
 }

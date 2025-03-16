@@ -10,6 +10,7 @@ export type AppState = {
   events: AppEvent[]
   completionDelta?: CompletionDelta
   awaitingConfirmation: boolean
+  inProgress: boolean
 }
 
 export const INITIAL_APP_STATE: AppState = {
@@ -25,4 +26,5 @@ export const INITIAL_APP_STATE: AppState = {
   completionDelta: undefined,
   debugMode: false,
   events: [],
+  inProgress: false,
 }

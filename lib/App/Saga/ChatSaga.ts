@@ -45,7 +45,6 @@ export function * ChatSaga() {
         yield * put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: serializeError(error) } })
         return
       }
-      yield * put({ type: 'debug/error', payload: { error: serializeError(new Error('wtf why are we here in ChatSaga->error?NOTcancelled')) } })
       yield * put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: serializeError(error) } })
       console.error(error)
     }

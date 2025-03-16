@@ -2,7 +2,7 @@ export type AnyChunk =
   Record<string, string>
 | Record<string, Record<string, string>>
 
-export function merge(a: AnyChunk, b: AnyChunk): AnyChunk {
+export function mergeChunks(a: AnyChunk, b: AnyChunk): AnyChunk {
     const result: Record<string, any> = {};
     const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
 
@@ -26,7 +26,7 @@ function mergeValues(v1: AnyChunk | string, v2: AnyChunk | string): AnyChunk | s
     } else if (typeof v2 === 'string' && typeof v1 === 'object') {
         return mergeRecordWithString(v1 as AnyChunk, v2);
     } else {
-        return merge(v1 as AnyChunk, v2 as AnyChunk);
+        return mergeChunks(v1 as AnyChunk, v2 as AnyChunk);
     }
 }
 

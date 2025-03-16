@@ -100,8 +100,9 @@ export const overDeep2: overDeep2 = (path, xf) => (obj) => {
 
 export const eternity = new Promise(() => {})
 
-// @ts-expect-error
-export function exhaustiveCheck(x: never): never { }
+
+export function exhaustiveCheck<ExcludedTypes = never>(x: NoInfer<ExcludedTypes>) { return x as never }
+
 
 /**
  * Checks if the current file is the entry point in Bun.

@@ -1,5 +1,6 @@
 import type { AppEvent } from "@/lib/App/AppEvent";
 import { V_DEBUG } from "@/lib/Constants";
+import { pp } from "@/lib/Utils";
 import { serializeError } from "serialize-error";
 
 /**
@@ -110,7 +111,7 @@ export class LogService {
 
     // File logging
     if (this.fileEnabled) {
-      this.writeToFile(`[${timestamp}] [${level.toUpperCase()}] ${message} ${data ? JSON.stringify(this.sanitizeData(data)) : ''}`);
+      this.writeToFile(`[${timestamp}] [${level.toUpperCase()}] ${message} ${data ? pp(this.sanitizeData(data)) : ''}`);
     }
   }
 
