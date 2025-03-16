@@ -8,7 +8,7 @@ const SOURCE_FILE = new URL(import.meta.url)
 export async function getVibeMd() {
   const absolutePath = `${CWD}/VIBE.md`
   const file = Bun.file(absolutePath)
-  const text = await file.text()
+  const text = await file.text().catch(() => '')
   return `
 <AgentNotes>
 ${text}

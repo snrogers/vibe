@@ -80,8 +80,3 @@ export async function drawDirectoryTree(): Promise<void> {
   const tree = await buildTree(rootDir, ignoreFunc, rootDir);
   console.log(printTree(tree));
 }
-
-// Run the function and handle any errors
-drawDirectoryTree().catch((error) => {
-  console.error(chalk.red('Error drawing directory tree:'), error);
-});
