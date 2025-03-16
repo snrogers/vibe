@@ -1,7 +1,7 @@
 import { render, Text } from "ink"
 import { createElement } from "react"
 
-import { View } from "./lib/View"
+import { View } from "./lib/InkCli"
 import { appStore } from "./lib/App"
 import { eternity } from "./lib/Utils"
 
@@ -34,7 +34,6 @@ const cliInterface = render(
   createElement(View),
   {  }
 )
-
 
 await new Promise(resolve => setTimeout(resolve, 1000))
 

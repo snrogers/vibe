@@ -93,7 +93,7 @@ type overDeep2 =
 export const overDeep2: overDeep2 = (path, xf) => (obj) => {
   // Split the path string by dots
   const pathParts = path.split('.');
-  
+
   // Use the existing overDeep function with the split path
   return overDeep(...pathParts)(xf)(obj);
 }
@@ -102,3 +102,13 @@ export const eternity = new Promise(() => {})
 
 // @ts-expect-error
 export function exhaustiveCheck(x: never): never { }
+
+/**
+ * Checks if the current file is the entry point in Bun.
+ * @returns {boolean} - True if this file is the entry point, false otherwise.
+ */
+function isEntryPoint(): boolean {
+  // import.meta.path is the absolute path of the current file
+  // Bun.main is the absolute path of the entry point script
+  return import.meta.path === Bun.main;
+}

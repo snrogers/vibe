@@ -19,6 +19,7 @@ import type { ChatSession } from '@/lib/Domain/ChatSession';
 import { BashTool } from '../ToolService/BashTool';
 import { DEEPSEEK_MODEL, deepseekClient } from './DeepseekClient';
 import { GROK_MODEL, grokClient } from './GrokClient';
+import { ProjectOverviewTool } from '../ToolService/ProjectOverviewTool';
 
 
 const MODEL  = GROK_MODEL
@@ -32,7 +33,7 @@ export const streamChatCompletion = async (chatSession: ChatSession) => {
     messages,
     temperature: 0.5,
     max_tokens: 8192 / 2,
-    tools: [BashTool],
+    tools: [BashTool, ProjectOverviewTool],
     tool_choice: 'auto',
     stream: true,
   });
@@ -48,6 +49,7 @@ export const fetchChatCompletion = async (chatSession: ChatSession) => {
     messages,
     temperature: 0.5,
     max_tokens: 1000,
+    tools: [BashTool, ProjectOverviewTool],
     stream: false,
   });
 

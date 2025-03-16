@@ -12,9 +12,9 @@ export const MessageList: FC = () => {
   const debugMode = useAppSelector((st) => st.debugMode);
 
   return (
-    <Box flexDirection="row" flexGrow={1}>
-      <Box width={debugMode ? "50%" : "100%"} height="100%">
-        <Frame height="100%" overflow="hidden">
+    <Box flexDirection="row" flexGrow={1} overflowY="hidden">
+      <Box width={debugMode ? "50%" : "100%"}>
+        <Frame>
           {messages.map((message, idx) => (
             <Message key={idx} message={message} />
           ))}
