@@ -28,6 +28,7 @@ export const ProjectOverviewTool = {
   },
 } satisfies ChatCompletionTool
 
+
 const StringifiedArgumentsSchema = zu.stringToJSON().pipe(
   ProjectOverviewArgumentsSchema,
 )
