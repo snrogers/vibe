@@ -5,6 +5,7 @@ import { ReadFileArgumentsSchema } from "./Schema";
 import { logger } from "@/lib/Services/LogService";
 import { z } from "zod";
 import type { Tool } from "../Types";
+import { handleReadFileToolCall } from "./handleReadFileToolCall";
 
 const description = `
   Read the contents of a file given its path.
