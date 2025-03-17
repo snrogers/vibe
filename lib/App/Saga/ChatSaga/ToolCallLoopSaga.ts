@@ -13,7 +13,8 @@ import { ToolService } from '@/lib/Services/ToolService'
 import { logger } from '@/lib/Services/LogService'
 
 
-const TOOL_CALL_LIMIT = 5
+const TOOL_CALL_LIMIT = Number.POSITIVE_INFINITY
+
 
 type ToolCallLoopSagaOpts = {
   assistantMessage: AssistantMessage
@@ -34,7 +35,7 @@ export function * ToolCallLoopSaga(opts: ToolCallLoopSagaOpts) {
         { assistantMessage: assistantMessage ?? null, toolCalls: toolCalls.length })
 
       // ----------------------------------------------------------------- //
-      // Break if we've reached the limit
+      // TODO: Break if we've reached the limit
       // We'll check afterwards to see if there's a dangling AssistantMesage.
       // If so, we'll replace it with a little pep talk session.
       // ----------------------------------------------------------------- //
