@@ -225,7 +225,7 @@ export const Message: FC<MessageProps> = memo(({ message }) => {
   if (role === 'assistant') return <AssistantMessageView message={message} />
   if (role === 'system')    return <SystemMessageView    message={message} />
   if (role === 'tool')      return <ToolMessageView      message={message} />
-  if (role === 'function')  return <Text>UNIMPLEMENTED ROLE</Text>
+  if (role === 'function')  return <ToolMessageView      message={message} />
 
   return (
     <Frame>
