@@ -49,26 +49,20 @@ export function * ToolCallLoopSaga(opts: ToolCallLoopSagaOpts) {
       // ----------------------------------------------------------------- //
       // Otherwise Crunch the Tool calls and wait for the results
       // ----------------------------------------------------------------- //
-      const toolMessages: ToolMessage[] = yield * all(toolCalls.map(
-        (toolCall) => ToolCallSaga({ toolCall })
-      ))
+      const toolMessages: ToolMessage[] = yield * all(
+        toolCalls.map((toolCall) => ToolCallSaga({ toolCall }))
+      )
       yield* put({ type: 'TOOLS_COMPLETE', payload: { messages: toolMessages } })
 
       // Respond with Tool Call Results
       const chatSessionWithToolCallResults = yield* select((state: AppState) => state.chatSession)
-      const assistantMessage = yield * StreamCompletionSaga({ chatSession: chatSessionWithToolCallResults })
+
+      assistantMessage = yield * StreamCompletionSaga({ chatSession: chatSessionWithToolCallResults })
       yield* put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: assistantMessage } })
 
       toolCalls = assistantMessage.tool_calls ?? []
     }
   } catch (error) {
-    if (yield* cancelled()) {
-      yield* put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: serializeError(error) } })
-      return
-    }
-
     yield* put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: serializeError(error) } })
-    console.error(error)
   }
-
 }
