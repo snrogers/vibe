@@ -7,6 +7,7 @@ import { WriteFileTool } from './WriteFileTool'
 import { ReplaceTool } from './ReplaceTool/ReplaceTool'
 import { CurlTool } from './CurlTool'
 import { openAiChatCompletionToolFromTool } from './Utils'
+import { ALL_MCP_COMPLETION_TOOLS, ALL_MCP_TOOLS } from '../McpService/McpService'
 
 export { BashTool } from './BashTool'
 export { CurlTool } from './CurlTool'
@@ -25,6 +26,7 @@ export const ALL_TOOLS = [
   ReadFileTool,
   ReplaceTool,
   WriteFileTool,
+  ...ALL_MCP_TOOLS,
 ]
 
 export const ALL_COMPLETION_TOOLS: ChatCompletionTool[] = [
@@ -34,4 +36,5 @@ export const ALL_COMPLETION_TOOLS: ChatCompletionTool[] = [
   openAiChatCompletionToolFromTool(ReadFileTool),
   openAiChatCompletionToolFromTool(ReplaceTool),
   openAiChatCompletionToolFromTool(WriteFileTool),
+  ...ALL_MCP_COMPLETION_TOOLS,
 ]

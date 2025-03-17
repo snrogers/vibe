@@ -4,7 +4,7 @@ import { ZodError } from 'zod';
 import { ENV }                           from '@/lib/Constants';
 import { exhaustiveCheck }               from '@/lib/Utils';
 
-import { ALL_COMPLETION_TOOLS }                     from '.';
+import { ALL_COMPLETION_TOOLS }          from '.';
 import { CurlTool }                      from './CurlTool';
 import { ReadFileTool }                  from './ReadFileTool/ReadFileTool';
 import { ProjectOverviewTool }           from './ProjectOverviewTool';
@@ -14,6 +14,7 @@ import { WriteFileTool }                 from './WriteFileTool';
 import { withStandardErrorHandling }     from './withStandardErrorHandling';
 import { GithubTool } from './GithubTool';
 import type { AppTool } from './AppTool';
+import { McpService } from '../McpService/McpService';
 
 export const ToolService = {
   getTools: () => ALL_COMPLETION_TOOLS,
@@ -47,7 +48,7 @@ function getToolHandler (name: ToolName) {
       return ReplaceTool.handler;
     default:
       exhaustiveCheck(name);
-      return McpService.fetchMcpTool(name)
+      return McpService.fetchMcpToolHandler(name)
 
   }
 }

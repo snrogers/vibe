@@ -15,7 +15,7 @@ import type { BashTool } from "./BashTool";
  * @returns {Promise<ToolMessage>} A promise that resolves to a ToolMessage.
  */
 export type ToolCallHandler<
-  ArgsSchema extends AnyZodType,
+  ArgsSchema extends AnyZodType = AnyZodType,
 > = (toolCall: z.TypeOf<ArgsSchema>) => Promise<ToolMessage>
 
 /**

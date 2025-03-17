@@ -1,12 +1,15 @@
 import { Client as BaseMcpClient } from '@modelcontextprotocol/sdk/client/index.js'
-import type { Tool } from '@/lib/Services/ToolService/Types'
+import type { Tool, ToolCallHandler } from '@/lib/Services/ToolService/Types'
+import jsonSchemaToZod from 'json-schema-to-zod'
 
 import { fetchMcpConfig, type McpServerConfig } from './fetchMcpConfig'
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
-import { eternity } from '@/lib/Utils'
 import type { McpTool } from './Utils'
-import type { ChatCompletionTool } from 'openai/resources/index.mjs'
+import type { ChatCompletionMessageToolCall, ChatCompletionTool, ChatCompletionToolMessageParam } from 'openai/resources/index.mjs'
 import type { Simplify } from '@/lib/Types'
+import { z } from 'zod'
+import { dump, eternity } from '@/lib/Utils'
+import { logger } from '../LogService'
 
 
 type mcpConfigFile = { mcpServers: Record<string, McpServerConfig> }
@@ -17,22 +20,22 @@ const mcpConfigEntries =
   Object.entries(mcpConfig.mcpServers) as unknown as [string, McpServerConfig][]
 
 
+
 type AnthroTool = Simplify<Awaited<ReturnType<(typeof BaseMcpClient)['prototype']['listTools']>>['tools'][number]>
 
 class McpClient {
-  readonly name:      string;
-  readonly config:    McpServerConfig;
-  readonly whenReady: Promise<void>;
+  public readonly name:      string;
+  public readonly config:    McpServerConfig;
+  public readonly whenReady: Promise<void>;
+  public readonly tools:     ChatCompletionTool[] = []
 
-  public readonly tools: ChatCompletionTool[] = []
-
-  private readonly client: BaseMcpClient;
+  public readonly baseClient: BaseMcpClient;
 
   constructor(name: string, config: McpServerConfig) {
     this.name   = name
     this.config = config
 
-    this.client = new BaseMcpClient({
+    this.baseClient = new BaseMcpClient({
       name: 'Vibe',
       version: '0.0.0',
     })
@@ -45,75 +48,78 @@ class McpClient {
     this.whenReady = (async (client: BaseMcpClient) => {
       await client.connect(transport)
       const { tools: mcpTools } = await client.listTools()
-
-      console.log('readying', { name, mcpTools })
-
-      this.tools = mcpTools.map(openAiToolFromAnthroTool)
-    })(this.client)
+      this.tools = mcpTools.map((mcpTool) => openAiToolFromAnthroTool(name, mcpTool))
+    })(this.baseClient)
 
     this.whenReady.catch(async (err) => {
       console.error('Error in McpClient.whenReady', err)
-      await eternity
     })
   }
 }
 
-const mcpClients: Record<string, BaseMcpClient> = mcpConfigEntries.reduce(
+const mcpClients: Record<string, McpClient> = mcpConfigEntries.reduce(
   (acc, [name, mcpServerConfig]) => {
     const client = new McpClient(name, mcpServerConfig)
-    return { ...acc, [mcpServerConfig.command]: client }
+    return { ...acc, [name]: client }
   }, {}
 )
 
-export function fetchMcpPrompts() {
-  // FIXME: implement
+await Promise.all(Object.values(mcpClients).map((mcpClient: McpClient) => mcpClient.whenReady))
+
+export const ALL_MCP_COMPLETION_TOOLS = Object.values(mcpClients).flatMap((mcpClient: McpClient) => mcpClient.tools)
+export const ALL_MCP_TOOLS =
+  Object.values(mcpClients).flatMap(toolsFromMcpClient)
+
+export function toolsFromMcpClient(mcpClient: McpClient): Tool[] {
+  return mcpClient.tools.map((mcpTool) => {
+    const name        = mcpTool.function.name
+    const description = mcpTool.function.description ?? 'DESCRIPTION NOT FOUND'
+    const argsSchema  = eval(jsonSchemaToZod(mcpTool.function.parameters!)) // FIXME: BEFORE RELEASE
+
+    return {
+      name,
+      description: description + '\n\n' + dump(mcpTool.function.parameters!),
+      argsSchema:   z.any(),
+      handler:      fetchChatCompletionToolHandler(mcpClient.name),
+    } satisfies Tool
+  })
 }
 
-export function fetchMcpTool(name: string): Tool {
-  const client = mcpClients[name]
-  if (!client) {
-    throw new Error(`No client found for tool ${name}`)
-  }
-  return toolFromMcpClient(client);
+export function fetchChatCompletionToolHandler(name: string): ToolCallHandler {
+  return (toolCall: ChatCompletionMessageToolCall) => processToolCall(toolCall)
 }
 
-export const openAiToolFromAnthroTool = (mcpTool: AnthroTool): ChatCompletionTool => {
+export function openAiToolFromAnthroTool(serverName: string, mcpTool: AnthroTool): ChatCompletionTool {
   return {
     type: 'function',
     function: {
-      name:        mcpTool.name,
+      name:        `${serverName}/${mcpTool.name}`,
       description: mcpTool.description,
       parameters:  mcpTool.inputSchema as Record<string, unknown>,
     }
   }
 }
 
-export function toolFromMcpClient(mcpClient: McpClient): Tool {
-  const { name  } = mcpClient
-  const description = mcpClient.prompt
+export async function processToolCall(toolCall: ChatCompletionMessageToolCall): Promise<ChatCompletionToolMessageParam> {
+  const [serverName, toolName] = toolCall.function.name.split('/')
+  const toolArgs = JSON.parse(toolCall.function.arguments) as Record<string, unknown>
+
+  const client = mcpClients[serverName]!
+  logger.log('info', `Calling tool ${toolName} on server ${serverName}`, { toolArgs, client, mcpClients })
+
+  const result = await client.baseClient.callTool({
+    name: toolName,
+    arguments: toolArgs,
+  });
 
   return {
-    name:         mcpClient.name,
-    description,
-    handler:      mcpClient.callTool.bind(mcpClient),
+    tool_call_id: toolCall.id,
+    content:      result.content as string,
+    role:         'tool',
   }
 }
 
 export const McpService = {
-  fetchMcpPrompts,
-  fetchMcpTool,
+  fetchMcpToolHandler:    fetchChatCompletionToolHandler,
+  getChatCompletionTools: () => Object.values(mcpClients).map((mcpClient: McpClient) => mcpClient.tools),
 }
-
-
-// ----------------------------------------------------------------- //
-// FIXME: DELETE BELOW THIS
-// ----------------------------------------------------------------- //
-
-console.log('mcpConfig', mcpConfig)
-const [name, mcpServerConfig] = mcpConfigEntries[0]!
-const client = new McpClient(name, mcpServerConfig)
-await client.whenReady
-
-console.log('Ready', { clientTools: client.tools })
-
-await eternity
