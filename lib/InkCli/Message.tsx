@@ -92,36 +92,32 @@ interface MessageContentProps {
   message: ChatMessage
 }
 const MessageContent: FC<MessageContentProps> = ({ message }) => {
-  const { role, content } = message
+  const { role, content } = message;
 
-  const toolCalls = (message as AssistantMessage).tool_calls
-
+  // Handle string content
   if (typeof content === 'string') {
-    const style = getRoleStyle(role)
-    return <Text {...style.text}>{content}</Text>
+    const style = getRoleStyle(role);
+    return <Text {...style.text}>{content}</Text>;
+  }
+
+  // Handle array content (e.g., from tool responses)
+  if (Array.isArray(content)) {
+    return (
+      <>
+        {content.map((part, index) => {
+          if (part.type === 'text') return <Text key={index}>{part.text}</Text>;
+          else                      return <Text key={index}>Unsupported content type: {part.type}</Text>;
+        })}
+      </>
+    );
   }
 
   return (
-    <>
-      <Frame>
-        { typeof content === 'string'
-          ? <Text>{content}</Text>
-          : <Text>UNIMPLEMENTED CONTENT: {dump(content)}</Text>
-        }
-      </Frame>
-
-      { toolCalls && toolCalls.length > 0 &&
-        <Frame>
-          <Text>TOOL CALLS: {dump(toolCalls)}</Text>
-        </Frame>
-      }
-
-      <Frame>
-        <Text>{ dump(message) }</Text>
-      </Frame>
-    </>
-  )
-}
+    <Frame>
+      <Text>{ dump(content) }</Text>
+    </Frame>
+  );
+};
 
 const ToolCallContent: FC<{ message: AssistantMessage }> = (props) => {
   const { message } = props

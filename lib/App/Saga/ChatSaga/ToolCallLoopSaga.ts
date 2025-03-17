@@ -28,6 +28,10 @@ export function * ToolCallLoopSaga(opts: ToolCallLoopSagaOpts) {
 
     while (toolCalls.length) {
       numLoops++
+      logger.log(
+        'info',
+        'tool call loop',
+        { assistantMessage: assistantMessage ?? null, toolCalls: toolCalls.length })
 
       // ----------------------------------------------------------------- //
       // Break if we've reached the limit
@@ -52,7 +56,7 @@ export function * ToolCallLoopSaga(opts: ToolCallLoopSagaOpts) {
 
       // Respond with Tool Call Results
       const chatSessionWithToolCallResults = yield* select((state: AppState) => state.chatSession)
-      const assistantMessage = yield* StreamCompletionSaga({ chatSession: chatSessionWithToolCallResults })
+      const assistantMessage = yield * StreamCompletionSaga({ chatSession: chatSessionWithToolCallResults })
       yield* put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: assistantMessage } })
 
       toolCalls = assistantMessage.tool_calls ?? []
