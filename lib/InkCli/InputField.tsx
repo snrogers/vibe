@@ -1,5 +1,5 @@
 import React, { useMemo, useState, type FC } from 'react'
-import { Box, Text, useStdin } from 'ink'
+import { Box, Text, useFocus, useStdin } from 'ink'
 import { useInput } from 'ink'
 import { appStore } from '../App'
 import { useAppSelector } from '../App/AppProvider'
@@ -19,18 +19,22 @@ const DummyInputField: FC = () => {
 export const LiveInputField: FC = () => {
   const [textInput, setTextInput] = useState("")
   const inProgress = useAppSelector((state) => state.inProgress)
+  const isFocused = useFocus()
 
   const onSubmit = useMemo(() =>
     (value: string) => {
-      if (!appStore.getState().inProgress) {
-        appStore.dispatch({ type: 'PROMPT_SUBMITTED', payload: { prompt: value } })
-        setTextInput('')
-      }
+      if (appStore.getState().inProgress) return
+      if (!isFocused) return
+
+      appStore.dispatch({ type: 'PROMPT_SUBMITTED', payload: { prompt: value } })
+      setTextInput('')
     },
     [setTextInput]
   )
 
   useInput((input, key) => {
+    if (!isFocused) return
+
     if (key.return) {
       onSubmit(textInput)
     } else if (key.backspace || key.delete) {

@@ -4,6 +4,7 @@ import type { AssistantMessage, ChatMessage, ToolMessage } from '../Domain/ChatS
 import { dump } from '../Utils'
 import { useAppSelector } from '../App/AppProvider'
 import { Frame } from './Frame'
+import { useTerminalDimensions } from './useTerminalDimensions'
 
 // ----------------------------------------------------------------- //
 // Role Badges and Styling
@@ -149,15 +150,17 @@ interface MessageCardProps {
 const MessageCard: FC<MessageCardProps> = ({ role, children }) => {
   const style = getRoleStyle(role)
 
+  const { columns, rows } = useTerminalDimensions()
+
   return (
     <Box
       flexDirection="column"
       marginBottom={1}
       borderStyle={style.border.style as any}
       borderColor={style.border.color}
-      width="100%"
+      width={columns - 2}
     >
-      <Box marginBottom={1}>
+      <Box width={columns - 2} marginBottom={1}>
         <MessageBadge role={role} />
       </Box>
 

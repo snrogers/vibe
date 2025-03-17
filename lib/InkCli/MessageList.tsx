@@ -23,7 +23,6 @@ export const MessageList: FC = () => {
             <Message key={idx} message={message} />
           ))}
 
-          {completionDelta && <MessagePartial partial={completionDelta} />}
         </Frame>
       </Box>
 

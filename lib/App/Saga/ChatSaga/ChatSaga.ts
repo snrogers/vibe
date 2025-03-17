@@ -10,6 +10,16 @@ import { serializeError } from 'serialize-error'
 import type { AppState } from '@/lib/App/AppState'
 import { StreamCompletionSaga } from '@/lib/App/Saga/StreamCompletionSaga'
 import { ToolCallSaga } from '@/lib/App/Saga/ToolCallSaga'
+import { ToolCallLoopSaga } from './ToolCallLoopSaga'
+
+
+
+// GAME PLAN:
+// This is eventually going to turn into a big "Listen for the Next Event and then do a Completion" loop.
+// "Next Event" maybe be:
+// - User submits a prompt
+// - VibeApp responds with a "Tool Call" to the LLM
+// - Agent responds with a request to powwow
 
 
 const TOOL_CALL_LIMIT = 5
@@ -23,46 +33,21 @@ export function * ChatSaga(opts: ChatSagaOtps) {
     yield * put({ type: 'CHAT_COMPLETION_STARTED', payload: { message: prompt } })
     const chatSession = yield * select((state: AppState) => state.chatSession)
 
+    // ----------------------------------------------------------------- //
+    // Fetch a Completion
+    // ----------------------------------------------------------------- //
     const assistantMessage = yield * StreamCompletionSaga({ chatSession })
     yield * put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: assistantMessage } })
 
     // ----------------------------------------------------------------- //
-    // Handle Tool Calls
+    // Handle Any Tool Calls
     // ----------------------------------------------------------------- //
-    let numSteps = 0
     let toolCalls = assistantMessage.tool_calls ?? []
-    while (toolCalls.length) {
-      numSteps++
+    if (toolCalls.length) yield * ToolCallLoopSaga({ assistantMessage, toolCalls })
 
-      // ----------------------------------------------------------------- //
-      // Break if we've reached the limit
-      // We'll check afterwards to see if there's a dangling AssistantMesage.
-      // If so, we'll replace it with a little pep talk session.
-      // ----------------------------------------------------------------- //
-      if (numSteps > TOOL_CALL_LIMIT) {
-        // logger.log('info', `Too many tool calls, stopping here.`)
-        // yield * put({ type: 'Chat_COMPLETION_PEP_TALK', payload: { message: 'Too many tool calls, stopping here.' } })
-        // break
-      }
-
-      // ----------------------------------------------------------------- //
-      // Otherwise Crunch the Tool calls and wait for the results
-      // ----------------------------------------------------------------- //
-      const toolMessages: ToolMessage[] = yield * all(toolCalls.map(
-        (toolCall) => ToolCallSaga({ toolCall })
-      ))
-      yield * put({ type: 'TOOLS_COMPLETE', payload: { messages: toolMessages } })
-
-      // ----------------------------------------------------------------- //
-      // Respond with Tool Call Results
-      // ----------------------------------------------------------------- //
-      const chatSessionWithToolCallResults = yield * select((state: AppState) => state.chatSession)
-      const assistantMessage               = yield * StreamCompletionSaga({ chatSession: chatSessionWithToolCallResults })
-      yield * put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: assistantMessage } })
-
-      toolCalls = assistantMessage.tool_calls ?? []
-    }
-
+    // ----------------------------------------------------------------- //
+    // Then we're done
+    // ----------------------------------------------------------------- //
     yield * put({ type: 'CHAT_COMPLETION_FINISHED', payload: { message: assistantMessage } })
   } catch (error) {
     if (yield * cancelled()) {

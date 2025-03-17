@@ -26,7 +26,7 @@ export function * ToolCallLoopSaga(opts: ToolCallLoopSagaOpts) {
     let processingToolCalls = true
     let numLoops            = 0
 
-    while (processingToolCalls) {
+    while (toolCalls.length) {
       numLoops++
 
       // ----------------------------------------------------------------- //
@@ -38,10 +38,8 @@ export function * ToolCallLoopSaga(opts: ToolCallLoopSagaOpts) {
         logger.log('info', `Too many tool calls, stopping here.`)
 
         yield * put({ type: 'CHAT_COMPLETION_PEP_TALK', payload: { message: assistantMessage } })
-
-        yield * put({ type: 'CHAT_COMPLETION_FINISHED', payload: { message: assistantMessage } })
-
-        break
+        return false
+        break // break out of the loop
       }
 
       // ----------------------------------------------------------------- //

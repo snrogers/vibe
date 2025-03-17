@@ -1,6 +1,5 @@
-import { Box, Text } from "ink";
+import { Box, Static, Text } from "ink";
 import { memo, useMemo, type FC } from "react";
-import { Header } from "./Header";
 import { InputField } from "./InputField";
 import { MessageList } from "./MessageList";
 import { DebugView } from "./DebugView";
@@ -9,6 +8,10 @@ import { Frame } from "./Frame";
 import { useAppSelector, withAppProvider } from "../App/AppProvider";
 import { dump } from "../Utils";
 import { useTerminalDimensions } from "./useTerminalDimensions";
+import { Message } from "./Message";
+import { MessagePartial } from "./MessagePartial";
+import { identity } from "rambdax";
+import { FKeyBar } from "./FKeyBar";
 
 export const View: FC = () => {
   const state = useAppSelector((st) => st)
@@ -17,17 +20,20 @@ export const View: FC = () => {
 
   const { columns, rows } = useTerminalDimensions()
 
+  const { chatSession: { messages }, completionDelta } =
+    useAppSelector(identity)
+
   return (
     <>
-      {awaitingConfirmation ? (
-        <ConfirmationModal />
-      ) : (
-        <>
-          <MessageList />
+      <Static items={messages} style={{ width: '100%' }}>
+        {(message) => (<Message message={message} />)}
+      </Static>
 
-          <InputField />
-        </>
-      )}
+      {completionDelta && <MessagePartial partial={completionDelta} />}
+
+      <InputField />
+
+      <FKeyBar />
     </>
   );
 }
