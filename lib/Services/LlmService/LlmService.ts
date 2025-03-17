@@ -26,38 +26,29 @@ import { ALL_COMPLETION_TOOLS } from '../ToolService';
 const MODEL  = GROK_MODEL
 const client = grokClient
 
-export const streamChatCompletion = async (chatSession: ChatSession) => {
-  const { messages } = chatSession
+type StreamChatCompletionOpts = {
+  model?: string
+  toolChoice?: 'auto' | 'required' | 'none'
+}
+export const streamChatCompletion =
+  async (chatSession: ChatSession, opts: StreamChatCompletionOpts = {}) => {
+    const { messages } = chatSession
+    const toolChoice = opts.toolChoice ?? 'auto'
+    const model      = opts.model      ?? MODEL
 
-  const completionStream = await client.chat.completions.create({
-    model: MODEL,
-    messages,
-    temperature: 0.5,
-    max_tokens: 8192 / 2,
-    tools: ALL_COMPLETION_TOOLS,
-    tool_choice: 'auto',
-    stream: true,
-  });
+    const completionStream = await client.chat.completions.create({
+      model: MODEL,
+      messages,
+      temperature: 0.5,
+      max_tokens:  8192 * 4,
+      tools:       ALL_COMPLETION_TOOLS,
+      tool_choice: 'auto',
+      stream:      true,
+    });
 
-  return completionStream;
-};
-
-export const fetchChatCompletion = async (chatSession: ChatSession) => {
-  const { messages } = chatSession
-
-  const completion = await client.chat.completions.create({
-    model: MODEL,
-    messages,
-    temperature: 0.5,
-    max_tokens: 1000,
-    tools: [BashTool, ProjectOverviewTool],
-    stream: false,
-  });
-
-  return completion;
-};
+    return completionStream;
+  };
 
 export const LlmService = {
   streamChatCompletion,
-  fetchChatCompletion,
 };

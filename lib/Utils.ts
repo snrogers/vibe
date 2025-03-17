@@ -1,20 +1,11 @@
 import { is, mergeWith } from "rambdax";
+
 import type { AnyKey, Xf } from "./Types";
 
-
-type ObjectSpecForPath<Path extends [...string[]], T = unknown> =
-  Path extends [infer Head extends AnyKey, ...infer Tail extends string[]]
-  ? Tail extends []
-    ? { [key in Head]: T }
-    : { [key in Head]: ObjectSpecForPath<Tail> }
-  : never
 
 export const dump = (obj: unknown) => {
   return JSON.stringify(obj, null, 2);
 }
-
-export const eternity = new Promise(() => {})
-
 
 /**
  * Ensures that all possible cases are handled in a switch statement or similar construct.
@@ -67,6 +58,8 @@ export const exhaustiveCheck =
     return x as never
   }
 
+/** A Promise that never resolves or rejects. */
+export const eternity = new Promise(() => {})
 
 /**
  * Checks if the current file is the entry point in Bun.

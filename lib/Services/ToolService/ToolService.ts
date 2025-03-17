@@ -47,7 +47,8 @@ function getToolHandler (name: ToolName) {
       return ReplaceTool.handler;
     default:
       exhaustiveCheck(name);
-      throw new ToolNotFoundError(`Unknown tool: ${name}`);
+      return McpService.fetchMcpTool(name)
+
   }
 }
 

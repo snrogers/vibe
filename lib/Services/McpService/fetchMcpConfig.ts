@@ -1,4 +1,7 @@
+import path from "path"
+
 import { MCP_CONFIG_PATH } from "@/lib/Constants"
+import { logger } from "../LogService"
 
 
 export type McpServerConfig = {
@@ -21,12 +24,22 @@ export const EMPTY_MCP_CONFIG = `
 `
 
 export const fetchMcpConfig = async () => {
-  const mcpConfigExists = await Bun.file(MCP_CONFIG_PATH).exists()
+  const absolutePath = path.resolve(MCP_CONFIG_PATH)
 
-  if (!mcpConfigExists) await writeEmptyMcpConfig()
+  logger.log('debug', `checking if ${absolutePath} exists`)
+  const mcpConfigExists = await Bun.file(absolutePath).exists()
 
+
+  if (!mcpConfigExists) {
+    logger.log('debug', `creating ${absolutePath}`)
+    await writeEmptyMcpConfig()
+  }
+
+  logger.log('debug', `reading ${absolutePath}`)
   const config =
-    (await require('~/.vibe.mcpServers.js')) as McpConfigDict
+    (await require(absolutePath)) as McpConfigDict
+
+  logger.log('debug', `config`, config)
 
   return config
 }

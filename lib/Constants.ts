@@ -8,7 +8,7 @@ export const cwd =
   ?? process.env.CWD
   ?? process.cwd()
 
-export const MCP_CONFIG_PATH = `~/.vibe.mcpServers.js`
+export const MCP_CONFIG_PATH = process.env.HOME + `/.vibe.mcpServers.js`
 
 export const V_DEBUG =
   Args.debug
