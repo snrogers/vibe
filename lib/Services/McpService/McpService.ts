@@ -1,42 +1,32 @@
-import { MCPClient } from '@modelcontextprotocol/sdk';
+import { Client as MCPClient } from '@modelcontextprotocol/sdk/client/index.js'
+import { fetchMcpConfig, type McpServerConfig } from './fetchMcpConfig'
 
-export class McpService {
-  private client: MCPClient;
 
-  constructor(config: { serverUrl: string; apiKey?: string }) {
-    this.client = new MCPClient({
-      serverUrl: config.serverUrl,
-      apiKey: config.apiKey, // Optional, depending on server requirements
-    });
-  }
+type mcpConfigFile = { mcpServers: Record<string, McpServerConfig> }
 
-  /** Retrieve context from the MCP Server by key */
-  async getContext(key: string): Promise<any> {
-    try {
-      return await this.client.getContext(key);
-    } catch (error) {
-      console.error(`Error retrieving context for key "${key}":`, error);
-      throw error;
-    }
-  }
+const mcpConfig = await fetchMcpConfig()
 
-  /** Store context on the MCP Server */
-  async setContext(key: string, value: any): Promise<void> {
-    try {
-      await this.client.setContext(key, value);
-    } catch (error) {
-      console.error(`Error setting context for key "${key}":`, error);
-      throw error;
-    }
-  }
+const entries   = Object.entries(mcpConfig.mcpServers) as unknown as [string, McpServerConfig][]
 
-  /** Delete context from the MCP Server */
-  async deleteContext(key: string): Promise<void> {
-    try {
-      await this.client.deleteContext(key);
-    } catch (error) {
-      console.error(`Error deleting context for key "${key}":`, error);
-      throw error;
-    }
-  }
+console.log('entries', entries)
+
+const mcpClients = Object.entries(mcpConfig.mcpServers).reduce(
+  (acc, [name, mcpServerConfig]) => {
+    const client =  new MCPClient({
+      name: 'Vibe',
+      version: '0.0.0',
+    })
+
+    client.connect(mcpServerConfig)
+
+    return { ...acc, [mcpServerConfig.command]: client }
+  }, {}
+)
+
+export function fetchMcpServers() {
+  return []
+}
+
+export function fetchMcpPrompts() {
+  return []
 }

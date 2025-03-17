@@ -16,9 +16,9 @@ if (Args.help) {
     Usage: vibe [options]
 
     Options:
-      -d, --debug                           Enable debug mode
+      -d,  --debug                          Enable debug mode
       -n=, --non-interactive="YOUR_PROMPT"  Run in non-interactive mode
-      -h, --help                            Show this help message
+      -h,  --help                           Show this help message
   `)
   process.exit(0)
 }

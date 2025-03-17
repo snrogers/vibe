@@ -1,6 +1,6 @@
 import React, { type FC } from 'react'
 import { Box, Text } from 'ink'
-import { pp } from '../Utils'
+import { dump } from '../Utils'
 import type { ChatCompletionChunk } from 'openai/resources'
 
 interface MessagePartialProps {

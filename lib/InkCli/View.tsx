@@ -7,7 +7,7 @@ import { DebugView } from "./DebugView";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { Frame } from "./Frame";
 import { useAppSelector, withAppProvider } from "../App/AppProvider";
-import { pp } from "../Utils";
+import { dump } from "../Utils";
 import { useTerminalDimensions } from "./useTerminalDimensions";
 
 export const View: FC = () => {
@@ -18,7 +18,7 @@ export const View: FC = () => {
   const { columns, rows } = useTerminalDimensions()
 
   return (
-    <Box flexDirection="column">
+    <>
       {awaitingConfirmation ? (
         <ConfirmationModal />
       ) : (
@@ -28,6 +28,6 @@ export const View: FC = () => {
           <InputField />
         </>
       )}
-    </Box>
+    </>
   );
 }

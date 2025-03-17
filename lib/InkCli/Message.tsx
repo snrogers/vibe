@@ -1,7 +1,7 @@
 import React, { memo, type FC } from 'react'
 import { Box, Text } from 'ink'
 import type { AssistantMessage, ChatMessage, ToolMessage } from '../Domain/ChatSession'
-import { pp } from '../Utils'
+import { dump } from '../Utils'
 import { useAppSelector } from '../App/AppProvider'
 import { Frame } from './Frame'
 
@@ -105,18 +105,18 @@ const MessageContent: FC<MessageContentProps> = ({ message }) => {
       <Frame>
         { typeof content === 'string'
           ? <Text>{content}</Text>
-          : <Text>UNIMPLEMENTED CONTENT: {pp(content)}</Text>
+          : <Text>UNIMPLEMENTED CONTENT: {dump(content)}</Text>
         }
       </Frame>
 
       { toolCalls && toolCalls.length > 0 &&
         <Frame>
-          <Text>TOOL CALLS: {pp(toolCalls)}</Text>
+          <Text>TOOL CALLS: {dump(toolCalls)}</Text>
         </Frame>
       }
 
       <Frame>
-        <Text>{ pp(message) }</Text>
+        <Text>{ dump(message) }</Text>
       </Frame>
     </>
   )
@@ -231,7 +231,7 @@ export const Message: FC<MessageProps> = memo(({ message }) => {
   return (
     <Frame>
       <MessageBadge role={role} />
-      <Text>{ pp(message) }</Text>
+      <Text>{ dump(message) }</Text>
     </Frame>
   )
 })

@@ -2,7 +2,7 @@ import { Box, Text, useInput } from "ink"
 
 import { Frame } from "./Frame"
 import { useAppSelector } from "../App/AppProvider"
-import { pp } from "../Utils"
+import { dump } from "../Utils"
 import { appStore } from "../App";
 
 
@@ -21,7 +21,7 @@ export const ConfirmationModal = () => {
   return (
     <Frame>
       <Text>Confirm Tool Call</Text>
-      <Text>{pp(lastMessage)}</Text>
+      <Text>{dump(lastMessage)}</Text>
       <Text>Press Enter to confirm, any other key to cancel</Text>
     </Frame>
   );

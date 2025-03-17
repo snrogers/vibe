@@ -9,12 +9,16 @@ import type {
 } from 'openai/resources';
 
 
-export type ChatMessage      = ChatCompletionMessageParam
-
 export type AssistantMessage = ChatCompletionAssistantMessageParam
+export type ChatMessage      = ChatCompletionMessageParam
+export type DeveloperMessage = ChatCompletionDeveloperMessageParam
+export type SystemMessage    = ChatCompletionSystemMessageParam
 export type ToolMessage      = ChatCompletionToolMessageParam
+export type UserMessage      = ChatCompletionUserMessageParam
 
 export type ChatMessageRole = ChatMessage['role']
+
+
 
 export type ChatSession = {
   id?: string

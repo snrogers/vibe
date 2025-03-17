@@ -2,7 +2,7 @@ import { useState, useEffect, type FC } from "react";
 import { Box, Text } from "ink";
 import { Frame } from "./Frame";
 
-import { pp } from "@/lib/Utils";
+import { dump } from "@/lib/Utils";
 import { useAppSelector } from "@/lib/App/AppProvider";
 import { logger } from "@/lib/Services/LogService";
 
@@ -58,7 +58,7 @@ export const DebugView: FC = () => {
       {viewMode === 'state' && (
         <Box flexDirection="column" marginBottom={1}>
           <Text bold underline color="yellow">State:</Text>
-          <Text>{pp(appState)}</Text>
+          <Text>{dump(appState)}</Text>
         </Box>
       )}
 
@@ -69,7 +69,7 @@ export const DebugView: FC = () => {
             <Text color="gray">No events dispatched yet</Text>
           ) : (
             events.slice(-10).map((event, idx) => (
-              <Text key={idx} color="white">{pp(event)}</Text>
+              <Text key={idx} color="white">{dump(event)}</Text>
             ))
           )}
         </Box>

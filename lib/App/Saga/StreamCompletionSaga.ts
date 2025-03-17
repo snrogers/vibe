@@ -10,7 +10,7 @@ import type { ChatCompletionChunk } from 'openai/resources'
 import { mergeDeltas } from '@/lib/Services/LlmService/processStream'
 import { logger, LogService } from '@/lib/Services/LogService'
 import { mergeLeft } from 'rambdax'
-import { pp } from '@/lib/Utils'
+import { dump } from '@/lib/Utils'
 import { mergeChunks, type AnyChunk } from '@/lib/Services/LlmService/mergeChunks'
 import type { FunctionToolCall } from 'openai/resources/beta/threads/runs/steps.mjs'
 
@@ -36,7 +36,7 @@ export function * StreamCompletionSaga({ chatSession }: StreamCompletionSagaOpts
     yield * mapAsyncIterable(
       completion,
       function * (chunk: ChatCompletionChunk) {
-        logger.log('info', `Received chunk: ${pp(chunk.choices[0]?.delta)}`);
+        logger.log('info', `Received chunk: ${dump(chunk.choices[0]?.delta)}`);
 
         const maybeRole       = chunk.choices[0]?.delta?.role
         const maybeContent    = chunk.choices[0]?.delta?.content
