@@ -19,8 +19,6 @@ const mcpConfig = await fetchMcpConfig()
 const mcpConfigEntries =
   Object.entries(mcpConfig.mcpServers) as unknown as [string, McpServerConfig][]
 
-
-
 type AnthroTool = Simplify<Awaited<ReturnType<(typeof BaseMcpClient)['prototype']['listTools']>>['tools'][number]>
 
 class McpClient {
@@ -74,7 +72,6 @@ export function toolsFromMcpClient(mcpClient: McpClient): Tool[] {
   return mcpClient.tools.map((mcpTool) => {
     const name        = mcpTool.function.name
     const description = mcpTool.function.description ?? 'DESCRIPTION NOT FOUND'
-    const argsSchema  = eval(jsonSchemaToZod(mcpTool.function.parameters!)) // FIXME: BEFORE RELEASE
 
     return {
       name,
@@ -108,7 +105,7 @@ export async function processToolCall(toolCall: ChatCompletionMessageToolCall): 
   logger.log('info', `Calling tool ${toolName} on server ${serverName}`, { toolArgs, client, mcpClients })
 
   const result = await client.baseClient.callTool({
-    name: toolName,
+    name:      toolName,
     arguments: toolArgs,
   });
 
