@@ -40,8 +40,9 @@ export function * ChatSaga(opts: ChatSagaOtps) {
       // If so, we'll replace it with a little pep talk session.
       // ----------------------------------------------------------------- //
       if (numSteps > TOOL_CALL_LIMIT) {
-        logger.log('info', `Too many tool calls, stopping here.`)
-        break
+        // logger.log('info', `Too many tool calls, stopping here.`)
+        // yield * put({ type: 'Chat_COMPLETION_PEP_TALK', payload: { message: 'Too many tool calls, stopping here.' } })
+        // break
       }
 
       // ----------------------------------------------------------------- //
