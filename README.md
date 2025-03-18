@@ -56,14 +56,6 @@ module.exports = {
 };
 ```
 
-The configuration allows you to:
-- Define multiple named MCP servers
-- Specify the command to start each server
-- Provide command-line arguments
-- Set environment variables
-
-MCP servers extend Vibe's functionality by providing additional tools that can be called by the LLM.
-
 ## Usage
 Start Vibe by running:
 
