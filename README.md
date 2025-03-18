@@ -10,7 +10,7 @@ Vibe is an interactive command-line tool powered by Large Language Model (LLM) A
 ## Features
 
 * **Chat Interface**: Engage with an LLM Agent through a command-line chat system
-* **Tool Execution**: Run built-in tools like `bash` for shell commands or `project_overview` for directory trees
+* **Tool Execution**: Run built-in tools like `bash` **[NOT A SAFE TOOL, MAY DELET YOUR COMPUTE]** for shell commands or `project_overview` for directory trees
 * **Debug Mode**: Enable detailed logs and event tracking for troubleshooting
 * **Inspector Mode**: View hidden system and tool messages during interactions
 * **Non-Interactive Mode**: Execute one-off prompts without entering the interactive CLI
