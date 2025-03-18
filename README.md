@@ -1,5 +1,7 @@
 # Vibe
 
+# DISCLAIMER: NOT MY FAULT IF THIS DELETS YOUR COMPUTER
+
 ![You must learn its secret, Conan](https://github.com/snrogers/vibe/blob/main/docs/riddle-of-steel.png?raw=true)
 
 
