@@ -79,7 +79,7 @@ responses from the LLM Agent.
 Vibe supports the following options:
 
 * `-d, --debug`: Enable debug mode to display detailed logs
-* `-n="PROMPT", --nonInteractive="PROMPT"`: Run a single prompt non-interactively and exit
+* `-n="PROMPT", --nonInteractive="PROMPT"`: Run a single prompt non-interactively and exit [BROKEN?]
 * `-h, --help`: Show the help message
 
 ## Examples:
