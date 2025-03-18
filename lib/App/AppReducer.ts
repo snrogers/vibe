@@ -17,7 +17,7 @@ export const appReducer = (state: AppState = INITIAL_APP_STATE, event: AppEvent)
   switch (type) {
     case 'CHAT_COMPACTION_SUCCESS': {
       const { compactedChatSession: chatSession } = payload
-      return { ...state, chatSession }
+      return { ...state, chatSession, inProgress: false, completionDelta: undefined }
     }
 
     case 'CHAT_COMPLETION_FAILURE': {
