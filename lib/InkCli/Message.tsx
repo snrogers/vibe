@@ -146,12 +146,12 @@ const ToolCallContent: FC<{ message: AssistantMessage }> = (props) => {
           </Box>
 
           { Object.entries(args).map(([key, val], idx) => (
-            <Box key={idx}>
+            <Box key={`${idx}-arg`}>
               <Text key={idx} color="blue">
                 {key}:
               </Text>
 
-              <Text key={-idx}>
+              <Text key={`${idx}-val`}>
                 {dump(val)}
               </Text>
             </Box>
