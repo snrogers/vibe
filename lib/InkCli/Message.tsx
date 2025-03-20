@@ -1,4 +1,4 @@
-import React, { memo, type FC } from 'react'
+import React, { memo, useMemo, type FC } from 'react'
 import { Box, Text } from 'ink'
 import type { AssistantMessage, ChatMessage, ToolMessage } from '../Domain/ChatSession'
 import { dump } from '../Utils'
@@ -122,14 +122,41 @@ const MessageContent: FC<MessageContentProps> = ({ message }) => {
 const ToolCallContent: FC<{ message: AssistantMessage }> = (props) => {
   const { message } = props
 
+  const args = useMemo(
+    () => {
+      try {
+        return JSON.parse(message.tool_calls?.[0].function.arguments ?? '')
+      } catch (error) {
+        return { invalidArgs: message.tool_calls?.[0].function.arguments ?? 'NOARGS' }
+      }
+    }, [message]
+    )
+
   const toolCalls = message.tool_calls ?? []
 
   return (
     <Frame>
       { toolCalls.map((toolCall, idx) => (
-        <Text key={idx}>
-          {toolCall.function.name}: ({toolCall.function.arguments})
-        </Text>
+        <>
+          <Box>
+            <Text>Tool: </Text>
+            <Text key={idx} color="redBright">
+              {toolCall.function.name}:
+            </Text>
+          </Box>
+
+          { Object.entries(args).map(([key, val], idx) => (
+            <Box key={idx}>
+              <Text key={idx} color="blue">
+                {key}:
+              </Text>
+
+              <Text key={-idx}>
+                {dump(val)}
+              </Text>
+            </Box>
+          ))}
+      </>
       ))}
     </Frame>
   )

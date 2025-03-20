@@ -134,6 +134,7 @@ Note: LLM Models are not yet configurable through environment variables.
 
 The following features and improvements are planned for future releases:
 
+* [ ] **Tool Reminders**: To keep our little buddy on track
 * [ ] **LLM Provider Configuration**: Make LLM model selection configurable within the App
 * [ ] **Persistent Chat History**: Implement storage for conversation history between sessions
 * [ ] **Improved UI**: Enhance the terminal UI with more interactive elements and visual feedback
@@ -141,3 +142,4 @@ The following features and improvements are planned for future releases:
 * [ ] **Vision Model Support**: Add capability to process and analyze images
 * [ ] **Image Generation Support**: Integrate with image generation models to create visuals on demand
 * [ ] **Dynamic Model Selection**
+
