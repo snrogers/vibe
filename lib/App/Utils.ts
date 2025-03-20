@@ -5,12 +5,14 @@ import * as RSCore from '@redux-saga/core'
 // @ts-expect-error
 import { eventChannel } from '@redux-saga/core'
 // @ts-expect-error
-import { Channel } from 'redux-saga'
+import { Channel } from '@redux-saga/core'
+
+import { makeTake, makeTakeEvery, makeTakeLatest, makeTakeLeading } from 'redux-saga-ts'
+import type { SagaGenerator } from 'typed-redux-saga'
 
 import type { AppEvent, AppEventDict, AppEventPayloadDict, AppEventType } from './AppEvent'
 import type { Simplify, Xf } from '../Types'
 import type { AppState } from './AppState'
-import type { SagaGenerator } from 'typed-redux-saga'
 
 
 type AnySagaGeneratorFn = (...args: any[]) => TRS.SagaGenerator<any, any>
@@ -22,35 +24,19 @@ type SagaWatcherCb<ET extends AppEventType> =
 // ----------------------------------------------------------------- //
 // Typed Redux Functions
 // ----------------------------------------------------------------- //
-export const all         = TRS.all
-
-export const call        = TRS.call
-
-export const cancel      = TRS.cancel
-
-export const put         = TRS.put<AppEvent>
-
-export const race        = TRS.race
+export const all    = TRS.all
+export const call   = TRS.call
+export const cancel = TRS.cancel
+export const put    = TRS.put<AppEvent>
+export const race   = TRS.race
 
 /** @deprecated unsafe */
 export const select      = TRS.select // FIXME: make safe
 
-export const take        = TRS.take<AppEvent>
-
-export const takeEvery   =
-  <ET extends AppEventType = AppEventType>
-    (pattern: ET | '*', cb: SagaWatcherCb<ET>) =>
-      TRS.takeEvery<AppEventDict<ET>>(pattern, (event) => cb(event))
-
-export const takeLatest =
-  <ET extends AppEventType = AppEventType>
-    (pattern: ET, cb: SagaWatcherCb<ET>) =>
-      TRS.takeLatest<AppEventDict<ET>>(pattern, (event) => cb(event))
-
-export const takeLeading =
-  <ET extends AppEventType = AppEventType>
-    (pattern: ET, cb: SagaWatcherCb<ET>) =>
-      TRS.takeLeading<AppEventDict<ET>>(pattern, (event) => cb(event))
+export const take        = makeTake<AppEvent>()
+export const takeEvery   = makeTakeEvery<AppEvent>()
+export const takeLatest  = makeTakeLatest<AppEvent>()
+export const takeLeading = makeTakeLeading<AppEvent>()
 
 
 // Custom Redux-Saga Functions

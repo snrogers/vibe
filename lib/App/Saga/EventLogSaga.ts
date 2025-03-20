@@ -53,9 +53,5 @@ export function* EventLogSaga(event: AppEvent) {
 
 export function * WatchEventLogSaga() {
   logger.log('info', 'WatchEventLogSaga started');
-
-
-  // TODO: just make a brand new version of TypedReduxSaga
-  //       because these types are TRASH
-  yield * takeEvery('*', EventLogSaga as any);
+  yield * takeEvery('*', EventLogSaga);
 }

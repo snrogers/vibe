@@ -1,3 +1,4 @@
+#!/usr/bin/env bun
 import { render, Text } from "ink"
 import { createElement } from "react"
 
