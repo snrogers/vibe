@@ -49,6 +49,7 @@ export type Tool<
   description: Description;
   argsSchema:  ArgsSchema;
   handler:     ToolCallHandler<ArgsSchema>;
+  reminder?:    string;
 };
 
 /**

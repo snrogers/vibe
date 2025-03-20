@@ -1,35 +1,22 @@
 import type { ToolMessage } from "@/lib/Domain/ChatSession";
 import type { ChatCompletionMessageToolCall } from "openai/resources";
+
 import { appStore } from "@/lib/App";
 import { logger } from "@/lib/Services/LogService";
+
+import { StringifiedBashToolArgsSchema } from "./Args";
+
+
+export const REMINDER = `
+  If you have made any edits with this tool call, please check to make sure they have been applied correctly!
+`
 
 export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall): Promise<ToolMessage> => {
   logger.log('info', `Handling bash tool call: ${JSON.stringify(toolCall, null, 2)}`);
 
-  // Parse arguments properly
-  let commandToRun = "";
-  try {
-    // Try parsing as JSON first
-    const parsedArgs = JSON.parse(toolCall.function.arguments || "{}");
-    commandToRun = parsedArgs.command || "echo 'No command specified'";
-  } catch (error) {
-    // If not valid JSON, try using the raw arguments string
-    commandToRun = toolCall.function.arguments.trim() || "echo 'No command specified'";
-  }
-
-  logger.log('debug', `Running command: ${commandToRun}`);
-  const cwd = process.cwd();
-
-  const spawnResult = Bun.spawn({
-    cmd: ['bash', '-c', commandToRun],
-    cwd,
-  });
-
-  await spawnResult.exited;
-
-  const { stdout: stdoutBuffer, stderr: stderrBuffer, exitCode } = spawnResult;
-  const stdout = await new Response(stdoutBuffer).text();
-  const stderr = await new Response(stderrBuffer).text();
+  const { function: { arguments: argsJson }, id: tool_call_id } = toolCall;
+  const { command } = StringifiedBashToolArgsSchema.parse(argsJson);
+  const { exitCode, stdout, stderr } = await runCommand(command);
 
   // Provide informative content even if empty
   let content = exitCode === 0 ? stdout : `Error: Command failed with exit code ${exitCode}\n${stderr}`;
@@ -46,3 +33,49 @@ export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall
     content,
   };
 };
+
+
+// ----------------------------------------------------------------- //
+// Helpers
+// ----------------------------------------------------------------- //
+
+type BashResult = {
+  exitCode: number
+  stdout:   string
+  stderr:   string
+}
+const formatResponse = (result: BashResult): string => {
+  const { exitCode, stdout, stderr } = result;
+
+  return `
+<Reminder>
+  ${REMINDER}
+</Reminder>
+<Output>
+  <ExitCode>${exitCode}</ExitCode>
+  <Stdout>${stdout.trim()}</Stdout>
+  <Stderr>${stderr.trim()}</Stderr>
+</Output>
+  `.trim();
+}
+
+const runCommand = async (command: string) => {
+  const cwd = process.cwd();
+
+  const spawnResult = Bun.spawn({
+    cmd: ['bash', '-c', command],
+    cwd,
+  });
+
+  await spawnResult.exited;
+
+  const { stdout: stdoutBuffer, stderr: stderrBuffer, exitCode } = spawnResult;
+  const stdout = await new Response(stdoutBuffer).text();
+  const stderr = await new Response(stderrBuffer).text();
+
+  return {
+    exitCode,
+    stdout,
+    stderr,
+  };
+}
