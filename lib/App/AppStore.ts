@@ -12,7 +12,7 @@ const sagaMiddleware = createSagaMiddleware()
 
 export type AppStore  = typeof appStore
 export const appStore = configureStore({
-  reducer: appReducer,
+  reducer:    appReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
 })
 

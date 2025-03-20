@@ -57,5 +57,5 @@ export function * WatchEventLogSaga() {
 
   // TODO: just make a brand new version of TypedReduxSaga
   //       because these types are TRASH
-  yield * takeEvery('*', EventLogSaga as any);
+  yield * takeEvery('*', EventLogSaga);
 }

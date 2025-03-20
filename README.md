@@ -140,3 +140,4 @@ The following features and improvements are planned for future releases:
 * [ ] **Agent Swarms**: Implement multi-agent cooperation for complex problem solving
 * [ ] **Vision Model Support**: Add capability to process and analyze images
 * [ ] **Image Generation Support**: Integrate with image generation models to create visuals on demand
+* [ ] **Dynamic Model Selection**
