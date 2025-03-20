@@ -23,6 +23,7 @@ export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall
   // ----------------------------------------------------------------- //
   if (command.startsWith('git')) throw new Error('Git commands are not allowed');
 
+  // and then we do a little commanding
   const { exitCode, stdout, stderr } = await runCommand(command);
 
   // Provide informative content even if empty
@@ -37,7 +38,7 @@ export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall
   return {
     tool_call_id: toolCall.id,
     role: 'tool',
-    content,
+    content: formatResponse({ exitCode, stdout, stderr }),
   };
 };
 
@@ -47,7 +48,7 @@ export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall
 // ----------------------------------------------------------------- //
 
 type BashResult = {
-  exitCode: number
+  exitCode: number | null
   stdout:   string
   stderr:   string
 }
