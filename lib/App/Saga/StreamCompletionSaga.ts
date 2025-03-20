@@ -13,6 +13,7 @@ import { mergeLeft } from 'rambdax'
 import { dump } from '@/lib/Utils'
 import { mergeChunks, type AnyChunk } from '@/lib/Services/LlmService/mergeChunks'
 import type { FunctionToolCall } from 'openai/resources/beta/threads/runs/steps.mjs'
+import type { Usage } from '@/lib/Services/LlmService/Types'
 
 
 export type CompletionDelta = ChatCompletionChunk.Choice.Delta
@@ -49,13 +50,11 @@ export function * StreamCompletionSaga({ chatSession }: StreamCompletionSagaOpts
 
         toolCalls = chunk.choices[0]?.delta?.tool_calls
 
-        const partialCompletion: CompletionDelta =
-          {
-            ...chunk.choices[0]?.delta,
-            content: partialContent,
-            role: role as any
-          }
-        // logger.log('info', `Merged chunk: ${pp(partialCompletion)}`);
+        const partialCompletion: CompletionDelta = {
+          ...chunk.choices[0]?.delta,
+          content: partialContent,
+          role: role as any
+        }
         yield * put({ type: 'CHAT_COMPLETION_STREAM_PARTIAL', payload: { partialCompletion } })
       }
     )

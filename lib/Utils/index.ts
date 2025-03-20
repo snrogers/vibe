@@ -1,7 +1,5 @@
 import { is, mergeWith } from "rambdax";
 
-import type { AnyKey, Xf } from "./Types";
-
 
 export const dump = (obj: unknown) => {
   return JSON.stringify(obj, null, 2);

@@ -30,7 +30,7 @@
         "react-redux": "^9.2.0",
         "redux": "^5.0.1",
         "redux-saga": "^1.3.0",
-        "redux-saga-ts": "git+https://github.com/snrogers/redux-saga-ts.git#0a294a84aaf7a0e5ffd2a23a79e97c3d49dd08dc",
+        "redux-saga-ts": "git+https://github.com/snrogers/redux-saga-ts.git#0fdc0e3",
         "serialize-error": "^12.0.0",
         "terminal-kit": "^3.1.2",
         "typed-redux-saga": "^1.5.0",
@@ -629,7 +629,7 @@
 
     "redux-saga": ["redux-saga@1.3.0", "", { "dependencies": { "@redux-saga/core": "^1.3.0" } }, "sha512-J9RvCeAZXSTAibFY0kGw6Iy4EdyDNW7k6Q+liwX+bsck7QVsU78zz8vpBRweEfANxnnlG/xGGeOvf6r8UXzNJQ=="],
 
-    "redux-saga-ts": ["pkg-name@github:snrogers/redux-saga-ts#0a294a8", { "peerDependencies": { "redux-saga": "^1.3.0" } }, "snrogers-redux-saga-ts-0a294a8"],
+    "redux-saga-ts": ["pkg-name@github:snrogers/redux-saga-ts#0fdc0e3", { "peerDependencies": { "redux-saga": "^1.3.0" } }, "snrogers-redux-saga-ts-0fdc0e3"],
 
     "redux-thunk": ["redux-thunk@3.1.0", "", { "peerDependencies": { "redux": "^5.0.0" } }, "sha512-NW2r5T6ksUKXCabzhL9z+h206HQw/NJkcLm1GPImRQ8IzfXwRGqjVhKJGauHirT0DAuyy6hjdnMZaRoAcy0Klw=="],
 

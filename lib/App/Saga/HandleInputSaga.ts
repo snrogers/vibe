@@ -52,6 +52,7 @@ export function * HandleInputSaga(opts: HandleInputSagaOpts): SagaGenerator<any,
 }
 
 export function * WatchHandleInputSaga() {
+  console.log('WatchHandleInputSaga->START', { takeLatest,  })
   yield * takeLatest(
     'INPUT_SUBMITTED',
     ({ payload }) => HandleInputSaga(payload)
