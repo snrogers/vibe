@@ -16,6 +16,13 @@ export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall
 
   const { function: { arguments: argsJson }, id: tool_call_id } = toolCall;
   const { command } = StringifiedBashToolArgsSchema.parse(argsJson);
+
+  // ----------------------------------------------------------------- //
+  // We do a little safety
+  // TODO: REMOVE SAFETY
+  // ----------------------------------------------------------------- //
+  if (command.startsWith('git')) throw new Error('Git commands are not allowed');
+
   const { exitCode, stdout, stderr } = await runCommand(command);
 
   // Provide informative content even if empty

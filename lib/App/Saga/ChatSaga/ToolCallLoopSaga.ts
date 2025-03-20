@@ -54,13 +54,16 @@ export function * ToolCallLoopSaga(opts: ToolCallLoopSagaOpts) {
       )
       yield* put({ type: 'TOOLS_COMPLETE', payload: { messages: toolMessages } })
 
+      // ----------------------------------------------------------------- //
       // Respond with Tool Call Results
+      // ----------------------------------------------------------------- //
       const chatSessionWithToolCallResults = yield* select((state: AppState) => state.chatSession)
 
       const completionResult = yield * StreamCompletionSaga({ chatSession: chatSessionWithToolCallResults })
       assistantMessage = completionResult.assistantMessage
+      const usage = completionResult.usage
 
-      yield* put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: assistantMessage } })
+      yield * put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: assistantMessage, usage } })
 
       toolCalls = assistantMessage.tool_calls ?? []
     }

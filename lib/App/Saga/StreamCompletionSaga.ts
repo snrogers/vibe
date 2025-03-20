@@ -43,10 +43,12 @@ export function * StreamCompletionSaga({ chatSession }: StreamCompletionSagaOpts
         const maybeRole       = chunk.choices[0]?.delta?.role
         const maybeContent    = chunk.choices[0]?.delta?.content
         const maybeTool_calls = chunk.choices[0]?.delta?.tool_calls
+        const maybeUsage      = chunk.usage
 
         if (maybeRole)       role           ??= maybeRole
         if (maybeContent)    partialContent += maybeContent
         if (maybeTool_calls) toolCalls      ??= maybeTool_calls
+        if (maybeUsage)      usage          ??= maybeUsage
 
         toolCalls = chunk.choices[0]?.delta?.tool_calls
 
@@ -67,6 +69,7 @@ export function * StreamCompletionSaga({ chatSession }: StreamCompletionSagaOpts
       content: partialContent,
       role: 'assistant' as const,
       tool_calls: toolCalls
-    }
+    },
+    usage
   }
 }
