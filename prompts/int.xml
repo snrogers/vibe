@@ -15,7 +15,7 @@
     <section name="Tools and Technologies">
         <steps>
             <step>Analyze file extensions across the project (e.g., .py, .js, .java) to identify the programming languages in use.</step>
-            <step>Search for dependency configuration files like `package.json`, `requirements.txt`, or `pom.xml` and extract the listed frameworks and libraries.</step>
+            <step>Search for dependency configuration files like `tsconfig.json`, `package.json`, `requirements.txt`, or `pom.xml` and extract the listed frameworks and libraries.</step>
             <step>Identify tool-specific files such as `.gitignore`, `Dockerfile`, or `.eslintrc` to detect tools like Git, Docker, or linters.</step>
             <step>Parse the contents of dependency files (if accessible) to compile a list of libraries and their versions.</step>
         </steps>
