@@ -2,10 +2,10 @@ import type { ChatCompletionMessageToolCall } from "openai/resources";
 import type { z } from "zod";
 
 import type { AnyZodType } from "@/lib/Types";
-import type { SystemMessage, ToolMessage } from "@/lib/Domain/ChatSession";
 import type { JsonSchema } from "json-schema-to-zod";
 
 import type { BashTool } from "./BashTool";
+import type { SystemMessage, ToolMessage } from "@/lib/Domain";
 
 
 /**
@@ -16,7 +16,7 @@ import type { BashTool } from "./BashTool";
  */
 export type ToolCallHandler<
   ArgsSchema extends AnyZodType = AnyZodType,
-> = (toolCall: z.TypeOf<ArgsSchema>) => Promise<(ToolMessage|SystemMessage)[]>
+> = (toolCall: z.TypeOf<ArgsSchema>) => Promise<(ToolMessage | SystemMessage)[]>
 export type AnyToolCallHandler = ToolCallHandler<any>
 
 /**
@@ -29,12 +29,6 @@ export type ToolCallHandlerArgs<T extends AnyToolCallHandler> =
   ? ArgsSchema
   : never
 
-/**
- * Represents a tool with a name, description, argument schema, and handler.
- * @template Name - The name of the tool.
- * @template Description - The description of the tool.
- * @template ArgsSchema - The schema for the tool's arguments.
- */
 export type Tool<
   Name        extends string         = string,
   Description extends string         = string,

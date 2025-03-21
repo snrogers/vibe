@@ -1,6 +1,6 @@
 import { getTranscript, type ChatSession } from "@/lib/Domain/ChatSession"
 import { StreamCompletionSaga } from "./StreamCompletionSaga"
-import { put } from "../Utils"
+import { call, put } from "../Utils"
 import { getSystemPrompt } from "@/lib/Services/LlmService/Prompt/getPrompt"
 
 
@@ -52,11 +52,12 @@ export function * CompactionSaga(opts: CompactionSagaOtps) {
 
   const summary             = response.assistantMessage.content
   const resumeSessionPrompt = getResumeSessionPrompt(summary)
+  const systemPrompt        = yield * call(getSystemPrompt)
 
   const compactedChatSession: ChatSession = {
     ...session,
     messages: [
-      { role: 'system', content: yield getSystemPrompt() },
+      { role: 'system', content: systemPrompt },
       { role: 'system', content: summary },
       { role: 'system', content: resumeSessionPrompt },
     ]

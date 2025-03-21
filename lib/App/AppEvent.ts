@@ -1,6 +1,6 @@
 import type { ChatCompletionChunk, ChatCompletionMessage, ChatCompletionMessageToolCall } from "openai/resources/index.mjs";
 import type { CompletionDelta } from "./Saga/StreamCompletionSaga";
-import type { AssistantMessage, ChatMessage, ChatSession, SystemMessage, ToolMessage } from "../Domain/ChatSession";
+import type { AssistantMessage, ChatSession, SystemMessage, ToolMessage } from "../Domain/ChatSession";
 import type { ErrorObject } from "serialize-error";
 import type { Key } from "ink";
 import type { Simplify } from "../Types";

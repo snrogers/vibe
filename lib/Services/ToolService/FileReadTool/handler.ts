@@ -1,10 +1,10 @@
-import type { SystemMessage, ToolMessage } from "@/lib/Domain/ChatSession";
 import type { ChatCompletionMessageToolCall } from "openai/resources/index.mjs";
 import path from 'path';
 import { readFileSync } from "fs";
 import type { BunFile } from "bun";
 
 import { stringifiedParametersSchema } from "./Parameters";
+import type { ToolMessage, SystemMessage } from "@/lib/Domain";
 
 
 const MAX_OUTPUT_SIZE  = 0.25 * 1024 * 1024; // 0.25MB in bytes

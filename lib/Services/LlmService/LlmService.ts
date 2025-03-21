@@ -38,10 +38,10 @@ export const streamChatCompletion =
   async (chatSession: ChatSession, opts: StreamChatCompletionOpts = {}) => {
     const { messages } = chatSession
 
-    const toolChoice = opts.toolChoice ?? 'auto'
+    const toolChoice    = opts.toolChoice    ?? 'auto'
     const modelProvider = opts.modelProvider ?? 'xai'
-    const modelName = opts.modelName ?? 'grok-latest'
-    const tools = opts.tools?.map(getCompletionTool) ?? ALL_COMPLETION_TOOLS
+    const modelName     = opts.modelName     ?? 'grok-latest'
+    const tools         = opts.tools?.map(getCompletionTool) ?? ALL_COMPLETION_TOOLS
 
     const completionOpts = {
       temperature: 0.5,

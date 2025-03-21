@@ -9,7 +9,7 @@ import { StreamCompletionSaga } from '@/lib/App/Saga/StreamCompletionSaga'
 import { ToolService } from '@/lib/Services/ToolService'
 import { logger } from '@/lib/Services/LogService'
 
-import { ToolCallLoopSaga } from '../ToolCallLoopSaga'
+import { ToolCallLoopSaga } from './ToolCallLoopSaga'
 import { put, race } from '../../Utils'
 
 
@@ -79,3 +79,4 @@ export function * WatchChatSaga() {
     ({ payload }) => ChatSaga(payload)
   )
 }
+

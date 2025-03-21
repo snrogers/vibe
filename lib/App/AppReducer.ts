@@ -1,5 +1,5 @@
 import type { AppEvent } from './AppEvent';
-import { addAssistantMessage, addToolCallResults, addUserMessage, type ChatMessage, type ChatSession } from '../Domain/ChatSession';
+import { addAssistantMessage, addToolCallResults, addUserMessage, type ChatSession } from '../Domain/ChatSession';
 import { exhaustiveCheck } from '../Utils';
 import { INITIAL_APP_STATE, type AppState } from './AppState';
 import { logger } from '../Services/LogService';

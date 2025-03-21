@@ -1,10 +1,10 @@
 import React, { Fragment, memo, useMemo, type FC } from 'react'
 import { Box, Text } from 'ink'
-import type { AssistantMessage, ChatMessage, ToolMessage } from '../Domain/ChatSession'
 import { dump } from '../Utils'
 import { useAppSelector } from '../App/AppProvider'
 import { Frame } from './Frame'
 import { useTerminalDimensions } from './useTerminalDimensions'
+import type { ChatMessage, AssistantMessage } from '@/lib/Domain'
 
 // ----------------------------------------------------------------- //
 // Role Badges and Styling
@@ -244,7 +244,6 @@ const ToolMessageView: FC<MessageProps> = (props) => {
 interface MessageProps {
   message: ChatMessage
 }
-
 export const Message: FC<MessageProps> = memo(({ message }) => {
   const { role } = message
 

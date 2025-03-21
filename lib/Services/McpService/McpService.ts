@@ -11,7 +11,7 @@ import { z } from 'zod'
 import { dump, eternity } from '@/lib/Utils'
 import { logger } from '../LogService'
 import { serializeError } from 'serialize-error'
-import type { SystemMessage, ToolMessage } from '@/lib/Domain/ChatSession'
+import type { SystemMessage, ToolMessage } from '@/lib/Domain'
 
 
 type mcpConfigFile = { mcpServers: Record<string, McpServerConfig> }

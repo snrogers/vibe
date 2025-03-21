@@ -3,7 +3,7 @@ import { serializeError } from 'serialize-error'
 
 import type { AppEvent } from '@/lib/App/AppEvent'
 import type { AppState } from '@/lib/App/AppState'
-import type { AssistantMessage, ChatMessage, ChatSession } from '@/lib/Domain/ChatSession'
+import type { AssistantMessage, ChatSession } from '@/lib/Domain/ChatSession'
 import type { ChatCompletionChunk } from 'openai/resources'
 import type { FunctionToolCall } from 'openai/resources/beta/threads/runs/steps.mjs'
 import type { Stream } from 'openai/streaming.mjs'
@@ -14,7 +14,6 @@ import { dump } from '@/lib/Utils'
 import { getPrompt } from '@/lib/Services/LlmService/Prompt'
 import { logger } from '@/lib/Services/LogService'
 import { mergeChunks, type AnyChunk } from '@/lib/Services/LlmService/mergeChunks'
-import { mergeDeltas } from '@/lib/Services/LlmService/processStream'
 import { mergeLeft } from 'rambdax'
 
 
@@ -58,8 +57,6 @@ export function * StreamCompletionSaga(opts: StreamCompletionSagaOpts) {
 // ----------------------------------------------------------------- //
 // Helpers
 // ----------------------------------------------------------------- //
-
-
 function * collectChunks(chunkStream: Stream<ChatCompletionChunk>, onAccumulate?: (delta: CompletionDelta) => SagaGenerator<any, any>) {
   let partialCompletion: CompletionDelta = {}
   let partialContent: string = '';
