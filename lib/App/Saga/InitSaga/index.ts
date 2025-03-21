@@ -30,9 +30,7 @@ import { put, race } from '../../Utils'
 
 const TOOL_CALL_LIMIT = 5
 
-type InitSagaOtps = {
-  prompt: string
-}
+type InitSagaOtps = { prompt: string }
 export function * InitSaga(opts: InitSagaOtps) {
   logger.log('info', 'InitSaga->START', { opts })
 
