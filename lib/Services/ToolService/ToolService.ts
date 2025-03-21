@@ -10,6 +10,8 @@ import { BashTool }                      from './BashTool';
 import { withStandardErrorHandling }     from './withStandardErrorHandling';
 import type { AppTool } from './AppTool';
 import { McpService } from '../McpService/McpService';
+import { FileReadTool } from './FileReadTool';
+
 
 export const ToolService = {
   getTools: () => ALL_COMPLETION_TOOLS,
@@ -17,9 +19,7 @@ export const ToolService = {
   getToolHandler,
   executeToolCall: async (toolCall: ChatCompletionMessageToolCall) => {
     const { name, arguments: args } = toolCall.function;
-
     const toolHandler = withStandardErrorHandling(getToolHandler(name as ToolName));
-
     return await toolHandler(toolCall);
   }
 };
@@ -31,6 +31,8 @@ function getToolHandler (name: ToolName) {
       return BashTool.handler;
     case 'project_overview':
       return ProjectOverviewTool.handler;
+    case 'file_read':
+      return FileReadTool.handler;
     default:
       exhaustiveCheck(name);
       return McpService.fetchMcpToolHandler(name)

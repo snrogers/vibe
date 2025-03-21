@@ -44,6 +44,10 @@ export const LiveInputField: FC = () => {
     } else if (input && !key.ctrl && !key.meta) {
       setTextInput(textInput + input)
     }
+
+    if (inProgress && key.escape) {
+      appStore.dispatch({ type: 'CHAT_COMPLETION_CANCEL' })
+    }
   })
 
   return (

@@ -1,4 +1,4 @@
-import React, { memo, useMemo, type FC } from 'react'
+import React, { Fragment, memo, useMemo, type FC } from 'react'
 import { Box, Text } from 'ink'
 import type { AssistantMessage, ChatMessage, ToolMessage } from '../Domain/ChatSession'
 import { dump } from '../Utils'
@@ -137,7 +137,7 @@ const ToolCallContent: FC<{ message: AssistantMessage }> = (props) => {
   return (
     <Frame>
       { toolCalls.map((toolCall, idx) => (
-        <>
+        <Fragment key={idx}>
           <Box>
             <Text>Tool: </Text>
             <Text key={idx} color="redBright">
@@ -156,7 +156,7 @@ const ToolCallContent: FC<{ message: AssistantMessage }> = (props) => {
               </Text>
             </Box>
           ))}
-      </>
+      </Fragment>
       ))}
     </Frame>
   )

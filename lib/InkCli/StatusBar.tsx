@@ -2,11 +2,13 @@ import { Box, Text } from "ink"
 import type { FC } from "react"
 import { useAppSelector } from "../App/AppProvider"
 import { Spinner } from "@inkjs/ui"
+import { dump } from "../Utils"
 
 
 export const StatusBar: FC = () => {
   const inspectMode = useAppSelector((state) => state.inspectMode)
-  const inProgress = useAppSelector((state) => state.inProgress)
+  const inProgress  = useAppSelector((state) => state.inProgress)
+  const usage       = useAppSelector((state) => state.usage)
 
   return (
     <>
@@ -26,7 +28,11 @@ export const StatusBar: FC = () => {
 
       {/** Status info */}
       <Box>
-        { inProgress && <Spinner label="Thinking..." /> }
+
+        { inProgress
+          ? <Spinner label="Thinking..." />
+          : <Text>{ JSON.stringify(usage) }</Text>
+        }
       </Box>
     </>
   )

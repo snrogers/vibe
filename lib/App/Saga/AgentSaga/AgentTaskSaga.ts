@@ -10,6 +10,10 @@ import { ToolService } from '@/lib/Services/ToolService'
 import { logger } from '@/lib/Services/LogService'
 
 import { ToolCallLoopSaga } from './ToolCallLoopSaga'
+import { type Agent, mkAgent } from '@/lib/Domain/Agent'
+import { grokClient } from '@/lib/Services/LlmService/LlmClient'
+import type { Tool } from '@/lib/Services/ToolService/Types'
+import type { ToolDef } from '@/lib/Services/ToolService/ToolDef'
 
 
 
@@ -30,21 +34,44 @@ import { ToolCallLoopSaga } from './ToolCallLoopSaga'
 
 const TOOL_CALL_LIMIT = 5
 
-type ChatSagaOtps = {
-  prompt: string
+type AgentTaskSagaOtps = {
+  model:        string
+  prompt:       string
+  systemPrompt: string
+  tools:        ToolDef[]
 }
-export function * ChatSaga(opts: ChatSagaOtps) {
+export function * AgentTaskSaga(opts: AgentTaskSagaOtps) {
   try {
-    const { prompt } = opts
-    yield * put({ type: 'CHAT_COMPLETION_STARTED', payload: { message: prompt } })
-    const chatSession = yield * select((state: AppState) => state.chatSession)
+    const {
+      model,
+      prompt,
+      systemPrompt,
+      tools
+    } = opts
+
+    const agent = mkAgent({
+      modelName:      model,
+      modelProvider: 'xai',
+      tools,
+    })
+
+    yield * put({
+      type: 'AGENT_TASK_STARTED',
+      payload: {
+        model,
+        prompt,
+        systemPrompt,
+        toolNames: tools.map((tool) => tool.name)
+      }
+    })
+    const chatSession = agent.chatSession
 
     // ----------------------------------------------------------------- //
     // Fetch a Completion
     // ----------------------------------------------------------------- //
     const completionResult = yield * StreamCompletionSaga({ chatSession })
     const { assistantMessage } = completionResult
-    yield * put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: assistantMessage } })
+    yield * put({ type: 'AGENT_COMPLETION_SUCCESS', payload: { message: assistantMessage } })
 
     // ----------------------------------------------------------------- //
     // Handle Any Tool Calls
@@ -55,20 +82,13 @@ export function * ChatSaga(opts: ChatSagaOtps) {
     // ----------------------------------------------------------------- //
     // Then we're done
     // ----------------------------------------------------------------- //
-    yield * put({ type: 'CHAT_COMPLETION_FINISHED', payload: { message: assistantMessage } })
+    yield * put({ type: 'AGENT_TASK_SUCCESS', payload: { message: assistantMessage } })
   } catch (error) {
     if (yield * cancelled()) {
-      yield * put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: serializeError(error) } })
+      yield * put({ type: 'AGENT_TASK_FAILURE', payload: { error: serializeError(error) } })
       return
     }
-    yield * put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: serializeError(error) } })
+    yield * put({ type: 'AGENT_TASK_FAILURE', payload: { error: serializeError(error) } })
     console.error(error)
   }
-}
-
-export function * WatchChatSaga() {
-  yield * takeLatest<PROMPT_SUBMITTED>(
-    'PROMPT_SUBMITTED',
-    ({ payload }) => ChatSaga(payload)
-  )
 }

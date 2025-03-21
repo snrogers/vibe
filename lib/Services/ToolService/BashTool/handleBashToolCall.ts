@@ -1,4 +1,4 @@
-import type { ToolMessage } from "@/lib/Domain/ChatSession";
+import type { SystemMessage, ToolMessage } from "@/lib/Domain/ChatSession";
 import type { ChatCompletionMessageToolCall } from "openai/resources";
 
 import { appStore } from "@/lib/App";
@@ -6,12 +6,17 @@ import { logger } from "@/lib/Services/LogService";
 
 import { StringifiedBashToolArgsSchema } from "./Args";
 
+type BashResult = {
+  exitCode: number | null
+  stdout:   string
+  stderr:   string
+}
 
 export const REMINDER = `
   If you have made any edits with this tool call, please check to make sure they have been applied correctly!
 `
 
-export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall): Promise<ToolMessage> => {
+export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall): Promise<(ToolMessage | SystemMessage)[]> => {
   logger.log('info', `Handling bash tool call: ${JSON.stringify(toolCall, null, 2)}`);
 
   const { function: { arguments: argsJson }, id: tool_call_id } = toolCall;
@@ -35,11 +40,11 @@ export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall
 
   logger.log('info', `Command result (exitCode=${exitCode}): ${content.substring(0, 100)}${content.length > 100 ? '...' : ''}`);
 
-  return {
+  return [{
     tool_call_id: toolCall.id,
     role: 'tool',
     content: formatResponse({ exitCode, stdout, stderr }),
-  };
+  }];
 };
 
 
@@ -47,11 +52,26 @@ export const handleBashToolCall = async (toolCall: ChatCompletionMessageToolCall
 // Helpers
 // ----------------------------------------------------------------- //
 
-type BashResult = {
-  exitCode: number | null
-  stdout:   string
-  stderr:   string
+export const getReminder = (isError: boolean): string => {
+  if (isError) {
+    return `
+Your command returned a non-zero exit code.
+Please check the output for any errors.
+
+If you were editing a file, read the file contents again to make sure you didn't accidentally make any unintended changes.
+
+Don't just repeat the same failed command again. Instead, try to understand what went wrong and fix it.
+
+If you can't figure out what went wrong, please ask the User for help.
+`.trim()
+  }
+  return `
+If you have made any edits with this tool call, please check to make sure they have been applied correctly!
+
+  `
 }
+
+
 const formatResponse = (result: BashResult): string => {
   const { exitCode, stdout, stderr } = result;
 

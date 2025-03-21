@@ -16,11 +16,24 @@ const description = `
   </example>
 `
 
+const jsonSchema = {
+  type: 'object',
+  description,
+  properties: {
+    command: {
+      type: 'string',
+      description: 'The bash command to execute.',
+    },
+  },
+  required: ['command'],
+};
+
 // Define the BashTool with the new structure
 export const BashTool = {
   name: "bash",
   description,
   argsSchema: BashToolArgsSchema,
+  jsonSchema,
   handler: handleBashToolCall,
 } as const satisfies Tool
 

@@ -22,10 +22,22 @@ const description = `
   </example>
 `
 
+  const jsonSchema = {
+    type: 'object',
+    description,
+    properties: {
+      root_dir: {
+        type: 'string',
+        description: 'The root directory of the project.',
+      },
+    },
+    required: ['root_dir'],
+  };
 
 export const ProjectOverviewTool = {
   name: 'project_overview',
   description,
   argsSchema: ProjectOverviewArgumentsSchema,
   handler: handleProjectOverviewToolCall,
+  jsonSchema,
 } as const satisfies Tool

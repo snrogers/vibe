@@ -1,0 +1,50 @@
+<vibe-md-prompt>
+    <instructions>
+        Your task is to create the initial `VIBE.md` file for a project by systematically gathering information. For each section below, execute the listed steps to acquire the necessary details. Use the results to populate the corresponding section of the `VIBE.md` file with clear, concise, and accurate information based on what you find.
+    </instructions>
+
+    <section name="Project Structure">
+        <steps>
+            <step>Scan the project root directory and list all top-level files and folders.</step>
+            <step>Recursively navigate into subdirectories to identify their contents and structure.</step>
+            <step>Search for standard directory names such as "src", "tests", "docs", or "lib" and determine their roles based on their contents or naming conventions.</step>
+            <step>Locate and read any README files, documentation files, or comments that explain the project layout.</step>
+        </steps>
+    </section>
+
+    <section name="Tools and Technologies">
+        <steps>
+            <step>Analyze file extensions across the project (e.g., .py, .js, .java) to identify the programming languages in use.</step>
+            <step>Search for dependency configuration files like `package.json`, `requirements.txt`, or `pom.xml` and extract the listed frameworks and libraries.</step>
+            <step>Identify tool-specific files such as `.gitignore`, `Dockerfile`, or `.eslintrc` to detect tools like Git, Docker, or linters.</step>
+            <step>Parse the contents of dependency files (if accessible) to compile a list of libraries and their versions.</step>
+        </steps>
+    </section>
+
+    <section name="Commands">
+        <steps>
+            <step>Open `package.json` (if present) and extract the "scripts" section to identify predefined commands.</step>
+            <step>Locate and analyze any Makefiles, shell scripts, or batch files for common tasks or commands.</step>
+            <step>Review README files, documentation, or inline comments for explicitly mentioned command-line instructions.</step>
+            <step>Inspect the contents of any script files in the project to determine their purpose and usage.</step>
+        </steps>
+    </section>
+
+    <section name="Workflows">
+        <steps>
+            <step>Search READMEs, wikis, or code comments for descriptions of version control practices (e.g., branching strategies or commit conventions).</step>
+            <step>Find and examine CI/CD configuration files like `.travis.yml`, `.gitlab-ci.yml`, or `Jenkinsfile` to understand automation processes.</step>
+            <step>Locate deployment scripts or configuration files (e.g., `deploy.sh`, Docker Compose files) and analyze their steps.</step>
+            <step>Collect any documented instructions on code reviews, testing workflows, or other processes from project files or comments.</step>
+        </steps>
+    </section>
+
+    <section name="Important Notes">
+        <steps>
+            <step>Scan code files and documentation for TODO comments, issue references, or notes on known bugs and workarounds.</step>
+            <step>Check READMEs or setup guides for manual configuration steps, such as setting environment variables or initializing databases.</step>
+            <step>Identify and record URLs to external resources (e.g., wikis, official docs, tutorials) mentioned in the project files.</step>
+            <step>Review all gathered information and note any critical details that don’t fit into the other sections.</step>
+        </steps>
+    </section>
+</vibe-md-prompt>

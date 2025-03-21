@@ -7,6 +7,7 @@ import type {
   ChatCompletionToolMessageParam,
   ChatCompletionUserMessageParam,
 } from 'openai/resources';
+import { getPrompt } from '../Services/LlmService/Prompt';
 
 
 export type AssistantMessage = ChatCompletionAssistantMessageParam
@@ -18,12 +19,17 @@ export type UserMessage      = ChatCompletionUserMessageParam
 
 export type ChatMessageRole = ChatMessage['role']
 
-
-
 export type ChatSession = {
+  _tag?: 'ChatSession'
   id?: string
   messages: Array<ChatMessage>
 }
+
+export const mkEmptyChatSession = (): ChatSession => ({
+  _tag: 'ChatSession',
+  messages: [],
+})
+
 
 export const addUserMessage = (session: ChatSession, message: string) => {
   const userMessage: ChatMessage = {
@@ -57,4 +63,3 @@ export const getTranscript = (session: ChatSession): string => {
     ${m.content}
   `).join('\n\n\n')
 }
-
