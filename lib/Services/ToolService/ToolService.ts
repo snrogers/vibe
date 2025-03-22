@@ -13,6 +13,8 @@ import { McpService } from '../McpService/McpService';
 import { FileReadTool } from './FileReadTool';
 import { FileWriteTool } from './FileWriteTool';
 import { FileEditTool } from './FileEditTool';
+import { GlobTool } from './GlobTool';
+import { GrepTool } from './GrepTool';
 
 
 export const ToolService = {
@@ -39,6 +41,10 @@ function getToolHandler (name: ToolName) {
       return FileWriteTool.handler;
     case 'file_edit':
       return FileEditTool.handler;
+    case 'glob':
+      return GlobTool.handler;
+    case 'grep':
+      return GrepTool.handler;
     default:
       exhaustiveCheck(name);
       return McpService.fetchMcpToolHandler(name)
