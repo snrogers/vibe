@@ -139,7 +139,12 @@ The following features and improvements are planned for future releases:
       Agent with what to do next
     * [ ] Auto-Correct: e.g., Convert a FileWrite to a FileRead if the Agent hasn't read the file yet, instead of just ordering it to ReadFile first
 * [ ] **LLM Provider Configuration**: Make LLM model selection configurable within the App
-* [ ] **Persistent Chat History**: Implement storage for conversation history between sessions
+* [-] **Persistent Chat History**: Implement storage for conversation history between sessions
+    * [x] Persist Current ChatSession across sessions
+    * [ ] Save all ChatSession and allow for restoring
+    * [ ] Just put the Agent's notes in the DB?
 * [ ] **Improved UI**: Enhance the terminal UI with more interactive elements and visual feedback
 * [ ] **Agent Tool**: Dispatch Small-Task/Small-Context Agents
 
+## Special Thanks
+- [@dnakov](https://github.com/dnakov) for [anon-kode](https://github.com/dnakov/anon-kode) which provided MUCH "inspiration" on Tool/Process design.

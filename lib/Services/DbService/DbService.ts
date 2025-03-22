@@ -1,9 +1,10 @@
 import { PGlite } from '@electric-sql/pglite';
 import { homedir } from 'os';
 import { join } from 'path';
+import { serializeError } from 'serialize-error';
+
 import type { ChatSession } from '@/lib/Domain/ChatSession';
 import {logger} from '../LogService';
-import {serializeError} from 'serialize-error';
 
 // Persistent storage in user's home directory
 const dataDir = join(homedir(), '.vibe.db');
@@ -35,6 +36,8 @@ export const DbService = {
       const result = await db.query('SELECT data FROM chat_session WHERE id = 1');
       logger.log('info', 'DbService->loadChatSession', { result })
       if (result.rows.length > 0) {
+        // TODO: Validate the data?
+        // @ts-expect-error
         return result.rows[0].data;
       }
       return null;
