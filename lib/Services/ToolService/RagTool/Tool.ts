@@ -5,6 +5,13 @@ import { handleRagToolCall } from './handler';
 const description = `
 Tool to save and retrieve data for retrieval-augmented generation.
 
+IMPORTANT: When the User asks for information, always check this tool first.
+
+IMPORTANT: Use this tool liberally when planning a task.
+           Always look up relevant information from this tool before searching elsewhere.
+           Whenever you have to do any research to perform a task,
+           save the relevant information to this tool.
+
 Accepts a command object with:
   - type: "save" or "retrieve"
   - data: string (required for "save")
@@ -42,10 +49,10 @@ const jsonSchema = {
   required: ["type"]
 };
 
-export const RagTool: Tool = {
+export const RagTool = {
   name: "rag_tool",
   description,
   argsSchema: RagToolCommandSchema,
   jsonSchema,
   handler: handleRagToolCall,
-};
+} as const satisfies Tool;

@@ -7,7 +7,7 @@ import { serializeError } from 'serialize-error';
 
 import type { ChatSession } from '@/lib/Domain/ChatSession';
 import { logger } from '../LogService';
-import type {RagDocument} from './Document';
+import type {RagDocument} from './RagDocument';
 
 // Persistent storage in user's home directory
 const dataDir = join(homedir(), '.vibe.db');
@@ -27,7 +27,9 @@ export const DbService = {
         data       JSONB,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
+    `);
 
+    await db.query(`
       CREATE TABLE IF NOT EXISTS rag_vectors (
         id        SERIAL PRIMARY KEY,
         embedding REAL[], -- Array of floats for Vector

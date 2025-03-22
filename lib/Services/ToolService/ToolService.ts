@@ -1,7 +1,4 @@
 import type { ChatCompletionMessageToolCall } from 'openai/resources';
-import { ZodError } from 'zod';
-
-import { ENV }                           from '@/lib/Constants';
 import { exhaustiveCheck }               from '@/lib/Utils';
 
 import { ALL_COMPLETION_TOOLS }          from '.';
@@ -15,14 +12,17 @@ import { FileWriteTool } from './FileWriteTool';
 import { FileEditTool } from './FileEditTool';
 import { GlobTool } from './GlobTool';
 import { GrepTool } from './GrepTool';
+import {RagTool} from './RagTool';
 
 
 export const ToolService = {
   getTools: () => ALL_COMPLETION_TOOLS,
   /** @deprecated use executeToolCall instead */
   getToolHandler,
+
+  // TODO: Parse Parameters here instead of in each Handler
   executeToolCall: async (toolCall: ChatCompletionMessageToolCall) => {
-    const { name, arguments: args } = toolCall.function;
+    const { name, arguments: _args } = toolCall.function;
     const toolHandler = withStandardErrorHandling(getToolHandler(name as ToolName));
     return await toolHandler(toolCall);
   }
@@ -45,6 +45,8 @@ function getToolHandler (name: ToolName) {
       return GlobTool.handler;
     case 'grep':
       return GrepTool.handler;
+    case 'rag_tool':
+      return RagTool.handler;
     default:
       exhaustiveCheck(name);
       return McpService.fetchMcpToolHandler(name)

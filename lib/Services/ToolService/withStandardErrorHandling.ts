@@ -1,10 +1,11 @@
 import { ZodError } from "zod";
-
-import type { AnyAsyncFn } from "@/lib/Types";
-import { ENV, V_DEBUG } from "@/lib/Constants";
-import { ToolNotFoundError } from "./ToolService";
-import type { AnyToolCallHandler, ToolCallHandler, ToolCallHandlerArgs } from "./Types";
 import { serializeError } from "serialize-error";
+
+import { ENV, V_DEBUG } from "@/lib/Constants";
+import { dump } from "@/lib/Utils";
+
+import { ToolNotFoundError } from "./ToolService";
+import type { AnyToolCallHandler } from "./Types";
 
 
 export function withStandardErrorHandling<T extends AnyToolCallHandler>(
@@ -20,7 +21,7 @@ export function withStandardErrorHandling<T extends AnyToolCallHandler>(
         return {
           role: 'tool',
           tool_call_id: args.id,
-          content: `Error parsing arguments: ${error.message}`,
+          content: `Error parsing arguments:\n\n${dump(serializeError(error))}`,
         };
       }
 

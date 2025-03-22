@@ -1,9 +1,13 @@
-export type RagDocument = {
-  _tag?:     'RagDocument'
-  embedding: number[]
-  metadata:  Record<string, any>
-  text:      string
-};
+import {z} from "zod";
+
+
+export const RagDocumentSchema = z.object({
+  _tag:      z.literal('RagDocument').optional(),
+  embedding: z.array(z.number()),
+  metadata:  z.record(z.any()),
+  text:      z.string()
+});
+export type RagDocument = z.infer<typeof RagDocumentSchema>;
 
 type mkRagDocumentOpts = {
   embedding: number[]

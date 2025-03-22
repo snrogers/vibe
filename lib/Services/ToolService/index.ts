@@ -9,6 +9,7 @@ import { FileWriteTool } from './FileWriteTool'
 import { FileEditTool } from './FileEditTool'
 import { GlobTool } from './GlobTool'
 import { GrepTool } from './GrepTool'
+import {RagTool} from './RagTool'
 
 export { BashTool } from './BashTool'
 export { ProjectOverviewTool } from './ProjectOverviewTool'
@@ -29,6 +30,7 @@ export const ALL_TOOLS = [
   FileEditTool,
   GlobTool,
   GrepTool,
+  RagTool,
   ...ALL_MCP_TOOLS,
 ]
 
@@ -40,5 +42,6 @@ export const ALL_COMPLETION_TOOLS: ChatCompletionTool[] = [
   openAiChatCompletionToolFromTool(FileEditTool),
   openAiChatCompletionToolFromTool(GlobTool),
   openAiChatCompletionToolFromTool(GrepTool),
+  openAiChatCompletionToolFromTool(RagTool),
   ...ALL_MCP_COMPLETION_TOOLS,
 ]

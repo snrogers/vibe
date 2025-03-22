@@ -5,6 +5,7 @@ import type { FileWriteTool } from "./FileWriteTool";
 import type { GlobTool } from "./GlobTool";
 import type { GrepTool } from "./GrepTool";
 import { ProjectOverviewTool } from "./ProjectOverviewTool";
+import type {RagTool} from "./RagTool";
 
 export type AppTool =
   | typeof BashTool
@@ -14,3 +15,4 @@ export type AppTool =
   | typeof GlobTool
   | typeof GrepTool
   | typeof ProjectOverviewTool
+  | typeof RagTool

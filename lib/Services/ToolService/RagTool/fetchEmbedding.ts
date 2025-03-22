@@ -10,4 +10,5 @@ export const generateEmbedding = (content: string) => fetch(
     headers: { 'Content-Type': 'application/json' },
     body:    JSON.stringify({ model: 'mxbai-embed-large', prompt: content })
   }
-).then(response => EmbeddingResponseSchema.parse(response.json()))
+).then(response => response.json())
+ .then(body => EmbeddingResponseSchema.parse(body))
