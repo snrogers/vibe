@@ -1,13 +1,13 @@
 export type RagDocument = {
   _tag?:     'RagDocument'
   embedding: number[]
-  metadata:  { file_path: string, updated_at: string }
+  metadata:  Record<string, any>
   text:      string
 };
 
 type mkRagDocumentOpts = {
   embedding: number[]
-  metadata:  { file_path: string, updated_at: string }
+  metadata:  Record<string, any>
   text:      string
 };
 export const mkRagDocument = (opts: mkRagDocumentOpts): RagDocument =>{
