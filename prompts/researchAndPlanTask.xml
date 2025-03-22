@@ -22,7 +22,7 @@
       <number>2</number>
       <instruction>Generate Project Overview</instruction>
       <action>
-        - Use the `project_overview` tool to list all files and directories in the project at "/Users/sebastian/projects/vibe/".
+        - Use the `project_overview` tool to list all files and directories in the project.
         - Look for common directory names such as "src", "lib", "models", "controllers", "services", "routes".
         - Write down these key directories and their likely purposes (e.g., "src/models" likely contains data models).
         - Keep this list for use in later steps.
@@ -35,7 +35,7 @@
         - Take each keyword from <KEYWORDS>.
         - Use the `glob` tool with patterns like "**/*[keyword]*" to find files in the project where the keyword appears in the file name or path.
         - Example: For "user", find files like "/src/models/User.ts" or "/lib/userUtils.ts".
-        - Make a list of these files with their absolute paths (starting with "/Users/sebastian/projects/vibe/").
+        - Make a list of these files with their absolute paths.
       </action>
     </step>
     <step>
@@ -126,7 +126,7 @@
             <id>task-XXX</id> <!-- Use numbers like task-001, task-002, etc., adding 1 each time -->
             <description>Write what this task does (e.g., "Add password field to User model")</description>
             <files>
-              <file>Full path to file 1 (e.g., /Users/sebastian/projects/vibe/src/models/User.ts)</file>
+              <file path="Full path to file 1">FILE__CONTENT</file>
               <!-- Add a second <file> only if needed, max 2 files -->
             </files>
             <steps>
@@ -143,11 +143,11 @@
             </steps>
             <criteria>
               <criterion>Check the change works (e.g., "The User model now has a password field")</criterion>
-              <criterion>`bun x tsc --noEmit` succeeds</criterion>
+              <criterion>`bun typecheck` succeeds</criterion>
             </criteria>
           </task>
         - Rules for each task:
-          - Use absolute paths starting with "/Users/sebastian/projects/vibe/".
+          - Use absolute paths
           - Write TypeScript code with strict types (e.g., `string`, `number`).
           - Use PascalCase for classes (e.g., `UserModel`), camelCase for variables (e.g., `userName`).
           - Add try/catch if the code might fail.
@@ -159,7 +159,7 @@
   <criteria>
     <criterion>The summary from Step 9 has all sections: Project Structure, Relevant Files, Code Snippets, Dependencies, Configuration, and Other Notes.</criterion>
     <criterion>The list of small tasks from Step 10 is in XML and has at least one task.</criterion>
-    <criterion>Every small task has an ID, description, files (1-2), steps with code, and criteria including `bun x tsc --noEmit`.</criterion>
+    <criterion>Every small task has an ID, description, files (1-2), steps with code, and criteria including `bun typecheck`.</criterion>
     <criterion>The small tasks together will complete "<TASK_DESCRIPTION>" based on the summary.</criterion>
   </criteria>
 </task>

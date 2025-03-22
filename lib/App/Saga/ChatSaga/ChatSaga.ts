@@ -9,14 +9,10 @@ import { ToolCallLoopSaga } from '../ToolCallLoopSaga'
 import { put, race } from '../../Utils'
 
 
-
-
-const TOOL_CALL_LIMIT = 5
-
-type ChatSagaOtps = {
+type ChatSagaOpts = {
   prompt: string
 }
-export function * ChatSaga(opts: ChatSagaOtps) {
+export function * ChatSaga(opts: ChatSagaOpts) {
   logger.log('info', 'ChatSaga->START', { opts })
 
   const { cancel } = yield * race({

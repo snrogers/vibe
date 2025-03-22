@@ -1,14 +1,19 @@
 import { PGlite } from '@electric-sql/pglite';
+import { hstore } from '@electric-sql/pglite/contrib/hstore';
+import { vector } from '@electric-sql/pglite/vector';
 import { homedir } from 'os';
 import { join } from 'path';
 import { serializeError } from 'serialize-error';
 
 import type { ChatSession } from '@/lib/Domain/ChatSession';
-import {logger} from '../LogService';
+import { logger } from '../LogService';
 
 // Persistent storage in user's home directory
 const dataDir = join(homedir(), '.vibe.db');
-const db = new PGlite({ dataDir });
+const db = new PGlite({
+  dataDir,
+  extensions: { hstore, vector }
+});
 
 export const DbService = {
   db,
