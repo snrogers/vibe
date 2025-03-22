@@ -112,6 +112,10 @@ export const appReducer = withLogging((state: AppState = INITIAL_APP_STATE, even
       const { partialCompletion } = payload
       return { ...state, completionDelta: partialCompletion }
     }
+    case 'CHAT_SESSION_LOADED': {
+      const { chatSession } = payload
+      return { ...state, chatSession }
+    }
     case 'CHAT_SESSION_RESET': {
       return { ...INITIAL_APP_STATE }
     }

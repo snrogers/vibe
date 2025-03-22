@@ -145,7 +145,8 @@ export class LogService {
       Object.keys(obj).forEach(key => {
         const value = obj[key];
 
-        if (typeof value === 'string' && value.length > 500) {
+        // DISABLED: Lets not truncate for now
+        if (false && typeof value === 'string' && value.length > 500) {
           obj[key] = value.substring(0, 500) + '... [TRUNCATED]';
         } else if (typeof value === 'object' && value !== null) {
           processObject(value);
