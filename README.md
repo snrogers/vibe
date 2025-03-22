@@ -122,9 +122,9 @@ The current working directory is /path/to/your/project.
 Configuration
 **Environment Variables**:
 
-* `GROK_API_KEY`: API key for xAI's Grok LLM (required for default model)
+* `GROK_API_KEY`:     API key for xAI's Grok LLM (required for default model)
 * `DEEPSEEK_API_KEY`: API key for DeepSeek LLM (not configurable without code changes)
-* `V_DEBUG`: Set to true to enable debug mode by default
+* `V_DEBUG`:          Set to true to enable debug mode by default
 
 Note: LLM Models are not yet configurable through environment variables.
       To use a different model such as DeepSeek instead of the default Grok,
@@ -134,12 +134,12 @@ Note: LLM Models are not yet configurable through environment variables.
 
 The following features and improvements are planned for future releases:
 
-* [ ] **Tool Reminders**: To keep our little buddy on track
+* [-] **Tool Reminders**: To keep our little buddy on track
+    * [-] Now tacking on explicit SystemMessages along with ToolMessages to guide the
+      Agent with what to do next
+    * [ ] Auto-Correct: e.g., Convert a FileWrite to a FileRead if the Agent hasn't read the file yet, instead of just ordering it to ReadFile first
 * [ ] **LLM Provider Configuration**: Make LLM model selection configurable within the App
 * [ ] **Persistent Chat History**: Implement storage for conversation history between sessions
 * [ ] **Improved UI**: Enhance the terminal UI with more interactive elements and visual feedback
-* [ ] **Agent Swarms**: Implement multi-agent cooperation for complex problem solving
-* [ ] **Vision Model Support**: Add capability to process and analyze images
-* [ ] **Image Generation Support**: Integrate with image generation models to create visuals on demand
-* [ ] **Dynamic Model Selection**
+* [ ] **Agent Tool**: Dispatch Small-Task/Small-Context Agents
 
