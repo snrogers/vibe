@@ -6,6 +6,7 @@ import { put, select, takeLatest } from "../Utils";
 import { ChatSaga } from "./ChatSaga";
 import type { AppState } from "../AppState";
 import { CompactionSaga } from "./CompactionSaga";
+import {PlanningSaga} from "./PlanningSaga";
 
 
 type HandleInputSagaOpts = {
@@ -30,6 +31,14 @@ export function * HandleInputSaga(opts: HandleInputSagaOpts): SagaGenerator<any,
     if (input.startsWith('/compact')) {
       const session = yield * select((state: AppState) => state.chatSession)
       yield * CompactionSaga({ session })
+      return
+    }
+
+    if (input.startsWith('/plan')) {
+      const message = input.replace('/plan', '').trim()
+      yield * put({ type: 'PLANNING_COMPLETION_STARTED', payload: { message } })
+      yield * PlanningSaga({ prompt: message })
+      return
     }
 
     if (input.startsWith('/reset')) {
