@@ -94,10 +94,16 @@ async function readImage(
 
 /** Adds line numbers to text content starting from a given line number */
 function addLineNumbers(content: string, startLine: number): string {
-  return content
+  const contentStr = content
     .split('\n')
-    .map((line, index) => `${startLine + index}: ${line}`)
+    .map((line, index) => `<Line number=${startLine + index}>${line}</Line>`)
     .join('\n');
+
+  return `
+    <FileContent>
+      ${contentStr}
+    </FileContent>
+  `.trim();
 }
 
 /** Reads text content from a file with optional offset and limit */
