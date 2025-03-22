@@ -11,6 +11,7 @@ import { withStandardErrorHandling }     from './withStandardErrorHandling';
 import type { AppTool } from './AppTool';
 import { McpService } from '../McpService/McpService';
 import { FileReadTool } from './FileReadTool';
+import { FileWriteTool } from './FileWriteTool';
 
 
 export const ToolService = {
@@ -33,10 +34,11 @@ function getToolHandler (name: ToolName) {
       return ProjectOverviewTool.handler;
     case 'file_read':
       return FileReadTool.handler;
+    case 'file_write':
+      return FileWriteTool.handler;
     default:
       exhaustiveCheck(name);
       return McpService.fetchMcpToolHandler(name)
-
   }
 }
 

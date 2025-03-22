@@ -6,7 +6,6 @@ import createSagaMiddleware from '@redux-saga/core'
 
 import { appReducer } from './AppReducer'
 import { RootSaga } from './Saga'
-import { createContext, type ComponentProps, type FC } from 'react'
 
 const sagaMiddleware = createSagaMiddleware()
 
