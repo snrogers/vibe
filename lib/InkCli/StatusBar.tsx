@@ -1,8 +1,8 @@
 import { Box, Text } from "ink"
 import type { FC } from "react"
-import { useAppSelector } from "../App/AppProvider"
 import { Spinner } from "@inkjs/ui"
-import { dump } from "../Utils"
+
+import { useAppSelector } from "../App/AppProvider"
 
 
 export const StatusBar: FC = () => {
@@ -15,20 +15,25 @@ export const StatusBar: FC = () => {
       <Box width="100%">
         <Box borderStyle="single" borderRight borderColor="white" >
           <Text>
-            (F1)Help
+            (F1) Help
           </Text>
         </Box>
 
         <Box borderStyle="single" borderRight borderColor="white">
           <Text color={inspectMode ? 'yellow' : 'whiteBright'}>
-            (F2)Inspector
+            (F2) Inspector
+          </Text>
+        </Box>
+
+        <Box borderStyle="single" borderRight borderColor="white">
+          <Text color={inProgress ? 'yellow' : 'whiteBright'}>
+            (F3) Prompt Template
           </Text>
         </Box>
       </Box>
 
       {/** Status info */}
       <Box>
-
         { inProgress
           ? <Spinner label="Thinking..." />
           : <Text>{ JSON.stringify(usage) }</Text>
