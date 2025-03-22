@@ -1,0 +1,160 @@
+<task>
+  <id>research-and-plan-001</id>
+  <description>Research and plan the implementation of the task: "<TASK_DESCRIPTION>"</description>
+  <steps>
+    <!-- Research Phase -->
+    <step>
+      <number>1</number>
+      <instruction>Perform Task Analysis</instruction>
+      <action>
+        - Read the task description: "<TASK_DESCRIPTION>".
+        - Identify key concepts and keywords that define the task.
+        - Example: For "Add user authentication", extract keywords like "user", "authentication", "login".
+        - List these keywords as: <KEYWORDS>.
+      </action>
+    </step>
+    <step>
+      <number>2</number>
+      <instruction>Generate Project Overview</instruction>
+      <action>
+        - Use the `project_overview` tool to list all files and directories in the project at "/Users/sebastian/projects/vibe/".
+        - Look for common directory names such as "src", "lib", "models", "controllers", "services", "routes".
+        - Write down these key directories and their likely purposes (e.g., "src/models" likely contains data models).
+        - Keep this list for use in later steps.
+      </action>
+    </step>
+    <step>
+      <number>3</number>
+      <instruction>Locate Relevant Files</instruction>
+      <action>
+        - Take each keyword from <KEYWORDS>.
+        - Use the `glob` tool with patterns like "**/*[keyword]*" to find files in the project where the keyword appears in the file name or path.
+        - Example: For "user", find files like "/src/models/User.ts" or "/lib/userUtils.ts".
+        - Make a list of these files with their absolute paths (starting with "/Users/sebastian/projects/vibe/").
+      </action>
+    </step>
+    <step>
+      <number>4</number>
+      <instruction>Search File Contents</instruction>
+      <action>
+        - For each file found in Step 3, use the `grep` tool to search its content for each keyword in <KEYWORDS>.
+        - Count how many times each keyword appears in each file.
+        - Example: In "/src/models/User.ts", "user" appears 3 times, "authentication" appears 0 times.
+        - Save these counts for each file.
+      </action>
+    </step>
+    <step>
+      <number>5</number>
+      <instruction>Rank Files by Relevance</instruction>
+      <action>
+        - For each file, calculate a relevance score:
+          - Add up the number of keyword occurrences in the file content (from Step 4).
+          - Add 1 point for each keyword that appears in the file’s path or name.
+          - Example: "/src/auth/user.ts" with 3 "user" hits and "auth" in path gets a score of 4.
+        - Sort the files by their scores, highest to lowest.
+        - Pick the top 5 files. If there are fewer than 5, use all of them.
+      </action>
+    </step>
+    <step>
+      <number>6</number>
+      <instruction>Read and Extract Relevant Content</instruction>
+      <action>
+        - For each of the top 5 files from Step 5, use `file_read` to get the full text of the file.
+        - Find every line that contains a keyword from <KEYWORDS>.
+        - For each match, copy that line plus 2-3 lines before and after it as a "snippet".
+        - Note the file’s absolute path and the line numbers for each snippet.
+        - Save these snippets for the summary.
+      </action>
+    </step>
+    <step>
+      <number>7</number>
+      <instruction>Analyze Project Dependencies</instruction>
+      <action>
+        - Find the dependency file, like "package.json", in the project overview from Step 2.
+        - Use `file_read` to read its content.
+        - List all the dependencies (e.g., library names from "dependencies" in "package.json").
+        - Check if any dependency names relate to <KEYWORDS> (e.g., "passport" for "authentication").
+        - Highlight those that seem relevant.
+      </action>
+    </step>
+    <step>
+      <number>8</number>
+      <instruction>Analyze Configuration Files</instruction>
+      <action>
+        - Look for common configuration files like ".env", "config.js", or "settings.py" in the project overview from Step 2.
+        - Use `file_read` to read each one.
+        - Search the text for <KEYWORDS> or related terms (e.g., "AUTH_TOKEN" for "authentication").
+        - Write down any matching lines with the file path.
+      </action>
+    </step>
+    <step>
+      <number>9</number>
+      <instruction>Summarize Gathered Information</instruction>
+      <action>
+        - Write a summary using this structure:
+          - **Project Structure:** Describe the key directories from Step 2 and what they might do (e.g., "src/models holds data models").
+          - **Relevant Files:** List the top 5 files from Step 5, their paths, and why they’re relevant (e.g., "contains 'user' 3 times").
+          - **Code Snippets:** Paste the snippets from Step 6 with paths and line numbers.
+          - **Dependencies:** List relevant dependencies from Step 7.
+          - **Configuration:** Include settings from Step 8.
+          - **Other Notes:** Add anything else noticed (e.g., "No login code found").
+        - Use plain text with bold headings (like **Project Structure**) for each section.
+      </action>
+    </step>
+
+    <!-- Planning Phase -->
+    <step>
+      <number>10</number>
+      <instruction>Plan the Implementation</instruction>
+      <action>
+        - Read the summary from Step 9 carefully.
+        - Figure out what changes or new code are needed to complete "<TASK_DESCRIPTION>".
+        - Example: For "Add user authentication", you might need to:
+          - Add a password field to a User model.
+          - Create a login service.
+          - Add a login route.
+        - Split these changes into small tasks that:
+          - Can be done in one go ("1-shottable").
+          - Affect only 1-2 files each.
+        - For each small task, write an XML task element like this:
+          <task>
+            <id>task-XXX</id> <!-- Use numbers like task-001, task-002, etc., adding 1 each time -->
+            <description>Write what this task does (e.g., "Add password field to User model")</description>
+            <files>
+              <file>Full path to file 1 (e.g., /Users/sebastian/projects/vibe/src/models/User.ts)</file>
+              <!-- Add a second <file> only if needed, max 2 files -->
+            </files>
+            <steps>
+              <step>
+                <number>1</number>
+                <instruction>Clear action (e.g., "Open the User model and find the class definition")</instruction>
+                <code><![CDATA[
+                // Write TypeScript code here
+                // Example: Add a field with strict typing
+                passwordHash: string;
+                ]]></code>
+              </step>
+              <!-- Add more steps if needed, e.g., "Save the file" -->
+            </steps>
+            <criteria>
+              <criterion>Check the change works (e.g., "The User model now has a password field")</criterion>
+              <criterion>`bun x tsc --noEmit` succeeds</criterion>
+            </criteria>
+          </task>
+        - Rules for each task:
+          - Use absolute paths starting with "/Users/sebastian/projects/vibe/".
+          - Write TypeScript code with strict types (e.g., `string`, `number`).
+          - Use PascalCase for classes (e.g., `UserModel`), camelCase for variables (e.g., `userName`).
+          - Add try/catch if the code might fail.
+          - Keep it simple so a BotWorker can do it in one response.
+        - Make a list of all these small tasks in XML.
+      </action>
+    </step>
+  </steps>
+  <criteria>
+    <criterion>The summary from Step 9 has all sections: Project Structure, Relevant Files, Code Snippets, Dependencies, Configuration, and Other Notes.</criterion>
+    <criterion>The list of small tasks from Step 10 is in XML and has at least one task.</criterion>
+    <criterion>Every small task has an ID, description, files (1-2), steps with code, and criteria including `bun x tsc --noEmit`.</criterion>
+    <criterion>The small tasks together will complete "<TASK_DESCRIPTION>" based on the summary.</criterion>
+  </criteria>
+</task>

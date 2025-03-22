@@ -1,0 +1,102 @@
+<Prompt>
+  <Instructions>
+    To gather and summarize information for the task "<TASK_DESCRIPTION>", follow these steps:
+
+    <Step1>
+      <Title>Task Analysis</Title>
+      <Description>Identify key concepts and keywords from the task description to guide the search.</Description>
+      <Action>
+        - Extract keywords from the task description: "<TASK_DESCRIPTION>".
+        - Example: For "Add user authentication", keywords might be "user", "authentication", "login".
+        - List the keywords as: <KEYWORDS>.
+      </Action>
+    </Step1>
+
+    <Step2>
+      <Title>Project Overview</Title>
+      <Description>Generate an overview of the project’s structure to understand its layout.</Description>
+      <Action>
+        - Use the `project_overview` tool to list all files and directories in the project.
+        - Identify key directories (e.g., "src", "lib", "models", "controllers", "services", "routes") based on common naming conventions.
+        - Note these directories for reference in subsequent steps.
+      </Action>
+    </Step2>
+
+    <Step3>
+      <Title>File Search</Title>
+      <Description>Locate files potentially relevant to the task using keyword-based pattern matching.</Description>
+      <Action>
+        - For each keyword in <KEYWORDS>, use `glob` to find files where the path or name includes the keyword.
+        - Use patterns like "**/*[keyword]*" or "**/[keyword]/*".
+        - Optionally, filter by common file extensions (e.g., .ts, .js, .py) if known.
+        - Compile a list of matching files.
+      </Action>
+    </Step3>
+
+    <Step4>
+      <Title>Content Search</Title>
+      <Description>Search the content of identified files for task-related keywords.</Description>
+      <Action>
+        - For each file from Step 3, use `grep` to search for each keyword in <KEYWORDS> within the file content.
+        - Record the number of occurrences of each keyword per file.
+        - Example: "user" appears 3 times in file X, "authentication" appears 2 times.
+      </Action>
+    </Step4>
+
+    <Step5>
+      <Title>Relevance Ranking</Title>
+      <Description>Rank files by relevance to prioritize detailed analysis.</Description>
+      <Action>
+        - Calculate a relevance score for each file: sum of keyword occurrences in content plus 1 point per keyword in the path.
+        - Example: File "/src/auth/user.ts" with "user" (3 hits) and "auth" in path scores 4.
+        - Select the top 5 files with the highest scores. If fewer than 5, take all.
+      </Action>
+    </Step5>
+
+    <Step6>
+      <Title>File Reading</Title>
+      <Description>Read and extract relevant content from the top-ranked files.</Description>
+      <Action>
+        - For each of the top 5 files, use `file_read` to retrieve their full contents.
+        - Extract sections containing keywords from <KEYWORDS>, including the line with the keyword and 2-3 lines of context above and below.
+        - Note the file path and line numbers for each extracted section.
+      </Action>
+    </Step6>
+
+    <Step7>
+      <Title>Dependency Analysis</Title>
+      <Description>Examine project dependencies for libraries relevant to the task.</Description>
+      <Action>
+        - Identify the dependency file (e.g., "package.json", "requirements.txt", "pom.xml") from the project overview.
+        - Use `file_read` to read its contents.
+        - List all dependencies and highlight any whose names suggest relevance to <KEYWORDS> (e.g., "passport" for "authentication").
+      </Action>
+    </Step7>
+
+    <Step8>
+      <Title>Configuration Analysis</Title>
+      <Description>Check configuration files for settings related to the task.</Description>
+      <Action>
+        - Identify common configuration files (e.g., ".env", "config.js", "settings.py") from the project overview.
+        - Use `file_read` to read each file.
+        - Search for lines containing <KEYWORDS> or related terms (e.g., "AUTH_", "USER_") and note them.
+      </Action>
+    </Step8>
+
+    <Step9>
+      <Title>Summarization</Title>
+      <Description>Compile all gathered information into a structured summary for sub-task planning.</Description>
+      <Action>
+        - Create a summary with these sections:
+          - **Project Structure:** Briefly describe key directories and their inferred purposes (from Step 2).
+          - **Relevant Files:** List the top 5 files (from Step 5) with paths and a one-sentence explanation of relevance.
+          - **Code Snippets:** Include extracted sections (from Step 6) with file paths and line numbers.
+          - **Dependencies:** List potentially relevant dependencies (from Step 7).
+          - **Configuration:** Note task-related settings (from Step 8).
+          - **Other Notes:** Add observations (e.g., "No authentication found" if searches yield little).
+        - Format as plain text with clear headings for each section.
+      </Action>
+    </Step9>
+
+  </Instructions>
+</Prompt>
