@@ -1,3 +1,5 @@
+**/*.example
+**/*.example.ts
 *.lcov
 *.tgz
 *.tsbuildinfo
@@ -11,6 +13,8 @@
 .envrc
 .eslintcache
 .idea
+.vim
+VIBE.md
 _.log
 coverage
 dist
@@ -19,7 +23,4 @@ logs
 node_modules
 out
 report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
-**/*.example
-**/*.example.ts
-VIBE.md
 tmp/
