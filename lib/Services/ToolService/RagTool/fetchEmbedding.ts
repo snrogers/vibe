@@ -1,9 +1,13 @@
+import { z } from "zod"
 
-export const fetchEmbedding = (content: string) => fetch(
+
+export const EmbeddingResponseSchema = z.object({ embedding: z.array(z.number()) })
+
+export const generateEmbedding = (content: string) => fetch(
   'http://localhost:11434/api/embeddings',
   {
-    method: 'POST',
+    method:  'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'mxbai-embed-large', prompt: content })
+    body:    JSON.stringify({ model: 'mxbai-embed-large', prompt: content })
   }
-).then(response => response.json())
+).then(response => EmbeddingResponseSchema.parse(response.json()))
