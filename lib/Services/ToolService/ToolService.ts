@@ -12,6 +12,7 @@ import type { AppTool } from './AppTool';
 import { McpService } from '../McpService/McpService';
 import { FileReadTool } from './FileReadTool';
 import { FileWriteTool } from './FileWriteTool';
+import { FileEditTool } from './FileEditTool';
 
 
 export const ToolService = {
@@ -36,6 +37,8 @@ function getToolHandler (name: ToolName) {
       return FileReadTool.handler;
     case 'file_write':
       return FileWriteTool.handler;
+    case 'file_edit':
+      return FileEditTool.handler;
     default:
       exhaustiveCheck(name);
       return McpService.fetchMcpToolHandler(name)

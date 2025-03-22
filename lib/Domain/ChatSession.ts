@@ -1,15 +1,10 @@
 import type {
   ChatCompletionAssistantMessageParam,
-  ChatCompletionDeveloperMessageParam,
-  ChatCompletionFunctionMessageParam,
-  ChatCompletionMessageParam,
   ChatCompletionSystemMessageParam,
   ChatCompletionToolMessageParam,
-  ChatCompletionUserMessageParam,
 } from 'openai/resources';
 
-import { getPrompt } from '../Services/LlmService/Prompt';
-import type { ChatMessage } from './Messsage';
+import type {ChatMessage} from './Message';
 
 
 
@@ -59,4 +54,6 @@ export const getTranscript = (session: ChatSession): string => {
     ${m.content}
   `).join('\n\n\n')
 }
-export type AssistantMessage = ChatCompletionAssistantMessageParam; export type SystemMessage = ChatCompletionSystemMessageParam; export type ToolMessage = ChatCompletionToolMessageParam;
+export type AssistantMessage = ChatCompletionAssistantMessageParam;
+export type SystemMessage   = ChatCompletionSystemMessageParam;
+export type ToolMessage    = ChatCompletionToolMessageParam;

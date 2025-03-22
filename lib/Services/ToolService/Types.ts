@@ -1,10 +1,6 @@
-import type { ChatCompletionMessageToolCall } from "openai/resources";
 import type { z } from "zod";
 
 import type { AnyZodType } from "@/lib/Types";
-import type { JsonSchema } from "json-schema-to-zod";
-
-import type { BashTool } from "./BashTool";
 import type { SystemMessage, ToolMessage } from "@/lib/Domain";
 
 

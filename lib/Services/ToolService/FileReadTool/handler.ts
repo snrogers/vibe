@@ -1,19 +1,19 @@
 import type { ChatCompletionMessageToolCall } from "openai/resources/index.mjs";
 import path from 'path';
-import { readFileSync } from "fs";
 import type { BunFile } from "bun";
 
 import { stringifiedParametersSchema } from "./Parameters";
 import type { ToolMessage, SystemMessage } from "@/lib/Domain";
+import { FileContext } from "../FileContext";
 
 
 const MAX_OUTPUT_SIZE  = 0.25 * 1024 * 1024; // 0.25MB in bytes
 const IMAGE_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp']);
-const MAX_IMAGE_SIZE   = 3.75 * 1024 * 1024; // 5MB in bytes, accounting for base64 encoding
+const _MAX_IMAGE_SIZE   = 3.75 * 1024 * 1024; // 5MB in bytes, accounting for base64 encoding
 
 export const handler = async (toolCall: ChatCompletionMessageToolCall): Promise<(ToolMessage|SystemMessage)[]> => {
-  const { function: { arguments: argsJson }, id: tool_call_id } = toolCall;
-  const args = stringifiedParametersSchema.parse(JSON.parse(argsJson));
+  const { function: { arguments: argsStr }, id: tool_call_id } = toolCall;
+  const args = stringifiedParametersSchema.parse(argsStr);
   const { file_path, offset = 1, limit } = args;
 
   const fullFilePath = path.resolve(file_path);
@@ -47,12 +47,15 @@ export const handler = async (toolCall: ChatCompletionMessageToolCall): Promise<
 
     // Adjust offset to 0-based indexing
     const lineOffset = offset === 0 ? 0 : offset - 1;
-    const { content, lineCount } = await readTextContent(file, lineOffset, limit);
+    const { content, lineCount: _lineCount } = await readTextContent(file, lineOffset, limit);
 
     // Check output size after reading
     if (content.length > MAX_OUTPUT_SIZE) {
       throw new Error(formatFileSizeError(content.length));
     }
+
+    // Update file access timestamp in the shared context
+    FileContext.fileAccessTimestamps[fullFilePath] = Date.now();
 
     const formattedContent = addLineNumbers(content, offset);
     return [
