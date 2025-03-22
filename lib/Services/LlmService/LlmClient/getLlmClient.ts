@@ -1,5 +1,5 @@
 import type { ModelProvider } from '../ModelProvider'
-import { deepseekClient } from './DeepseekClient'
+import { deepseekClient } from './DeepseekChatClient'
 import { grokClient } from './GrokClient'
 
 

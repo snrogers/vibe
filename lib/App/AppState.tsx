@@ -23,7 +23,7 @@ export const INITIAL_APP_STATE: AppState = {
   awaitingConfirmation: false,
   chatSession: {
     messages: [
-      { role:   'system', content: await getSystemPrompt({ tools: ALL_TOOLS }) }
+      // { role:   'system', content: await getSystemPrompt({ tools: ALL_TOOLS }) }
     ]
   },
   completionDelta: undefined,

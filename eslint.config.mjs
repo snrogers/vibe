@@ -1,21 +1,24 @@
 // @ts-check
+import tsEslint from 'typescript-eslint';
+import stylisticTs from '@stylistic/eslint-plugin-ts'
 
-import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
-  tseslint.configs.base,
+export default tsEslint.config(
+  tsEslint.configs.base,
   {
-    plugins: { '@typescript-eslint': tseslint.plugin },
+    plugins: {
+      '@stylistic/ts': stylisticTs,
+      '@typescript-eslint': tsEslint.plugin
+    },
     languageOptions: {
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: '.',
-      }
+      parser: tsEslint.parser
     },
     rules: {
       'no-unused-vars': 'off',
+      '@stylistic/ts/object-curly-spacing': 'error',
+      '@stylistic/ts/space-before-blocks': 'error',
+      '@stylistic/ts/space-before-function-paren': 'error',
       '@typescript-eslint/no-unused-vars': 'error',
     }
   }
 );
-
