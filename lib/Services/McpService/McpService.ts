@@ -1,20 +1,16 @@
 import { Client as BaseMcpClient } from '@modelcontextprotocol/sdk/client/index.js'
 import type { Tool, ToolCallHandler } from '@/lib/Services/ToolService/Types'
-import jsonSchemaToZod from 'json-schema-to-zod'
 
 import { fetchMcpConfig, type McpServerConfig } from './fetchMcpConfig'
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
-import type { McpTool } from './Utils'
-import type { ChatCompletionMessageToolCall, ChatCompletionTool, ChatCompletionToolMessageParam } from 'openai/resources/index.mjs'
+import type { ChatCompletionMessageToolCall, ChatCompletionTool } from 'openai/resources/index.mjs'
 import type { Simplify } from '@/lib/Types'
 import { z } from 'zod'
-import { dump, eternity } from '@/lib/Utils'
+import { dump } from '@/lib/Utils'
 import { logger } from '../LogService'
 import { serializeError } from 'serialize-error'
 import type { SystemMessage, ToolMessage } from '@/lib/Domain'
 
-
-type mcpConfigFile = { mcpServers: Record<string, McpServerConfig> }
 
 const mcpConfig = await fetchMcpConfig()
 

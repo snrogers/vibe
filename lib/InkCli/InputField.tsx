@@ -1,4 +1,4 @@
-import React, { useMemo, useState, type FC } from 'react'
+import { useMemo, useState, type FC } from 'react'
 import { Box, Text, useFocus, useStdin } from 'ink'
 import { useInput } from 'ink'
 import { appStore } from '../App'
