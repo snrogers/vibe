@@ -6,7 +6,7 @@ import { getVibeMd } from "./getVibeMd"
 type GetPromptOpts = {
   tools: Tool[]
 }
-export async function getSystemPrompt(opts?: GetPromptOpts) {
+export async function getSystemPrompt(opts?: GetPromptOpts): Promise<string> {
   const { tools = [] } = opts ?? {}
 
   return [

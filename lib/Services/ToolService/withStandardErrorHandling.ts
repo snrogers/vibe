@@ -1,9 +1,10 @@
 import { ZodError } from "zod";
 
 import type { AnyAsyncFn } from "@/lib/Types";
-import { ENV } from "@/lib/Constants";
+import { ENV, V_DEBUG } from "@/lib/Constants";
 import { ToolNotFoundError } from "./ToolService";
 import type { AnyToolCallHandler, ToolCallHandler, ToolCallHandlerArgs } from "./Types";
+import { serializeError } from "serialize-error";
 
 
 export function withStandardErrorHandling<T extends AnyToolCallHandler>(
@@ -41,6 +42,15 @@ export function withStandardErrorHandling<T extends AnyToolCallHandler>(
             content: `Error: ${error.message}`,
           };
         }
+      }
+
+      // Verbose error response in debug mode
+      if (V_DEBUG || ENV === 'development') {
+        return {
+          role: 'tool',
+          tool_call_id: args.id,
+          content: JSON.stringify(serializeError(error)),
+        };
       }
 
       return {

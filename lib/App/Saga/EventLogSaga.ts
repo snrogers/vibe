@@ -15,7 +15,7 @@ export function* EventLogSaga(event: AppEvent) {
     // TODO: do we even use 'KEY_INPUT'?
     if (event.type === 'KEY_INPUT') return
     // Skip stream partial events unless in debug mode
-    if (event.type === 'CHAT_COMPLETION_STREAM_PARTIAL' && !V_DEBUG) return;
+    if (event.type === 'CHAT_COMPLETION_STREAM_PARTIAL') return;
 
     eventCount++;
 

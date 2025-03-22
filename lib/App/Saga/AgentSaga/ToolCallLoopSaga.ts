@@ -2,7 +2,7 @@ import type { ChatCompletionMessageToolCall } from 'openai/resources'
 import { serializeError } from 'serialize-error'
 import { all, call, cancelled, put, select, take, takeEvery } from 'typed-redux-saga'
 
-import type { AssistantMessage } from '@/lib/Domain/ChatSession'
+import type { AssistantMessage, SystemMessage } from '@/lib/Domain/ChatSession'
 import type { AppEvent } from '@/lib/App/AppEvent'
 import type { AppState } from '@/lib/App/AppState'
 import type { ToolMessage } from '@/lib/Domain/ChatSession'
@@ -49,9 +49,10 @@ export function * ToolCallLoopSaga(opts: ToolCallLoopSagaOpts) {
       // ----------------------------------------------------------------- //
       // Otherwise Crunch the Tool calls and wait for the results
       // ----------------------------------------------------------------- //
-      const toolMessages: ToolMessage[] = yield * all(
+      const toolMessages: (SystemMessage|ToolMessage)[] = (yield * all(
         toolCalls.map((toolCall) => call(ToolService.executeToolCall, toolCall))
-      )
+      )).flat(1)
+
       yield* put({ type: 'TOOLS_COMPLETE', payload: { messages: toolMessages } })
 
       // Respond with Tool Call Results
@@ -59,8 +60,6 @@ export function * ToolCallLoopSaga(opts: ToolCallLoopSagaOpts) {
 
       const completionResult = yield * StreamCompletionSaga({ chatSession: chatSessionWithToolCallResults })
       assistantMessage = completionResult.assistantMessage
-
-      yield* put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: assistantMessage } })
 
       toolCalls = assistantMessage.tool_calls ?? []
     }

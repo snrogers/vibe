@@ -61,7 +61,7 @@ export const View: FC = () => {
   return (
     <>
       <Static items={oldMessages} style={{ width: '100%' }}>
-        {(message) => (<Message message={message} />)}
+        {(message, idx) => (<Message key={idx} message={message} />)}
       </Static>
 
       <Box flexDirection="column">

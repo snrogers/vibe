@@ -1,10 +1,10 @@
-import React, { memo, type FC } from 'react'
+import React, { Fragment, memo, useMemo, type FC } from 'react'
 import { Box, Text } from 'ink'
-import type { AssistantMessage, ChatMessage, ToolMessage } from '../Domain/ChatSession'
 import { dump } from '../Utils'
 import { useAppSelector } from '../App/AppProvider'
 import { Frame } from './Frame'
 import { useTerminalDimensions } from './useTerminalDimensions'
+import type { ChatMessage, AssistantMessage } from '@/lib/Domain'
 
 // ----------------------------------------------------------------- //
 // Role Badges and Styling
@@ -122,14 +122,41 @@ const MessageContent: FC<MessageContentProps> = ({ message }) => {
 const ToolCallContent: FC<{ message: AssistantMessage }> = (props) => {
   const { message } = props
 
+  const args = useMemo(
+    () => {
+      try {
+        return JSON.parse(message.tool_calls?.[0].function.arguments ?? '')
+      } catch (error) {
+        return { invalidArgs: message.tool_calls?.[0].function.arguments ?? 'NOARGS' }
+      }
+    }, [message]
+    )
+
   const toolCalls = message.tool_calls ?? []
 
   return (
     <Frame>
       { toolCalls.map((toolCall, idx) => (
-        <Text key={idx}>
-          {toolCall.function.name}: ({toolCall.function.arguments})
-        </Text>
+        <Fragment key={idx}>
+          <Box>
+            <Text>Tool: </Text>
+            <Text key={idx} color="redBright">
+              {toolCall.function.name}:
+            </Text>
+          </Box>
+
+          { Object.entries(args).map(([key, val], idx) => (
+            <Box key={`${idx}-arg`}>
+              <Text key={idx} color="blue">
+                {key}:
+              </Text>
+
+              <Text key={`${idx}-val`}>
+                {dump(val)}
+              </Text>
+            </Box>
+          ))}
+      </Fragment>
       ))}
     </Frame>
   )
@@ -217,7 +244,6 @@ const ToolMessageView: FC<MessageProps> = (props) => {
 interface MessageProps {
   message: ChatMessage
 }
-
 export const Message: FC<MessageProps> = memo(({ message }) => {
   const { role } = message
 

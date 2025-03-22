@@ -21,6 +21,8 @@ export function * HandleInputSaga(opts: HandleInputSagaOpts): SagaGenerator<any,
     // just ctrl+c -ing out of the app
     if (input === 'exit') process.exit(0)
 
+    logger.log('info', '1')
+
     const isPrompt = !input.startsWith('/')
     if (isPrompt) {
       yield * put({ type: 'PROMPT_SUBMITTED', payload: { prompt: input } })
@@ -28,17 +30,28 @@ export function * HandleInputSaga(opts: HandleInputSagaOpts): SagaGenerator<any,
       return
     }
 
+    logger.log('info', '2')
+
     if (input.startsWith('/compact')) {
+      logger.log('info', 'input.startsWith(/compact)')
       const session = yield * select((state: AppState) => state.chatSession)
       yield * CompactionSaga({ session })
+    } else {
+      logger.log('info', 'input.startsWith(/compact) FAILED', { input })
     }
 
+    logger.log('info', '3')
+
     if (input.startsWith('/reset')) {
+      logger.log('info', 'input.startsWith(/reset)')
       yield * put({ type: 'ChatSessionReset' })
       return
     }
 
+    logger.log('info', '4')
+
     if (input.startsWith('/recover')) {
+      logger.log('info', 'input.startsWith(/recover)')
       yield * put({ type: 'ChatSessionRecover' })
       return
     }

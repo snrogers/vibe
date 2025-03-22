@@ -1,29 +1,26 @@
 import type {
   ChatCompletionAssistantMessageParam,
-  ChatCompletionDeveloperMessageParam,
-  ChatCompletionFunctionMessageParam,
-  ChatCompletionMessageParam,
   ChatCompletionSystemMessageParam,
   ChatCompletionToolMessageParam,
-  ChatCompletionUserMessageParam,
 } from 'openai/resources';
 
+import type {ChatMessage} from './Message';
 
-export type AssistantMessage = ChatCompletionAssistantMessageParam
-export type ChatMessage      = ChatCompletionMessageParam
-export type DeveloperMessage = ChatCompletionDeveloperMessageParam
-export type SystemMessage    = ChatCompletionSystemMessageParam
-export type ToolMessage      = ChatCompletionToolMessageParam
-export type UserMessage      = ChatCompletionUserMessageParam
+
 
 export type ChatMessageRole = ChatMessage['role']
 
-
-
 export type ChatSession = {
+  _tag?: 'ChatSession'
   id?: string
   messages: Array<ChatMessage>
 }
+
+export const mkEmptyChatSession = (): ChatSession => ({
+  _tag: 'ChatSession',
+  messages: [],
+})
+
 
 export const addUserMessage = (session: ChatSession, message: string) => {
   const userMessage: ChatMessage = {
@@ -57,4 +54,6 @@ export const getTranscript = (session: ChatSession): string => {
     ${m.content}
   `).join('\n\n\n')
 }
-
+export type AssistantMessage = ChatCompletionAssistantMessageParam;
+export type SystemMessage   = ChatCompletionSystemMessageParam;
+export type ToolMessage    = ChatCompletionToolMessageParam;

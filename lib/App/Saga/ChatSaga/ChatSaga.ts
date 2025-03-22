@@ -1,4 +1,4 @@
-import { all, call, cancelled, put, select, take, takeEvery, takeLatest } from 'typed-redux-saga'
+import { all, call, cancelled, select, take, takeEvery, takeLatest } from 'typed-redux-saga'
 import { serializeError } from 'serialize-error'
 
 import type { AppEvent, PROMPT_SUBMITTED } from '@/lib/App/AppEvent'
@@ -9,7 +9,8 @@ import { StreamCompletionSaga } from '@/lib/App/Saga/StreamCompletionSaga'
 import { ToolService } from '@/lib/Services/ToolService'
 import { logger } from '@/lib/Services/LogService'
 
-import { ToolCallLoopSaga } from './ToolCallLoopSaga'
+import { ToolCallLoopSaga } from '../ToolCallLoopSaga'
+import { put, race } from '../../Utils'
 
 
 
@@ -23,8 +24,7 @@ import { ToolCallLoopSaga } from './ToolCallLoopSaga'
 // - handling tool calls
 //
 // but in the future:
-// - Deploying Agent Swarms
-// - Mediating Agent Debates
+// - Deploying Agents
 // - Automatic Compaction
 
 
@@ -34,36 +34,43 @@ type ChatSagaOtps = {
   prompt: string
 }
 export function * ChatSaga(opts: ChatSagaOtps) {
-  try {
-    const { prompt } = opts
-    yield * put({ type: 'CHAT_COMPLETION_STARTED', payload: { message: prompt } })
-    const chatSession = yield * select((state: AppState) => state.chatSession)
+  logger.log('info', 'ChatSaga->START', { opts })
 
-    // ----------------------------------------------------------------- //
-    // Fetch a Completion
-    // ----------------------------------------------------------------- //
-    const completionResult = yield * StreamCompletionSaga({ chatSession })
-    const { assistantMessage } = completionResult
-    yield * put({ type: 'CHAT_COMPLETION_SUCCESS', payload: { message: assistantMessage } })
+  const { cancel } = yield * race({
+    cancel: take('CHAT_COMPLETION_CANCEL'),
+    success: call(function * () {
+      try {
+        const { prompt } = opts
+        yield * put({ type: 'CHAT_COMPLETION_STARTED', payload: { message: prompt } })
+        const chatSession = yield * select((state: AppState) => state.chatSession)
 
-    // ----------------------------------------------------------------- //
-    // Handle Any Tool Calls
-    // ----------------------------------------------------------------- //
-    let toolCalls = assistantMessage.tool_calls ?? []
-    if (toolCalls.length) yield * ToolCallLoopSaga({ assistantMessage, toolCalls })
+        // ----------------------------------------------------------------- //
+        // Fetch a Completion
+        // ----------------------------------------------------------------- //
+        const completionResult = yield * StreamCompletionSaga({ chatSession })
+        const { assistantMessage, usage } = completionResult
 
-    // ----------------------------------------------------------------- //
-    // Then we're done
-    // ----------------------------------------------------------------- //
-    yield * put({ type: 'CHAT_COMPLETION_FINISHED', payload: { message: assistantMessage } })
-  } catch (error) {
-    if (yield * cancelled()) {
-      yield * put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: serializeError(error) } })
-      return
-    }
-    yield * put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: serializeError(error) } })
-    console.error(error)
+        // ----------------------------------------------------------------- //
+        // Handle Any Tool Calls
+        // ----------------------------------------------------------------- //
+        let toolCalls = assistantMessage.tool_calls ?? []
+        if (toolCalls.length) yield * ToolCallLoopSaga({ assistantMessage, toolCalls })
+      } catch (error) {
+        if (yield * cancelled()) {
+          yield * put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: serializeError(error) } })
+          return
+        }
+        yield * put({ type: 'CHAT_COMPLETION_FAILURE', payload: { error: serializeError(error) } })
+        console.error(error)
+      }
+    })
+  })
+
+  if (cancel) {
+    logger.log('info', 'ChatSaga->CANCELLED', { cancel })
   }
+
+  logger.log('info', 'ChatSaga->END', { cancel })
 }
 
 export function * WatchChatSaga() {

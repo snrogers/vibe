@@ -1,37 +1,29 @@
 import type { ChatCompletion } from "openai/resources/index.mjs"
 import type { LlmClient } from "../Services/LlmService/LlmClient/LlmClient"
 import type { Tool } from "../Services/ToolService/Types"
-import type { ChatSession } from "./ChatSession"
+import { mkEmptyChatSession, type ChatSession } from "./ChatSession"
+import type { ModelProvider } from "../Services/LlmService/ModelProvider"
+import type { ToolDef } from "../Services/ToolService/ToolDef"
 
 
-export type AgentOpts = {
-  client:       LlmClient
-  systemPrompt: string
-  prompt:       string
-  tools:        Tool[]
+
+export type Agent = {
+  _tag?:        'Agent'
+  tools:         ToolDef[]
+  chatSession:   ChatSession
+  modelProvider: ModelProvider
+  modelName:     string
 }
-export class Agent implements Agent {
-  public readonly prompt:       string
-  public readonly systemPrompt: string
-  public readonly tools:        Tool[]
-  public readonly chatSession:  ChatSession
 
-  private readonly client:       LlmClient
-
-  constructor(opts: AgentOpts) {
-    this.client       = opts.client
-    this.prompt       = opts.prompt
-    this.systemPrompt = opts.systemPrompt
-    this.tools        = opts.tools
-    this.chatSession  = {
-      messages: [
-        { role: 'system', content: this.systemPrompt },
-        { role: 'user',   content: this.prompt },
-      ]
-    }
-  }
-
-  generateCompletion() {
-    return this.client.generateCompletion(this.chatSession)
+type mkAgentOpts = {
+  modelProvider: ModelProvider
+  modelName:     string
+  tools:         ToolDef[]
+}
+export function mkAgent(opts: mkAgentOpts) {
+  return {
+    _tag: 'Agent',
+    chatSession: mkEmptyChatSession(),
+    ...opts
   }
 }

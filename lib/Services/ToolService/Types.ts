@@ -1,11 +1,7 @@
-import type { ChatCompletionMessageToolCall } from "openai/resources";
 import type { z } from "zod";
 
 import type { AnyZodType } from "@/lib/Types";
-import type { ToolMessage } from "@/lib/Domain/ChatSession";
-import type { BashTool } from "./BashTool";
-
-
+import type { SystemMessage, ToolMessage } from "@/lib/Domain";
 
 
 /**
@@ -16,13 +12,8 @@ import type { BashTool } from "./BashTool";
  */
 export type ToolCallHandler<
   ArgsSchema extends AnyZodType = AnyZodType,
-> = (toolCall: z.TypeOf<ArgsSchema>) => Promise<ToolMessage>
-
-/**
- * A type alias for any ToolCallHandler.
- */
-export type AnyToolCallHandler =
-  ToolCallHandler<any>
+> = (toolCall: z.TypeOf<ArgsSchema>) => Promise<(ToolMessage | SystemMessage)[]>
+export type AnyToolCallHandler = ToolCallHandler<any>
 
 /**
  * Extracts the argument schema type from a ToolCallHandler.
@@ -34,12 +25,6 @@ export type ToolCallHandlerArgs<T extends AnyToolCallHandler> =
   ? ArgsSchema
   : never
 
-/**
- * Represents a tool with a name, description, argument schema, and handler.
- * @template Name - The name of the tool.
- * @template Description - The description of the tool.
- * @template ArgsSchema - The schema for the tool's arguments.
- */
 export type Tool<
   Name        extends string         = string,
   Description extends string         = string,
@@ -49,11 +34,9 @@ export type Tool<
   description: Description;
   argsSchema:  ArgsSchema;
   handler:     ToolCallHandler<ArgsSchema>;
+  reminder?:   string;
+  jsonSchema?: Record<string, unknown>;
 };
-
-/**
- * A type alias for any Tool.
- */
 export type AnyTool = Tool<any, any, any>
 
 /**

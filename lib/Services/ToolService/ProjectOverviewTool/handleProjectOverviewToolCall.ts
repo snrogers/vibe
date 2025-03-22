@@ -1,4 +1,4 @@
-import type { ToolMessage } from "@/lib/Domain/ChatSession";
+import type { SystemMessage, ToolMessage } from "@/lib/Domain/ChatSession";
 import type { ChatCompletionMessageToolCall } from "openai/resources";
 
 import { logger } from "@/lib/Services/LogService";
@@ -7,7 +7,7 @@ import { getIgnoreFunction, buildTree, printTree } from "./Utils";
 import { StringifiedProjectOverviewArgumentsSchema } from "./Args";
 
 
-export const handleProjectOverviewToolCall = async (toolCall: ChatCompletionMessageToolCall): Promise<ToolMessage> => {
+export const handleProjectOverviewToolCall = async (toolCall: ChatCompletionMessageToolCall): Promise<(SystemMessage | ToolMessage)[]> => {
   const { function: { arguments: argsJson }, id: tool_call_id } = toolCall;
   const args = StringifiedProjectOverviewArgumentsSchema.parse(argsJson);
   logger.log('info', 'Handling ProjectOverviewToolCall', args)
@@ -19,9 +19,9 @@ export const handleProjectOverviewToolCall = async (toolCall: ChatCompletionMess
 
   logger.log('info', 'Handled ProjectOverviewToolCall', result)
 
-  return {
+  return [{
     role: 'tool',
     tool_call_id,
     content: result
-  }
+  }]
 };

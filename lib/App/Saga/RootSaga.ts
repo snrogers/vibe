@@ -12,7 +12,7 @@ export const RootSaga = function * () {
 
       yield * fork(WatchHandleInputSaga)
 
-      yield * fork(WatchEventLogSaga)
+      // yield * fork(WatchEventLogSaga)
 
       // Wait here until something EXPLODES
       yield eternity

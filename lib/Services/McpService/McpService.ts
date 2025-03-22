@@ -10,6 +10,8 @@ import type { Simplify } from '@/lib/Types'
 import { z } from 'zod'
 import { dump, eternity } from '@/lib/Utils'
 import { logger } from '../LogService'
+import { serializeError } from 'serialize-error'
+import type { SystemMessage, ToolMessage } from '@/lib/Domain'
 
 
 type mcpConfigFile = { mcpServers: Record<string, McpServerConfig> }
@@ -50,7 +52,7 @@ class McpClient {
     })(this.baseClient)
 
     this.whenReady.catch(async (err) => {
-      console.error('Error in McpClient.whenReady', err)
+      logger.log('error', 'Error in McpClient.whenReady', serializeError(err))
     })
   }
 }
@@ -61,6 +63,14 @@ const mcpClients: Record<string, McpClient> = mcpConfigEntries.reduce(
     return { ...acc, [name]: client }
   }, {}
 )
+
+// FIXME: look more into internally hosted MCP Servers
+// mcpClients['mcp-agent-mode'] =
+//   new McpClient('mcp-agent-mode', {
+//     command: 'bun',
+//     args:    ['run', 'McpServers/index.ts'],
+//     env:     {},
+//   })
 
 await Promise.all(Object.values(mcpClients).map((mcpClient: McpClient) => mcpClient.whenReady))
 
@@ -90,15 +100,15 @@ export function openAiToolFromAnthroTool(serverName: string, mcpTool: AnthroTool
   return {
     type: 'function',
     function: {
-      name:        `${serverName}/${mcpTool.name}`,
+      name:        `${serverName}___${mcpTool.name}`,
       description: mcpTool.description,
       parameters:  mcpTool.inputSchema as Record<string, unknown>,
     }
   }
 }
 
-export async function processToolCall(toolCall: ChatCompletionMessageToolCall): Promise<ChatCompletionToolMessageParam> {
-  const [serverName, toolName] = toolCall.function.name.split('/')
+export async function processToolCall(toolCall: ChatCompletionMessageToolCall): Promise<(SystemMessage | ToolMessage)[]> {
+  const [serverName, toolName] = toolCall.function.name.split('___')
   const toolArgs = JSON.parse(toolCall.function.arguments) as Record<string, unknown>
 
   const client = mcpClients[serverName]!
@@ -109,11 +119,11 @@ export async function processToolCall(toolCall: ChatCompletionMessageToolCall): 
     arguments: toolArgs,
   });
 
-  return {
+  return [{
     tool_call_id: toolCall.id,
     content:      result.content as string,
     role:         'tool',
-  }
+  }]
 }
 
 export const McpService = {
