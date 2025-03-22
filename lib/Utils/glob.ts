@@ -34,12 +34,12 @@ export async function glob(
   signal?: AbortSignal
 ): Promise<GlobResult> {
   const { limit = 1000, offset = 0 } = options;
-  
+
   // Check if the path exists
   if (!existsSync(basePath)) {
     return { files: [], truncated: false };
   }
-  
+
   try {
     // Use find with glob pattern for speed and compatibility
     const cmd = 'find';
@@ -50,45 +50,45 @@ export async function glob(
       '-not', '-path', '*/node_modules/*',
       '-not', '-path', '*/.git/*'
     ];
-    
+
     // Execute the command
     const result = spawnSync(cmd, args, {
       encoding: 'utf-8',
       maxBuffer: 10 * 1024 * 1024 // 10MB buffer
     });
-    
+
     if (result.error || result.status !== 0) {
       console.error('Error executing find command:', result.error || result.stderr);
-      
+
       // Fallback to a simpler approach if the find command fails
       if (pattern.includes('*')) {
         return { files: [], truncated: false };
       }
-      
+
       // If it's a simple file path without wildcards, just check if it exists
       const fullPath = resolve(basePath, pattern);
       if (existsSync(fullPath)) {
         return { files: [fullPath], truncated: false };
       }
-      
+
       return { files: [], truncated: false };
     }
-    
+
     // Process the output
     let files = result.stdout.trim() ? result.stdout.trim().split('\n') : [];
-    
+
     // Apply offset and limit
     const totalFiles = files.length;
     files = files.slice(offset, offset + limit);
-    
+
     // Sort files by modification time
     const stats = await Promise.all(files.map(file => stat(file).catch(() => ({ mtimeMs: 0 }))));
-    
+
     files = files
       .map((file, index) => ({ file, mtime: stats[index].mtimeMs || 0 }))
       .sort((a, b) => b.mtime - a.mtime)
       .map(item => item.file);
-    
+
     return {
       files,
       truncated: totalFiles > offset + limit

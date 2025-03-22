@@ -11,25 +11,25 @@ export async function ripGrep(args: string[], cwd: string): Promise<string[]> {
   try {
     // Check if ripgrep is available
     const rgPath = getRipgrepPath();
-    
+
     // Execute ripgrep
     const result = spawnSync(rgPath, args, {
       cwd,
       encoding: 'utf-8',
       maxBuffer: 10 * 1024 * 1024 // 10MB buffer
     });
-    
+
     if (result.error) {
       console.error(`Error executing ripgrep: ${result.error.message}`);
       return [];
     }
-    
+
     if (result.status !== 0 && result.status !== 1) {
       // Status 1 is normal for "no matches found"
       console.error(`Ripgrep error (status ${result.status}): ${result.stderr}`);
       return [];
     }
-    
+
     // Split output by lines and filter out empty lines
     const output = result.stdout.trim();
     return output ? output.split('\n') : [];
