@@ -3,6 +3,7 @@ import OpenAI from "openai"
 
 
 export type LlmApi = 'openai'
+
 export type LlmConfig = {
   api:     LlmApi,
   model:   string,

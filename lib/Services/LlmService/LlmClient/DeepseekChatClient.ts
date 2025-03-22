@@ -1,13 +1,30 @@
-import OpenAI from "openai";
 import { DEEPSEEK_API_KEY } from "@/lib/Constants";
+import type { ChatSession } from "@/lib/Domain";
+
+import type { CompletionOpts } from "./LlmClient";
+import { getApiClient, type LlmConfig } from "./getApiClient";
 
 
 export const DEEPSEEK_MODEL = 'deepseek-chat';
-const openAiClient = new OpenAI({
-  apiKey:   DEEPSEEK_API_KEY,
-  baseURL: 'https://api.deepseek.com/v1',
-});
 
-export const deepseekClient = {
-  generateCompletion: openAiClient.chat.completions.create,
+export const deepseekChatClientConfig: LlmConfig = {
+  api:     'openai',
+  model:    DEEPSEEK_MODEL,
+  baseUrl: 'https://api.deepseek.com/v1',
+  apiKey:   DEEPSEEK_API_KEY!,
+}
+
+export function generateCompletion(client: LlmConfig, chatSession: ChatSession, completionOpts?: CompletionOpts) {
+  const { model } = client
+  const oaiClient = getApiClient(client)
+
+  return oaiClient.chat.completions.create({
+    model,
+    messages: chatSession.messages,
+    ...completionOpts
+  })
+}
+
+export const DeepseekR1Client = {
+  generateCompletion,
 }

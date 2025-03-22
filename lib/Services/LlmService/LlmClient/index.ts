@@ -1,2 +1,2 @@
-export { deepseekClient } from './DeepseekChatClient'
+export { deepseekChatClientConfig } from './DeepseekChatClient'
 export { grokClient } from './GrokClient'

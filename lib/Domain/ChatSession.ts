@@ -16,8 +16,16 @@ export type ChatSession = {
   messages: Array<ChatMessage>
 }
 
+export const mkChatSession = (opts: { id?: string, messages: ChatMessage[] }) => {
+  return {
+    _tag: 'ChatSession' as const,
+    id: opts.id,
+    messages: opts.messages,
+  }
+}
+
 export const mkEmptyChatSession = (): ChatSession => ({
-  _tag: 'ChatSession',
+  _tag: 'ChatSession' as const,
   messages: [],
 })
 

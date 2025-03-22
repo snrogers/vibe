@@ -1,12 +1,17 @@
 <task>
-  <id>research-and-plan-001</id>
-  <description>Research and plan the implementation of the task: "<TASK_DESCRIPTION>"</description>
+  <id>research-and-plan</id>
+  <description>
+    Research and plan the implementation of the task loosely defined by the User.
+    Ensure that the criteria listed in `<criteria/>` are met.
+  </description>
   <steps>
     <!-- Research Phase -->
     <step>
       <number>1</number>
       <instruction>Perform Task Analysis</instruction>
       <action>
+        - Activate "Planning" Mode.
+
         - Read the task description: "<TASK_DESCRIPTION>".
         - Identify key concepts and keywords that define the task.
         - Example: For "Add user authentication", extract keywords like "user", "authentication", "login".

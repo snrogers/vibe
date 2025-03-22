@@ -1,9 +1,8 @@
 import type { AppEvent } from './AppEvent';
-import { addAssistantMessage, addToolCallResults, addUserMessage, type ChatSession } from '../Domain/ChatSession';
-import { exhaustiveCheck } from '../Utils';
 import { INITIAL_APP_STATE, type AppState } from './AppState';
+import { addAssistantMessage, addToolCallResults, addUserMessage } from '../Domain/ChatSession';
+import { exhaustiveCheck } from '../Utils';
 import { logger } from '../Services/LogService';
-import { last } from 'rambdax';
 
 type IgnoredEventTypes =
   | 'KEY_INPUT'
@@ -142,6 +141,37 @@ export const appReducer = withLogging((state: AppState = INITIAL_APP_STATE, even
     case 'EVENT_LOG': {
       const { event } = payload
       return { ...state, events: [...state.events, event] }
+    }
+    case 'PLANNING_COMPLETION_CANCEL': {
+      return {
+        ...state,
+        inProgress: false,
+        completionDelta: undefined,
+      }
+    }
+    case 'PLANNING_COMPLETION_FAILURE': {
+      return {
+        ...state,
+        inProgress: false,
+        completionDelta: undefined,
+      }
+    }
+    case 'PLANNING_COMPLETION_STARTED': {
+      return {
+        ...state,
+        inProgress: true,
+      }
+    }
+    case 'PLANNING_COMPLETION_SUCCESS': {
+      const { assistantMessage, usage } = payload
+      const chatSession = addAssistantMessage(state.chatSession, assistantMessage)
+      return {
+        ...state,
+        inProgress: false,
+        chatSession,
+        completionDelta: undefined,
+        usage,
+      }
     }
     case 'PROMPT_SUBMITTED': {
       const { prompt } = payload

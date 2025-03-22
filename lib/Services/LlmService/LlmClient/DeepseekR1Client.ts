@@ -7,7 +7,7 @@ import {getApiClient, type LlmConfig} from "./getApiClient";
 
 export const DEEPSEEK_MODEL = 'deepseek-r1';
 
-export const deepseekClient: LlmConfig = {
+export const deepseekR1ClientConfig: LlmConfig = {
   api:     'openai',
   model:    DEEPSEEK_MODEL,
   baseUrl: 'https://api.deepseek.com/v1',

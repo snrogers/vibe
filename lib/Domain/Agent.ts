@@ -1,18 +1,15 @@
-import type { ChatCompletion } from "openai/resources/index.mjs"
-import type { LlmClient } from "../Services/LlmService/LlmClient/LlmClient"
-import type { Tool } from "../Services/ToolService/Types"
-import { mkEmptyChatSession, type ChatSession } from "./ChatSession"
+import type { LlmConfig } from "../Services/LlmService/LlmClient/getApiClient"
 import type { ModelProvider } from "../Services/LlmService/ModelProvider"
 import type { ToolDef } from "../Services/ToolService/ToolDef"
+import { mkEmptyChatSession, type ChatSession } from "./ChatSession"
 
 
 
 export type Agent = {
-  _tag?:        'Agent'
-  tools:         ToolDef[]
-  chatSession:   ChatSession
-  modelProvider: ModelProvider
-  modelName:     string
+  _tag?:       'Agent'
+  chatSession: ChatSession
+  modelConfig: LlmConfig
+  tools:       ToolDef[]
 }
 
 type mkAgentOpts = {

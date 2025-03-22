@@ -1,20 +1,14 @@
-import { call, cancelled, select, take, takeEvery, type SagaGenerator } from 'typed-redux-saga'
+import { call, type SagaGenerator } from 'typed-redux-saga'
 import { serializeError } from 'serialize-error'
 
-import type { AppEvent } from '@/lib/App/AppEvent'
-import type { AppState } from '@/lib/App/AppState'
-import type { AssistantMessage, ChatSession } from '@/lib/Domain/ChatSession'
 import type { ChatCompletionChunk } from 'openai/resources'
-import type { FunctionToolCall } from 'openai/resources/beta/threads/runs/steps.mjs'
+import type { ChatSession } from '@/lib/Domain/ChatSession'
 import type { Stream } from 'openai/streaming.mjs'
 import type { Usage } from '@/lib/Services/LlmService/Types'
 import { LlmService } from '@/lib/Services/LlmService'
-import { channelFromAsyncIterable, END, mapAsyncIterable, put } from '@/lib/App/Utils'
-import { dump } from '@/lib/Utils'
 import { getPrompt } from '@/lib/Services/LlmService/Prompt'
 import { logger } from '@/lib/Services/LogService'
-import { mergeChunks, type AnyChunk } from '@/lib/Services/LlmService/mergeChunks'
-import { mergeLeft } from 'rambdax'
+import { mapAsyncIterable, put } from '@/lib/App/Utils'
 
 
 export type CompletionDelta = ChatCompletionChunk.Choice.Delta
@@ -58,7 +52,6 @@ export function * StreamCompletionSaga(opts: StreamCompletionSagaOpts) {
 // Helpers
 // ----------------------------------------------------------------- //
 function * collectChunks(chunkStream: Stream<ChatCompletionChunk>, onAccumulate?: (delta: CompletionDelta) => SagaGenerator<any, any>) {
-  let partialCompletion: CompletionDelta = {}
   let partialContent: string = '';
   let role: string | undefined;
   let toolCalls: DeltaToolCall[] | undefined;

@@ -1,1 +1,1 @@
-export { WatchChatSaga, ChatSaga } from './ChatSaga'
+export { ChatSaga } from './ChatSaga'
